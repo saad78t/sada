@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import PostItem from "../components/Post/PostItem";
+import Spinner from "../Shared/Spinner";
+import { useQuery } from "@tanstack/react-query";
+import { getPosts } from "../services/postService";
 
 const HomeContainer = styled.div`
   max-width: 600px;
@@ -29,30 +32,32 @@ const EmptyState = styled.p`
   margin-top: 2rem;
 `;
 
-const dummyPosts = [
-  {
-    id: 1,
-    username: "ahmed",
-    content: "هذا أول بوست!",
-    createdAt: "2025-05-04",
-  },
-  {
-    id: 2,
-    username: "sara",
-    content: "أحب React كثيرًا 💙",
-    createdAt: "2025-05-03",
-  },
-];
-
 const Home = () => {
+  const {
+    isLoading,
+    data: posts,
+    error,
+  } = useQuery({
+    queryKey: ["Posts"],
+    queryFn: getPosts,
+  });
+
+  if (error) {
+    console.error(error);
+    throw new Error("posts can't be loaded");
+  }
+
   return (
     <HomeContainer>
+      {isLoading && <Spinner />}
+
       <PostList>
-        {dummyPosts.length === 0 ? (
-          <EmptyState>No posts yet</EmptyState>
-        ) : (
-          dummyPosts.map((post) => <PostItem post={post} key={post.id} />)
+        {!isLoading && posts?.length === 0 && (
+          <EmptyState>There are no posts currently.</EmptyState>
         )}
+
+        {!isLoading &&
+          posts?.map((post) => <PostItem post={post} key={post.id} />)}
       </PostList>
     </HomeContainer>
   );

@@ -19,13 +19,11 @@ const PostImage = styled.img`
   border: 1px solid ${({ theme }) => theme.borderColor};
 `;
 
-const PostContent = () => {
+const PostContent = ({ content, mediaUrl }) => {
   return (
     <ContentWrapper>
-      <PostText>
-        هذا هو محتوى البوست، بإمكانك إضافة أي نص هنا يمثل ما كتبه المستخدم.
-      </PostText>
-      <PostImage src="https://via.placeholder.com/600x400" alt="post" />
+      <PostText>{content}</PostText>
+      <PostImage src={mediaUrl} alt="post" />
     </ContentWrapper>
   );
 };

@@ -1,4 +1,9 @@
+// components/Post/PostItem.jsx
 import styled from "styled-components";
+import PostHeader from "./PostHeader";
+import PostContent from "./PostContent";
+import PostActions from "./PostActions";
+import CommentPreview from "./CommentPreview";
 
 const PostItemWrapper = styled.div`
   background-color: ${({ theme }) => theme.bgColor};
@@ -10,20 +15,16 @@ const PostItemWrapper = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 `;
 
-const Username = styled.h4`
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-`;
-
-const Content = styled.p`
-  line-height: 1.5;
-`;
-
 const PostItem = ({ post }) => {
   return (
     <PostItemWrapper>
-      <Username>@{post.username}</Username>
-      <Content>{post.content}</Content>
+      <PostHeader
+        username={post.users?.username || post.username}
+        createdAt={post.created_at}
+      />
+      <PostContent content={post.content} mediaUrl={post.media_url} />
+      <PostActions postId={post.id} />
+      <CommentPreview postId={post.id} />
     </PostItemWrapper>
   );
 };

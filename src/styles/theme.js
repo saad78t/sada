@@ -1,14 +1,16 @@
 export const lightTheme = {
-  bgColor: "#ffffff",
-  textColor: "#1a202c",
-  borderColor: "#e2e8f0",
-  avatarBg: "#cbd5e1",
-  buttonBg: "#3182ce",
+  bgColor: "#f2f5f9",
+  textColor: "#1a1a1a",
+  borderColor: "#d0d7de",
+  avatarBg: "#60a5fa",
+  buttonBg: "#2563eb",
   buttonText: "#ffffff",
-  buttonHover: "#2b6cb0",
+  buttonHover: "#1e40af",
   modalBg: "#ffffff",
-  toastBg: "#323232",
+  toastBg: "#2563eb",
   toastText: "#ffffff",
+  headerBg: "#3b82f6",
+  cardBg: "#ffffff",
 };
 
 export const darkTheme = {

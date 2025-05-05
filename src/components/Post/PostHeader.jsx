@@ -43,14 +43,14 @@ const OptionsButton = styled.button`
   cursor: pointer;
 `;
 
-const PostHeader = () => {
+const PostHeader = ({ username, createdAt }) => {
   return (
     <HeaderWrapper>
       <UserInfo>
         <Avatar />
         <UserNameDate>
-          <UserName>Username</UserName>
-          <PostDate>2 hours ago</PostDate>
+          <UserName>{username}</UserName>
+          <PostDate>{createdAt}</PostDate>
         </UserNameDate>
       </UserInfo>
       <OptionsButton>⋮</OptionsButton>

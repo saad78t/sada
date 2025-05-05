@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Header from "./Header";
 import BottomNav from "./BottomNav";
 import { Outlet } from "react-router-dom";
+import FloatingAddButton from "../Shared/FloatingAddButton";
 
 const LayoutContainer = styled.div`
   min-height: 100vh;
@@ -24,6 +25,7 @@ const Layout = ({ toggleTheme, isDarkMode }) => {
         <Outlet />
       </MainContent>
       <BottomNav />
+      <FloatingAddButton />
     </LayoutContainer>
   );
 };
