@@ -3,9 +3,6 @@ app tree
 ```
 sada-app/
 │
-├── public/
-│   └── index.html
-│
 ├── src/
 │   ├── assets/
 │
@@ -26,13 +23,12 @@ sada-app/
 │   │   │   ├── Button.jsx
 │   │   │   ├── Modal.jsx
 │   │   │   └── Toast.jsx
-│
-│   ├── pages/
-│   │   ├── HomePage.jsx
-│   │   ├── CreatePostPage.jsx
-│   │   ├── PostDetailPage.jsx
-│   │   ├── ProfilePage.jsx
-│   │   └── NotificationsPage.jsx
+│   │   │
+│   │   ├── Auth/
+│   │   │   ├── LoginForm.jsx
+│   │   │   ├── SignupForm.jsx
+│   │   │   ├── ForgotPassword.jsx
+│   │   │   └── AuthWrapper.jsx
 │
 │   ├── layout/
 │   │   ├── Header.jsx
@@ -42,19 +38,36 @@ sada-app/
 │   ├── routes/
 │   │   └── AppRoutes.jsx
 │
-│   ├── styles/
-│   │   └── GlobalStyle.js
+│   ├── pages/
+│   │   ├── Home.jsx
+│   │   ├── NewPost.jsx
+│   │   ├── PostDetails.jsx
+│   │   ├── Profile.jsx
+│   │   ├── Login.jsx
+│   │   └── Signup.jsx
+│
+│   ├── services/
+│   │   ├── supabaseClient.js
+│   │   ├── api.js
+│   │   ├── authService.js
+│   │   ├── userService.js
+│   │   ├── postService.js
+│   │   ├── commentService.js
+│   │   ├── likeService.js
+│   │   └── notificationService.js
+│
+│   ├── hooks/
+│   │   └── useAuth.js
 │
 │   ├── utils/
 │   │   └── helpers.js
 │
-│   ├── services/
-│   │   └── supabase.js
+│   ├── styles/
+│   │   └── GlobalStyle.js
 │
 │   ├── App.jsx
 │   └── main.jsx
 │
-├── .gitignore
-├── package.json
-└── README.md
+└── .env
+
 ```
