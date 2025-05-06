@@ -13,3 +13,18 @@ export async function getPosts() {
 
   return posts;
 }
+
+export async function getPostById(id) {
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*, users(username)")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    console.error("Error fetching post:", error);
+    throw new Error("Failed to load post");
+  }
+
+  return data;
+}

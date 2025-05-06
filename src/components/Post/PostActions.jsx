@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { FaHeart, FaComment, FaShare } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { getLikes } from "../../services/likeService";
+import { getComments } from "../../services/commentService";
 
 const ActionsWrapper = styled.div`
   display: flex;
@@ -32,13 +33,18 @@ const PostActions = ({ postId }) => {
     queryFn: () => getLikes(postId),
   });
 
+  const { data: comments = [], isLoading: commentsLoading } = useQuery({
+    queryKey: ["comments", postId],
+    queryFn: () => getComments(postId),
+  });
+
   return (
     <ActionsWrapper>
       <ActionButton>
         <FaHeart /> {likesLoading ? "..." : likes.length}
       </ActionButton>
       <ActionButton>
-        <FaComment /> 3
+        <FaComment /> {commentsLoading ? "..." : comments.length}
       </ActionButton>
       <ActionButton>
         <FaShare />

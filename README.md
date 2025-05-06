@@ -12,7 +12,8 @@ sada-app/
 │   │   │   ├── PostHeader.jsx
 │   │   │   ├── PostContent.jsx
 │   │   │   ├── PostActions.jsx
-│   │   │   └── CommentPreview.jsx
+│   │   │   ├── PostActions.jsx
+│   │   │
 │   │   │
 │   │   ├── Comment/
 │   │   │   ├── CommentItem.jsx
@@ -47,6 +48,7 @@ sada-app/
 │   │   ├── Profile.jsx
 │   │   ├── Login.jsx
 │   │   └── Signup.jsx
+│   │
 │
 │   ├── services/
 │   │   ├── supabaseClient.js

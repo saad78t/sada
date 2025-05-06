@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const HeaderContainer = styled.header`
@@ -39,7 +40,9 @@ const ToggleButton = styled.button`
 const Header = ({ toggleTheme, isDarkMode }) => {
   return (
     <HeaderContainer>
-      <Logo>Sada</Logo>
+      <Link to="/">
+        <Logo>Sada</Logo>
+      </Link>
       <RightSection>
         <ToggleButton onClick={toggleTheme}>
           {isDarkMode ? "🌞" : "🌙"}

@@ -1,9 +1,8 @@
-// components/Post/PostItem.jsx
 import styled from "styled-components";
 import PostHeader from "./PostHeader";
 import PostContent from "./PostContent";
 import PostActions from "./PostActions";
-import CommentPreview from "./CommentPreview";
+import { Link } from "react-router-dom";
 
 const PostItemWrapper = styled.div`
   background-color: ${({ theme }) => theme.bgColor};
@@ -22,9 +21,13 @@ const PostItem = ({ post }) => {
         username={post.users?.username || post.username}
         createdAt={post.created_at}
       />
-      <PostContent content={post.content} mediaUrl={post.media_url} />
+      <Link
+        to={`/post/${post.id}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        <PostContent content={post.content} mediaUrl={post.media_url} />
+      </Link>
       <PostActions postId={post.id} />
-      <CommentPreview postId={post.id} />
     </PostItemWrapper>
   );
 };
