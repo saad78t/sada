@@ -14,3 +14,17 @@ export async function getComments(postId) {
 
   return data;
 }
+
+export async function getAllComments() {
+  const { data, error } = await supabase
+    .from("comments")
+    .select("*, users(username)")
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    throw new Error("Error fetching all comments");
+  }
+
+  return data;
+}

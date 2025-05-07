@@ -6,6 +6,7 @@ import Profile from "../pages/Profile";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import Layout from "../layout/Layout";
+import CommentDetails from "../Comment/CommentDetails";
 
 function AppRoutes({ toggleTheme, isDarkMode }) {
   return (
@@ -18,6 +19,7 @@ function AppRoutes({ toggleTheme, isDarkMode }) {
         <Route path="/new" element={<NewPost />} />
         <Route path="/post/:id" element={<PostDetails />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/comment/:id" element={<CommentDetails />} />
       </Route>
 
       {/* الصفحات الخاصة خارج الـ Layout */}
