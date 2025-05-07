@@ -2,12 +2,13 @@ import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getPostById } from "../services/postService";
-import PostItem from "../components/Post/PostItem";
 import PostHeader from "../components/Post/PostHeader";
 import PostContent from "../components/Post/PostContent";
 import PostActions from "../components/Post/PostActions";
 import { getComments } from "../services/commentService";
 import { ArrowLeft } from "lucide-react";
+import Spinner from "../Shared/Spinner";
+import CommentItem from "../Comment/CommentItem";
 
 const PostDetailsContainer = styled.div`
   max-width: 700px;
@@ -67,18 +68,29 @@ const SubmitCommentButton = styled.button`
   }
 `;
 
-const BackButton = styled.button`
+const SecondaryHeader = styled.div`
+  position: fixed;
+  top: 95px;
+  width: 100%;
+  max-width: 700px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background: rgba(94, 94, 94, 0.8);
+  display: flex;
+  align-items: center;
+  padding: 10px;
+`;
+const ArrowButton = styled.button`
   background: none;
   border: none;
-  color: ${({ theme }) => theme.textColor};
   cursor: pointer;
-  font-size: 1.5rem;
-
-  &:hover {
-    opacity: 0.8;
-  }
+  margin-right: 5px;
+  color: white;
 `;
-
+const Text = styled.span`
+  color: white;
+`;
 const PostDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -98,16 +110,19 @@ const PostDetails = () => {
     queryFn: () => getComments(id),
   });
 
-  if (isLoading) return <p>Loading post...</p>;
+  if (isLoading) return <Spinner />;
   if (error || !post) return <p>Post not found</p>;
 
   return (
     <PostDetailsContainer>
-      <p>Post</p>
-      <BackButton onClick={() => navigate("/")}>
-        <ArrowLeft />
-      </BackButton>
-
+      {location.pathname === `/post/${id}` && (
+        <SecondaryHeader>
+          <ArrowButton onClick={() => navigate(-1)}>
+            <ArrowLeft />
+          </ArrowButton>
+          <Text>Post</Text>
+        </SecondaryHeader>
+      )}
       <PostWrapper>
         <PostHeader
           username={post.users?.username || post.username}
@@ -118,34 +133,29 @@ const PostDetails = () => {
       </PostWrapper>
 
       <CommentsSection>
-        {/* هنا قائمة التعليقات */}
         <CommentForm>
           <CommentInput placeholder="Write a comment..." />
           <SubmitCommentButton>Comment</SubmitCommentButton>
         </CommentForm>
-        {loadingComments ? (
-          <p>Loading comments...</p>
-        ) : (
-          comments
-            .filter((comment) => comment.parent_comment_id === null)
-            .map((comment) => (
-              <div key={comment.id} style={{ marginBottom: "1.5rem" }}>
-                <strong>{comment.users?.username || "User"}:</strong>{" "}
-                {comment.content}
-                {/* عرض الردود على هذا التعليق */}
-                <div style={{ marginLeft: "1.5rem", marginTop: "0.5rem" }}>
-                  {comments
-                    .filter((reply) => reply.parent_comment_id === comment.id)
-                    .map((reply) => (
-                      <div key={reply.id} style={{ marginBottom: "0.5rem" }}>
-                        <strong>{reply.users?.username || "User"}:</strong>{" "}
-                        {reply.content}
-                      </div>
-                    ))}
-                </div>
-              </div>
-            ))
-        )}
+        {comments
+          .filter((comment) => comment.parent_comment_id === null)
+          .map((comment) => {
+            const repliesCount = comments.filter(
+              (reply) => reply.parent_comment_id === comment.id
+            ).length;
+
+            return (
+              <CommentItem
+                key={comment.id}
+                comment={comment}
+                repliesCount={repliesCount}
+                onClick={(commentId) => {
+                  // هنا تدخل على صفحة أو نافذة الردود حسب ما تريد
+                  console.log("عرض الردود للتعليق:", commentId);
+                }}
+              />
+            );
+          })}
       </CommentsSection>
     </PostDetailsContainer>
   );
