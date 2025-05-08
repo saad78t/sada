@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import UserAvatar from "./UserAvatar";
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -43,11 +44,11 @@ const OptionsButton = styled.button`
   cursor: pointer;
 `;
 
-const PostHeader = ({ username, createdAt }) => {
+const PostHeader = ({ username, createdAt, avatarUrl }) => {
   return (
     <HeaderWrapper>
       <UserInfo>
-        <Avatar />
+        <UserAvatar username={username} profilePictureUrl={avatarUrl} />
         <UserNameDate>
           <UserName>{username}</UserName>
           <PostDate>{createdAt}</PostDate>

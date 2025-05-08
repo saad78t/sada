@@ -3,7 +3,7 @@ import supabase from "./supabaseClient";
 export async function getPosts() {
   let { data: posts, error } = await supabase
     .from("posts")
-    .select("*, users(username)")
+    .select("*, users(username, profile_picture_url)")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -17,7 +17,7 @@ export async function getPosts() {
 export async function getPostById(id) {
   const { data, error } = await supabase
     .from("posts")
-    .select("*, users(username)")
+    .select("*, users(username, profile_picture_url)")
     .eq("id", id)
     .single();
 

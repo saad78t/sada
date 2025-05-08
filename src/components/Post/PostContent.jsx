@@ -1,30 +1,58 @@
 import styled from "styled-components";
 
-const ContentWrapper = styled.div`
-  margin-bottom: 1rem;
+const ContentText = styled.p`
+  margin-bottom: 0.75rem;
+  white-space: pre-wrap;
 `;
 
-const PostText = styled.p`
-  font-size: 1rem;
-  line-height: 1.6;
-  color: ${({ theme }) => theme.textColor};
+const MediaContainer = styled.div`
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   margin-bottom: 0.75rem;
 `;
 
-const PostImage = styled.img`
+const MediaItem = styled.div`
   width: 100%;
-  max-height: 400px;
-  object-fit: cover; //Makes the image look good no matter the size.
-  border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.borderColor};
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
 `;
 
-const PostContent = ({ content, mediaUrl }) => {
+const MediaImage = styled.img`
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+`;
+
+const MediaVideo = styled.video`
+  width: 100%;
+  height: auto;
+  display: block;
+`;
+
+const PostContent = ({ content, mediaUrls }) => {
+  const safeMediaUrls = Array.isArray(mediaUrls) ? mediaUrls : [];
+
   return (
-    <ContentWrapper>
-      <PostText>{content}</PostText>
-      <PostImage src={mediaUrl} alt="post" />
-    </ContentWrapper>
+    <>
+      <ContentText>{content}</ContentText>
+
+      {safeMediaUrls.length > 0 && (
+        <MediaContainer>
+          {safeMediaUrls.map((url, index) => (
+            <MediaItem key={index}>
+              {url.match(/\.(mp4|webm)$/i) ? (
+                <MediaVideo src={url} controls />
+              ) : (
+                <MediaImage src={url} alt={`media-${index}`} />
+              )}
+            </MediaItem>
+          ))}
+        </MediaContainer>
+      )}
+    </>
   );
 };
 

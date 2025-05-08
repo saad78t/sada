@@ -14,20 +14,27 @@ const PostItemWrapper = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 `;
 
+const PostBodyLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+`;
+
 const PostItem = ({ post }) => {
+  const { content, media_urls, id } = post;
+
   return (
     <PostItemWrapper>
       <PostHeader
         username={post.users?.username || post.username}
         createdAt={post.created_at}
+        avatarUrl={post.users?.profile_picture_url}
       />
-      <Link
-        to={`/post/${post.id}`}
-        style={{ textDecoration: "none", color: "inherit" }}
-      >
-        <PostContent content={post.content} mediaUrl={post.media_url} />
-      </Link>
-      <PostActions postId={post.id} />
+
+      <PostBodyLink to={`/post/${id}`}>
+        <PostContent content={content} mediaUrls={media_urls} />
+      </PostBodyLink>
+
+      <PostActions postId={id} />
     </PostItemWrapper>
   );
 };

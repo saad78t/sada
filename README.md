@@ -12,12 +12,13 @@ sada-app/
 │   │   │   ├── PostHeader.jsx
 │   │   │   ├── PostContent.jsx
 │   │   │   ├── PostActions.jsx
-│   │   │   ├── PostActions.jsx
+│   │   │   ├── UserAvatar.jsx
 │   │   │
 │   │   │
 │   │   ├── Comment/
 │   │   │   ├── CommentItem.jsx
 │   │   │   └── ReplyForm.jsx
+│   │   │   └── CommentDetails.jsx
 │   │   │
 │   │   ├── Shared/
 │   │   │   ├── Avatar.jsx

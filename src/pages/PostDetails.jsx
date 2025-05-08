@@ -9,14 +9,15 @@ import PostActions from "../components/Post/PostActions";
 import Spinner from "../Shared/Spinner";
 import { ArrowLeft, ThumbsUp, MessageCircle } from "lucide-react";
 import { useState } from "react";
+import UserAvatar from "../components/Post/UserAvatar";
 
-const PostDetailsContainer = styled.div`
+const Container = styled.div`
   max-width: 700px;
   margin: 0 auto;
   padding: 2rem 1rem;
 `;
 
-const SecondaryHeader = styled.div`
+const FixedHeader = styled.div`
   position: fixed;
   top: 95px;
   width: 100%;
@@ -42,14 +43,13 @@ const Text = styled.span`
   color: white;
 `;
 
-const CommentBlock = styled.div`
-  border-left: ${({ hasLine }) => (hasLine ? "2px solid #28a745" : "none")};
-  padding-left: ${({ hasLine }) => (hasLine ? "1rem" : "0")};
-  margin-top: 1rem;
+const CommentContainer = styled.div`
+  border-left: ${({ $hasLine }) => ($hasLine ? "2px solid #28a745" : "none")};
+  padding-left: 0.75rem;
+  margin-bottom: 1rem;
 `;
 
 const CommentContent = styled.div`
-  margin-bottom: 0.5rem;
   cursor: pointer;
 `;
 
@@ -59,19 +59,14 @@ const AuthorRow = styled.div`
   gap: 0.5rem;
 `;
 
-// const Avatar = styled.img`
-//   width: 32px;
-//   height: 32px;
-//   border-radius: 50%;
-// `;
-
-const Author = styled.div`
+const UserName = styled.span`
   font-weight: bold;
+  color: ${({ theme }) => theme.textColor};
 `;
 
-const Timestamp = styled.small`
-  color: gray;
-  margin-left: 8px;
+const PostDate = styled.span`
+  font-size: 0.85rem;
+  color: ${({ theme }) => theme.borderColor};
 `;
 
 const CommentText = styled.div`
@@ -94,20 +89,6 @@ const ActionButton = styled.button`
   gap: 0.3rem;
   color: ${({ theme }) => theme.textColor};
   font-size: 0.85rem;
-`;
-
-const Avatar = styled.div`
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background-color: #6c757d;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 16px;
-  margin-right: 0.5rem;
 `;
 
 const PostDetails = () => {
@@ -144,20 +125,22 @@ const PostDetails = () => {
     const showReplies = expandedComments[comment.id];
 
     return (
-      <CommentBlock key={comment.id} hasLine={depth === 0}>
+      <CommentContainer key={comment.id} $hasLine={depth === 0}>
         <CommentContent
           onClick={() => replies.length > 0 && toggleReplies(comment.id)}
         >
           <AuthorRow>
-            {comment.users?.avatar_url && (
-              <Avatar src={comment.users.avatar_url} alt="avatar" />
-            )}
-            <Author>
-              {comment.users?.username || "User"}
-              <Timestamp>
-                {new Date(comment.created_at).toLocaleString()}
-              </Timestamp>
-            </Author>
+            <UserAvatar
+              username={comment.users?.username}
+              profilePictureUrl={comment.users?.profile_picture_url}
+            />
+            <div>
+              <UserName>{comment.users?.username}</UserName>
+              <PostDate>
+                {" "}
+                • {new Date(comment.created_at).toLocaleString()}
+              </PostDate>
+            </div>
           </AuthorRow>
           <CommentText>{comment.content}</CommentText>
           <CommentActions>
@@ -173,7 +156,7 @@ const PostDetails = () => {
         </CommentContent>
         {showReplies &&
           replies.map((reply) => renderComment(reply, allComments, depth + 1))}
-      </CommentBlock>
+      </CommentContainer>
     );
   };
 
@@ -181,21 +164,21 @@ const PostDetails = () => {
   if (error || !post) return <p>Post not found</p>;
 
   return (
-    <PostDetailsContainer>
-      {location.pathname === `/post/${id}` && (
-        <SecondaryHeader>
-          <ArrowButton onClick={() => navigate(-1)}>
-            <ArrowLeft />
-          </ArrowButton>
-          <Text>Post</Text>
-        </SecondaryHeader>
-      )}
+    <Container>
+      <FixedHeader>
+        <ArrowButton onClick={() => navigate(-1)}>
+          <ArrowLeft />
+        </ArrowButton>
+        <Text>Post</Text>
+      </FixedHeader>
+
       <PostHeader
         username={post.users?.username || post.username}
-        avatarUrl={post.users?.avatar_url}
+        avatarUrl={post.users?.profile_picture_url}
         createdAt={post.created_at}
       />
-      <PostContent content={post.content} mediaUrl={post.media_url} />
+
+      <PostContent content={post.content} mediaUrls={post.media_urls} />
       <PostActions postId={post.id} />
 
       <div style={{ marginTop: "2rem" }}>
@@ -203,11 +186,11 @@ const PostDetails = () => {
           <p>Loading comments...</p>
         ) : (
           comments
-            .filter((comment) => comment.parent_comment_id === null)
-            .map((comment) => renderComment(comment, comments))
+            .filter((c) => c.parent_comment_id === null)
+            .map((c) => renderComment(c, comments))
         )}
       </div>
-    </PostDetailsContainer>
+    </Container>
   );
 };
 
