@@ -36,7 +36,7 @@ const ArrowButton = styled.button`
   border: none;
   cursor: pointer;
   margin-right: 5px;
-  color: white;
+  color: #000000;
 `;
 
 const Text = styled.span`
@@ -119,6 +119,7 @@ const PostDetails = () => {
   };
 
   const renderComment = (comment, allComments, depth = 0) => {
+    //Extract responses to this comment
     const replies = allComments.filter(
       (c) => c.parent_comment_id === comment.id
     );
@@ -162,20 +163,20 @@ const PostDetails = () => {
 
   if (isLoading) return <Spinner />;
   if (error || !post) return <p>Post not found</p>;
-
   return (
     <Container>
-      <FixedHeader>
-        <ArrowButton onClick={() => navigate(-1)}>
-          <ArrowLeft />
-        </ArrowButton>
+      <ArrowButton onClick={() => navigate(-1)}>
+        <ArrowLeft />
+      </ArrowButton>
+      {/* <FixedHeader>
         <Text>Post</Text>
-      </FixedHeader>
+      </FixedHeader> */}
 
       <PostHeader
         username={post.users?.username || post.username}
         avatarUrl={post.users?.profile_picture_url}
         createdAt={post.created_at}
+        postId={post.id}
       />
 
       <PostContent content={post.content} mediaUrls={post.media_urls} />

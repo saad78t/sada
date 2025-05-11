@@ -28,6 +28,7 @@ const PostItem = ({ post }) => {
         username={post.users?.username || post.username}
         createdAt={post.created_at}
         avatarUrl={post.users?.profile_picture_url}
+        postId={id}
       />
 
       <PostBodyLink to={`/post/${id}`}>

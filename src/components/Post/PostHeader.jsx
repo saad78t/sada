@@ -1,5 +1,9 @@
 import styled from "styled-components";
 import UserAvatar from "./UserAvatar";
+import { useEffect, useRef, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deletePost } from "../../services/postService";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -11,14 +15,6 @@ const HeaderWrapper = styled.div`
 const UserInfo = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const Avatar = styled.div`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: ${({ theme }) => theme.avatarBg};
-  margin-right: 0.75rem;
 `;
 
 const UserNameDate = styled.div`
@@ -44,7 +40,76 @@ const OptionsButton = styled.button`
   cursor: pointer;
 `;
 
-const PostHeader = ({ username, createdAt, avatarUrl }) => {
+const DropdownMenu = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 140px;
+  background-color: ${({ theme }) => theme.bgColor};
+  border: 1px solid ${({ theme }) => theme.borderColor};
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+`;
+
+const MenuItem = styled.button`
+  background: none;
+  border: none;
+  padding: 0.6rem 1rem;
+  width: 100%;
+  text-align: left;
+  color: ${({ theme }) => theme.textColor};
+  font-size: 0.95rem;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.borderColor};
+  }
+`;
+
+const PostHeader = ({ username, createdAt, avatarUrl, postId }) => {
+  const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef();
+
+  function toggleMenu() {
+    setShowMenu((menu) => !menu);
+  }
+
+  const handleClickOutside = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setShowMenu(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showMenu]);
+
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const queryClient = useQueryClient();
+  const { isLoading: isDeleting, mutate } = useMutation({
+    mutationFn: deletePost,
+    onSuccess: () => {
+      alert("Post successfully deleted");
+      if (pathname === `/post/${postId}`) navigate(-1);
+      queryClient.invalidateQueries({
+        queryKey: ["Posts"],
+      });
+    },
+    onError: (err) => alert(err.mssage),
+  });
+
   return (
     <HeaderWrapper>
       <UserInfo>
@@ -54,7 +119,16 @@ const PostHeader = ({ username, createdAt, avatarUrl }) => {
           <PostDate>{createdAt}</PostDate>
         </UserNameDate>
       </UserInfo>
-      <OptionsButton>⋮</OptionsButton>
+      <div style={{ position: "relative" }} ref={menuRef}>
+        <OptionsButton onClick={toggleMenu}>⋮</OptionsButton>
+        {showMenu && (
+          <DropdownMenu>
+            <MenuItem onClick={() => mutate(postId)} disable={isDeleting}>
+              Delete Post
+            </MenuItem>
+          </DropdownMenu>
+        )}
+      </div>
     </HeaderWrapper>
   );
 };

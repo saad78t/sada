@@ -6,11 +6,21 @@ import GlobalStyle from "./styles/GlobalStyle";
 import AppRoutes from "./routes/AppRoutes";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
+// const queryClient = new QueryClient({
+//   defaultOptions: {
+//     queries: {
+//       // staleTime: 60 * 1000,
+//       staleTime: 0,
+//     },
+//   },
+// });
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // staleTime: 60 * 1000,
-      staleTime: 0,
+      staleTime: 5 * 60 * 1000, // 5 دقائق (يمكن تغييره حسب احتياجك)
+      gcTime: 10 * 60 * 1000, // 10 دقائق للاحتفاظ بالبيانات في الذاكرة
+      retry: false, // منع إعادة المحاولة في حالة الخطأ
+      refetchOnWindowFocus: false, // منع الجلب عند التركيز على النافذة
     },
   },
 });
