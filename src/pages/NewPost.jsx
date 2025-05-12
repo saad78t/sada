@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ImagePlus } from "lucide-react";
+import { useForm } from "react-hook-form";
 
 const Container = styled.div`
   max-width: 600px;
@@ -39,6 +40,13 @@ const Form = styled.form`
   gap: 1.5rem;
 `;
 
+const Input = styled.input`
+  border: 1px solid ${({ theme }) => theme.borderColor};
+  background-color: ${({ theme }) => theme.bgColor};
+  border-radius: 8px;
+  padding: 0.8rem 1.2rem;
+`;
+
 const TextArea = styled.textarea`
   width: 100%;
   min-height: 120px;
@@ -51,15 +59,22 @@ const TextArea = styled.textarea`
   resize: vertical;
 `;
 
-const FileInputLabel = styled.label`
-  display: inline-block;
-  padding: 0.75rem 1.25rem;
+const FileRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const FileIconLabel = styled.label`
   background-color: ${({ theme }) => theme.buttonBg};
   color: ${({ theme }) => theme.buttonText};
+  padding: 0.6rem;
   border-radius: 8px;
   cursor: pointer;
-  text-align: center;
-  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background-color: ${({ theme }) => theme.buttonHover};
@@ -70,6 +85,31 @@ const HiddenFileInput = styled.input`
   display: none;
 `;
 
+const PreviewContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+`;
+
+const PreviewItem = styled.div`
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid ${({ theme }) => theme.borderColor};
+  background-color: ${({ theme }) => theme.bgColor};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img,
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;
+
 const SubmitButton = styled.button`
   padding: 0.75rem 1.25rem;
   background-color: ${({ theme }) => theme.buttonBg};
@@ -78,6 +118,7 @@ const SubmitButton = styled.button`
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
+  align-self: flex-end;
 
   &:hover {
     background-color: ${({ theme }) => theme.buttonHover};
@@ -86,17 +127,38 @@ const SubmitButton = styled.button`
 
 const NewPost = () => {
   const navigate = useNavigate();
-  const [content, setContent] = useState("");
-  const [media, setMedia] = useState(null);
+  const [mediaFiles, setMediaFiles] = useState([]);
+  const [previews, setPreviews] = useState([]);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  // Update previews whenever mediaFiles change
+  useEffect(() => {
+    const newPreviews = mediaFiles.map((file) => ({
+      file,
+      url: URL.createObjectURL(file),
+    }));
+    setPreviews(newPreviews);
+
+    // Cleanup: revoke object URLs when component unmounts or files change
+    return () => {
+      newPreviews.forEach((preview) => URL.revokeObjectURL(preview.url));
+    };
+  }, [mediaFiles]);
 
   const handleFileChange = (e) => {
-    setMedia(e.target.files[0]);
+    const files = Array.from(e.target.files);
+    setMediaFiles(files);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Post content:", content);
-    console.log("Media file:", media);
+  const onSubmit = (data) => {
+    console.log("Form data:", data);
+    console.log("Media files:", mediaFiles);
+    // Here you can handle form submission and upload to Supabase or backend
   };
 
   return (
@@ -108,26 +170,43 @@ const NewPost = () => {
         <Title>New Post</Title>
       </Header>
 
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Input placeholder="Enter a title" {...register("title")} />
+
         <TextArea
           placeholder="What's on your mind?"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
+          {...register("content", { required: "Content is required" })}
         />
+        {errors.content && <span>{errors.content.message}</span>}
 
-        <FileInputLabel htmlFor="mediaUpload">
-          Add Image or Video
-        </FileInputLabel>
+        <FileRow>
+          <FileIconLabel htmlFor="mediaUpload" title="Upload images/videos">
+            <ImagePlus size={20} />
+          </FileIconLabel>
+          <SubmitButton type="submit">Post</SubmitButton>
+        </FileRow>
+
         <HiddenFileInput
           id="mediaUpload"
           type="file"
+          multiple
           accept="image/*,video/*"
           onChange={handleFileChange}
         />
 
-        {media && <p>Selected file: {media.name}</p>}
-
-        <SubmitButton type="submit">Post</SubmitButton>
+        {previews.length > 0 && (
+          <PreviewContainer>
+            {previews.map(({ file, url }, i) => (
+              <PreviewItem key={i}>
+                {file.type.startsWith("image") ? (
+                  <img src={url} alt={`Preview ${i}`} />
+                ) : file.type.startsWith("video") ? (
+                  <video src={url} controls />
+                ) : null}
+              </PreviewItem>
+            ))}
+          </PreviewContainer>
+        )}
       </Form>
     </Container>
   );

@@ -24,7 +24,6 @@ sada-app/
 │   │   │   ├── Avatar.jsx
 │   │   │   ├── Button.jsx
 │   │   │   ├── Modal.jsx
-│   │   │   └── Toast.jsx
 │   │   │   └── Spinner.jsx
 │   │   │   └── FloatingAddButton.jsx
 │   │   │

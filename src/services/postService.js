@@ -29,8 +29,8 @@ export async function getPostById(id) {
   return data;
 }
 
-export async function deletePost(id) {
-  const { error } = await supabase.from("posts").delete().eq("id", id);
+export async function deletePost(postId) {
+  const { error } = await supabase.from("posts").delete().eq("id", postId);
 
   if (error) {
     console.error("Error deleting post:", error);

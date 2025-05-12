@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deletePost } from "../../services/postService";
 import { useLocation, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -101,13 +102,13 @@ const PostHeader = ({ username, createdAt, avatarUrl, postId }) => {
   const { isLoading: isDeleting, mutate } = useMutation({
     mutationFn: deletePost,
     onSuccess: () => {
-      alert("Post successfully deleted");
+      toast.success("Post successfully deleted");
       if (pathname === `/post/${postId}`) navigate(-1);
       queryClient.invalidateQueries({
         queryKey: ["Posts"],
       });
     },
-    onError: (err) => alert(err.mssage),
+    onError: (err) => toast.error(err.message),
   });
 
   return (
@@ -123,7 +124,7 @@ const PostHeader = ({ username, createdAt, avatarUrl, postId }) => {
         <OptionsButton onClick={toggleMenu}>⋮</OptionsButton>
         {showMenu && (
           <DropdownMenu>
-            <MenuItem onClick={() => mutate(postId)} disable={isDeleting}>
+            <MenuItem onClick={() => mutate(postId)} disabled={isDeleting}>
               Delete Post
             </MenuItem>
           </DropdownMenu>

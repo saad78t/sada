@@ -111,6 +111,7 @@ const PostDetails = () => {
     queryFn: () => getComments(id),
   });
 
+  //prev stands for previous state, and comes automatically from React within setState
   const toggleReplies = (commentId) => {
     setExpandedComments((prev) => ({
       ...prev,
