@@ -17,14 +17,11 @@ const PostItemWrapper = styled.div`
 const PostBodyLink = styled(Link)`
   text-decoration: none;
   color: inherit;
+  display: block;
 `;
 
 const PostItem = ({ post }) => {
   const { content, media_urls, id } = post;
-  console.log("MEDIA FROM POSTITEM:", media_urls);
-  console.log("TYPE OF MEDIA:", typeof media_urls);
-  console.log("IS ARRAY:", Array.isArray(media_urls));
-  console.log("FIRST ITEM TYPE:", typeof media_urls[0]);
 
   return (
     <PostItemWrapper>

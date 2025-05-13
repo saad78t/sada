@@ -1,48 +1,119 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
+
+const ContentWrapper = styled.div`
+  direction: ${({ lang }) => (lang === "ar" ? "rtl" : "ltr")};
+  text-align: start;
+  margin-bottom: 1rem;
+`;
 
 const MediaGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 0.75rem;
-  margin-top: 1rem;
+  gap: 4px;
+  ${({ count }) => {
+    switch (count) {
+      case 1:
+        return "grid-template-columns: 1fr;";
+      case 2:
+        return "grid-template-columns: 1fr 1fr;";
+      case 3:
+        return `
+          grid-template-columns: 2fr 1fr;
+          grid-template-rows: 1fr 1fr;
+          grid-template-areas: 
+            "main side1"
+            "main side2";
+        `;
+      case 4:
+      default:
+        return "grid-template-columns: 1fr 1fr;";
+    }
+  }}
+`;
+
+const MediaItem = styled.div`
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  position: relative;
+
+  ${({ count, index }) => {
+    if (count === 3) {
+      if (index === 0) return "grid-area: main;";
+      if (index === 1) return "grid-area: side1;";
+      if (index === 2) return "grid-area: side2;";
+    }
+    return "";
+  }}
 `;
 
 const StyledImage = styled.img`
   width: 100%;
-  height: auto;
-  max-height: 300px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 10px;
+  cursor: pointer;
+  border-radius: 8px;
 `;
 
 const StyledVideo = styled.video`
   width: 100%;
-  max-height: 300px;
-  border-radius: 10px;
-  object-fit: cover;
+  max-height: 400px;
+  border-radius: 8px;
+  margin-top: 0.5rem;
 `;
 
-const PostContent = ({ content, mediaUrls }) => {
+const PostContent = ({ content, mediaUrls = [] }) => {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const lang = /[\u0600-\u06FF]/.test(content) ? "ar" : "en";
+
+  const images = mediaUrls && mediaUrls.filter((url) => !url.endsWith(".mp4"));
+  const videos = mediaUrls && mediaUrls.filter((url) => url.endsWith(".mp4"));
+
+  const handleImageClick = (index) => {
+    setCurrentIndex(index);
+    setLightboxOpen(true);
+  };
+
   return (
-    <div>
-      <p>{content}</p>
+    <>
+      <ContentWrapper lang={lang}>{content}</ContentWrapper>
 
-      <MediaGrid>
-        {mediaUrls?.map((url, index) => {
-          const isVideo = url.toLowerCase().includes(".mp4");
+      {images !== null && images.length > 0 && (
+        <MediaGrid count={images.length}>
+          {images !== null &&
+            images.map((url, index) => (
+              <MediaItem
+                key={index}
+                count={images.length}
+                index={index}
+                onClick={() => handleImageClick(index)}
+              >
+                <StyledImage src={url} alt={`media-${index}`} />
+              </MediaItem>
+            ))}
+        </MediaGrid>
+      )}
 
-          return isVideo ? (
-            <StyledVideo key={index} controls>
-              <source src={url} type="video/mp4" />
-              متصفحك لا يدعم تشغيل الفيديو.
-            </StyledVideo>
-          ) : (
-            <StyledImage key={index} src={url} alt={`media-${index}`} />
-          );
-        })}
-      </MediaGrid>
-    </div>
+      {videos !== null &&
+        videos.map((video, index) => (
+          <StyledVideo key={index} controls>
+            <source src={video} type="video/mp4" />
+            Your browser does not support the video tag.
+          </StyledVideo>
+        ))}
+
+      {lightboxOpen && (
+        <Lightbox
+          open={lightboxOpen}
+          close={() => setLightboxOpen(false)}
+          index={currentIndex}
+          slides={images.map((src) => ({ src }))}
+        />
+      )}
+    </>
   );
 };
 
