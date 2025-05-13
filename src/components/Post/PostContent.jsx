@@ -1,58 +1,48 @@
+import React from "react";
 import styled from "styled-components";
 
-const ContentText = styled.p`
-  margin-bottom: 0.75rem;
-  white-space: pre-wrap;
-`;
-
-const MediaContainer = styled.div`
+const MediaGrid = styled.div`
   display: grid;
-  gap: 0.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  margin-bottom: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
 `;
 
-const MediaItem = styled.div`
-  width: 100%;
-  position: relative;
-  border-radius: 10px;
-  overflow: hidden;
-`;
-
-const MediaImage = styled.img`
+const StyledImage = styled.img`
   width: 100%;
   height: auto;
+  max-height: 300px;
   object-fit: cover;
-  display: block;
+  border-radius: 10px;
 `;
 
-const MediaVideo = styled.video`
+const StyledVideo = styled.video`
   width: 100%;
-  height: auto;
-  display: block;
+  max-height: 300px;
+  border-radius: 10px;
+  object-fit: cover;
 `;
 
 const PostContent = ({ content, mediaUrls }) => {
-  const safeMediaUrls = Array.isArray(mediaUrls) ? mediaUrls : [];
-
   return (
-    <>
-      <ContentText>{content}</ContentText>
+    <div>
+      <p>{content}</p>
 
-      {safeMediaUrls.length > 0 && (
-        <MediaContainer>
-          {safeMediaUrls.map((url, index) => (
-            <MediaItem key={index}>
-              {url.match(/\.(mp4|webm)$/i) ? (
-                <MediaVideo src={url} controls />
-              ) : (
-                <MediaImage src={url} alt={`media-${index}`} />
-              )}
-            </MediaItem>
-          ))}
-        </MediaContainer>
-      )}
-    </>
+      <MediaGrid>
+        {mediaUrls?.map((url, index) => {
+          const isVideo = url.toLowerCase().includes(".mp4");
+
+          return isVideo ? (
+            <StyledVideo key={index} controls>
+              <source src={url} type="video/mp4" />
+              متصفحك لا يدعم تشغيل الفيديو.
+            </StyledVideo>
+          ) : (
+            <StyledImage key={index} src={url} alt={`media-${index}`} />
+          );
+        })}
+      </MediaGrid>
+    </div>
   );
 };
 

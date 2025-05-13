@@ -1,8 +1,8 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import PostHeader from "./PostHeader";
 import PostContent from "./PostContent";
 import PostActions from "./PostActions";
-import { Link } from "react-router-dom";
 
 const PostItemWrapper = styled.div`
   background-color: ${({ theme }) => theme.bgColor};
@@ -21,6 +21,10 @@ const PostBodyLink = styled(Link)`
 
 const PostItem = ({ post }) => {
   const { content, media_urls, id } = post;
+  console.log("MEDIA FROM POSTITEM:", media_urls);
+  console.log("TYPE OF MEDIA:", typeof media_urls);
+  console.log("IS ARRAY:", Array.isArray(media_urls));
+  console.log("FIRST ITEM TYPE:", typeof media_urls[0]);
 
   return (
     <PostItemWrapper>
