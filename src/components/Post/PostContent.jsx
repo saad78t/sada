@@ -23,21 +23,28 @@ const MediaGrid = styled.div`
           grid-template-columns: 2fr 1fr;
           grid-template-rows: 1fr 1fr;
           grid-template-areas: 
-            "main side1"
-            "main side2";
+            'main side1'
+            'main side2';
         `;
       case 4:
+        return `
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows: 1fr 1fr;
+        `;
       default:
-        return "grid-template-columns: 1fr 1fr;";
+        return "grid-template-columns: 1fr;";
     }
   }}
 `;
 
 const MediaItem = styled.div`
   width: 100%;
-  aspect-ratio: 1;
   overflow: hidden;
   position: relative;
+  cursor: pointer;
+
+  ${({ count }) => count === 4 && "aspect-ratio: 4 / 3;"}
+  ${({ count }) => count !== 4 && "aspect-ratio: 1;"}
 
   ${({ count, index }) => {
     if (count === 3) {
@@ -53,7 +60,6 @@ const StyledImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  cursor: pointer;
   border-radius: 8px;
 `;
 
@@ -69,8 +75,13 @@ const PostContent = ({ content, mediaUrls = [] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const lang = /[\u0600-\u06FF]/.test(content) ? "ar" : "en";
 
-  const images = mediaUrls?.filter((url) => !url.endsWith(".mp4")) || [];
-  const videos = mediaUrls?.filter((url) => url.endsWith(".mp4")) || [];
+  const images = Array.isArray(mediaUrls)
+    ? mediaUrls.filter((url) => !url.endsWith(".mp4"))
+    : [];
+
+  const videos = Array.isArray(mediaUrls)
+    ? mediaUrls.filter((url) => url.endsWith(".mp4"))
+    : [];
 
   const handleImageClick = (index) => {
     setCurrentIndex(index);
@@ -100,7 +111,7 @@ const PostContent = ({ content, mediaUrls = [] }) => {
         videos.map((video, index) => (
           <StyledVideo key={index} controls>
             <source src={video} type="video/mp4" />
-            Your browser does not support the video tag.
+            المتصفح لا يدعم تشغيل الفيديو.
           </StyledVideo>
         ))}
 
