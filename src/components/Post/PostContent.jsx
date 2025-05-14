@@ -69,8 +69,8 @@ const PostContent = ({ content, mediaUrls = [] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const lang = /[\u0600-\u06FF]/.test(content) ? "ar" : "en";
 
-  const images = mediaUrls && mediaUrls.filter((url) => !url.endsWith(".mp4"));
-  const videos = mediaUrls && mediaUrls.filter((url) => url.endsWith(".mp4"));
+  const images = mediaUrls?.filter((url) => !url.endsWith(".mp4")) || [];
+  const videos = mediaUrls?.filter((url) => url.endsWith(".mp4")) || [];
 
   const handleImageClick = (index) => {
     setCurrentIndex(index);
@@ -81,23 +81,22 @@ const PostContent = ({ content, mediaUrls = [] }) => {
     <>
       <ContentWrapper lang={lang}>{content}</ContentWrapper>
 
-      {images !== null && images.length > 0 && (
+      {images.length > 0 && (
         <MediaGrid count={images.length}>
-          {images !== null &&
-            images.map((url, index) => (
-              <MediaItem
-                key={index}
-                count={images.length}
-                index={index}
-                onClick={() => handleImageClick(index)}
-              >
-                <StyledImage src={url} alt={`media-${index}`} />
-              </MediaItem>
-            ))}
+          {images.map((url, index) => (
+            <MediaItem
+              key={index}
+              count={images.length}
+              index={index}
+              onClick={() => handleImageClick(index)}
+            >
+              <StyledImage src={url} alt={`media-${index}`} />
+            </MediaItem>
+          ))}
         </MediaGrid>
       )}
 
-      {videos !== null &&
+      {videos.length > 0 &&
         videos.map((video, index) => (
           <StyledVideo key={index} controls>
             <source src={video} type="video/mp4" />
