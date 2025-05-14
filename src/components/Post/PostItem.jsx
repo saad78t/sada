@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import PostHeader from "./PostHeader";
 import PostContent from "./PostContent";
 import PostActions from "./PostActions";
@@ -12,35 +12,42 @@ const PostItemWrapper = styled.div`
   padding: 1rem;
   margin-bottom: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  cursor: pointer;
+`;
+
+const PostBodyLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+  display: block;
 `;
 
 const PostItem = ({ post }) => {
-  const navigate = useNavigate();
   const { content, media_urls, id } = post;
 
-  const handleNavigate = () => navigate(`/post/${id}`);
-
+  const isOnlyMedia =
+    Array.isArray(media_urls) && media_urls.length > 0 && !content;
   const isImageOnly =
     Array.isArray(media_urls) &&
     media_urls.length > 0 &&
     media_urls.every((url) => !url.endsWith(".mp4"));
-
-  const disableLink = isImageOnly && media_urls.length <= 4;
+  const disableLink = isOnlyMedia && isImageOnly && media_urls.length <= 4;
 
   return (
-    <PostItemWrapper onClick={!disableLink ? handleNavigate : undefined}>
+    <PostItemWrapper>
       <PostHeader
         username={post.users?.username || post.username}
         createdAt={post.created_at}
         avatarUrl={post.users?.profile_picture_url}
         postId={id}
       />
-      <PostContent
-        content={content}
-        mediaUrls={media_urls}
-        disableNavigation={disableLink}
-      />
+
+      {disableLink ? (
+        <PostContent content={content} mediaUrls={media_urls} />
+      ) : (
+        <PostBodyLink to={`/post/${id}`}>
+          <PostContent content={content} mediaUrls={media_urls} />
+        </PostBodyLink>
+      )}
+
       <PostActions postId={id} />
     </PostItemWrapper>
   );
