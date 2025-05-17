@@ -3,6 +3,7 @@ import PostItem from "../components/Post/PostItem";
 import Spinner from "../Shared/Spinner";
 import { useQuery } from "@tanstack/react-query";
 import { getPosts } from "../services/postService";
+import PostHeader from "../components/Post/PostHeader";
 
 const HomeContainer = styled.div`
   max-width: 600px;

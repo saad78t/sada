@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
@@ -22,7 +22,7 @@ const MediaGrid = styled.div`
       return `
         grid-template-columns: 2fr 1fr;
         grid-template-rows: 1fr 1fr;
-        grid-template-areas: 
+        grid-template-areas:
           'main side1'
           'main side2';
       `;
@@ -68,6 +68,16 @@ const MediaItem = styled.div`
   }}
 `;
 
+const ReadMoreSpan = styled.span`
+  color: ${({ theme }) => theme.readMoreColor || "#1da1f2"};
+  cursor: pointer;
+  font-weight: 500;
+  margin-left: 4px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
 const StyledImage = styled.img`
   width: 100%;
   height: 100%;
@@ -96,11 +106,12 @@ const StyledVideo = styled.video`
   margin-top: 0.5rem;
 `;
 
-const PostContent = ({ content, mediaUrls, disableNavigation = false }) => {
+const PostContent = ({ content, mediaUrls }) => {
   const safeMediaUrls = Array.isArray(mediaUrls) ? mediaUrls : [];
 
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTextExpanded, setIsTextExpanded] = useState(false);
 
   const lang = /[\u0600-\u06FF]/.test(content) ? "ar" : "en";
 
@@ -113,11 +124,43 @@ const PostContent = ({ content, mediaUrls, disableNavigation = false }) => {
     setLightboxOpen(true);
   };
 
+  const expandText = () => {
+    setIsTextExpanded((expand) => !expand);
+  };
+
   if (!content && images.length === 0 && videos.length === 0) return null;
+
+  const textContent = isTextExpanded ? content : `${content?.slice(0, 55)}...`;
 
   return (
     <>
-      {content && <ContentWrapper lang={lang}>{content}</ContentWrapper>}
+      {/* {content && (
+        <ContentWrapper lang={lang}>
+          {content.length > 55 ? (
+            <>
+              {textContent}
+              <ReadMoreButton onClick={expandText}>
+                {isTextExpanded ? "Read less" : "Read more"}
+              </ReadMoreButton>
+            </>
+          ) : (
+            content
+          )}
+        </ContentWrapper>
+      )} */}
+
+      <ContentWrapper lang={lang}>
+        {content?.length > 55 ? (
+          <>
+            {textContent}
+            <ReadMoreSpan onClick={expandText}>
+              {isTextExpanded ? " Read less" : " Read more"}
+            </ReadMoreSpan>
+          </>
+        ) : (
+          content
+        )}
+      </ContentWrapper>
 
       {images.length > 0 && (
         <MediaGrid count={Math.min(images.length, 4)}>
