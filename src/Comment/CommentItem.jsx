@@ -39,7 +39,7 @@ const Actions = styled.div`
 const CommentItem = ({ comment, comments, level = 0 }) => {
   const [showReplies, setShowReplies] = useState(false);
 
-  const replies = comments.filter((c) => c.parent_comment_id === comment.id);
+  const replies = comments?.filter((c) => c.parent_comment_id === comment.id);
 
   return (
     <Wrapper level={level}>
@@ -55,7 +55,7 @@ const CommentItem = ({ comment, comments, level = 0 }) => {
       <Content>{comment.content}</Content>
       <Actions>
         <span onClick={() => setShowReplies((prev) => !prev)}>
-          <MessageCircle size={16} /> {replies.length}
+          <MessageCircle size={16} /> {replies?.length}
         </span>
         <span>
           <ThumbsUp size={16} /> Like
@@ -63,7 +63,7 @@ const CommentItem = ({ comment, comments, level = 0 }) => {
       </Actions>
 
       {showReplies &&
-        replies.map((reply) => (
+        replies?.map((reply) => (
           <CommentItem
             key={reply.id}
             comment={reply}
