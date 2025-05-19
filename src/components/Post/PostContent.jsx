@@ -116,9 +116,8 @@ const PostContent = ({ content, mediaUrls, postId }) => {
     setCurrentIndex(index);
     // setLightboxOpen(true);
     // navigate(`/post/${postId}/photo/${index}`);
-    navigate(`/post/${postId}/photo/${index}`, {
-      state: { scrollY: window.scrollY },
-    });
+    sessionStorage.setItem("scrollY", window.scrollY);
+    navigate(`/post/${postId}/photo/${index}`);
   };
 
   const handleTextClick = () => {

@@ -3,7 +3,7 @@ import PostItem from "../components/Post/PostItem";
 import Spinner from "../Shared/Spinner";
 import { useQuery } from "@tanstack/react-query";
 import { getPosts } from "../services/postService";
-import PostHeader from "../components/Post/PostHeader";
+import { useEffect } from "react";
 
 const HomeContainer = styled.div`
   max-width: 600px;
@@ -47,6 +47,14 @@ const Home = () => {
     console.error(error);
     throw new Error("posts can't be loaded");
   }
+
+  useEffect(() => {
+    const scrollY = sessionStorage.getItem("scrollY");
+    if (scrollY) {
+      window.scrollTo(0, parseInt(scrollY));
+      sessionStorage.removeItem("scrollY");
+    }
+  }, []);
 
   return (
     <HomeContainer>

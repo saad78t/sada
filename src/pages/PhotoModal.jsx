@@ -1,4 +1,4 @@
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 import { getPostById } from "../services/postService";
@@ -76,8 +76,6 @@ const ArrowRight = styled(ArrowLeft)`
 const PhotoModal = () => {
   const { id, photoIndex } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
-
   const {
     data: post,
     isLoading,
@@ -126,9 +124,7 @@ const PhotoModal = () => {
         <CloseButton
           onClick={(e) => {
             e.stopPropagation();
-            const scrollY = location.state?.scrollY || 0;
-            navigate("/", { replace: true }); // ترجع للرئيسية
-            setTimeout(() => window.scrollTo(0, scrollY), 0); // تعيد التمرير بعد التنقل
+            navigate("/", { replace: true }); // رجع بدون history إضافي
           }}
         >
           <X />
