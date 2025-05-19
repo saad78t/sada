@@ -2,7 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ContentWrapper = styled.div`
   direction: ${({ lang }) => (lang === "ar" ? "rtl" : "ltr")};
@@ -105,19 +105,22 @@ const PostContent = ({ content, mediaUrls, postId }) => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTextExpanded, setIsTextExpanded] = useState(false);
+  const location = useLocation();
+
   const lang = /[\u0600-\u06FF]/.test(content) ? "ar" : "en";
 
   const images = safeMediaUrls.filter((url) => !url.endsWith(".mp4"));
   const videos = safeMediaUrls.filter((url) => url.endsWith(".mp4"));
-  console.log("POSTID", postId);
 
   const handleImageClick = (index, e) => {
     e.stopPropagation();
     setCurrentIndex(index);
     // setLightboxOpen(true);
+    sessionStorage.setItem("scrollY", window.scrollY); // Preserve scroll position after closing photo modal
     // navigate(`/post/${postId}/photo/${index}`);
-    sessionStorage.setItem("scrollY", window.scrollY);
-    navigate(`/post/${postId}/photo/${index}`);
+    navigate(`/post/${postId}/photo/${index}`, {
+      state: { from: location.pathname },
+    });
   };
 
   const handleTextClick = () => {

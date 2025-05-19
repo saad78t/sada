@@ -48,6 +48,7 @@ const Home = () => {
     throw new Error("posts can't be loaded");
   }
 
+  // Preserve scroll position after closing photo modal
   useEffect(() => {
     const scrollY = sessionStorage.getItem("scrollY");
     if (scrollY) {

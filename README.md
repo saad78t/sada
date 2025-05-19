@@ -48,6 +48,7 @@ sada-app/
 │   │   ├── Profile.jsx
 │   │   ├── Login.jsx
 │   │   └── Signup.jsx
+│   │   └── PhotoModal.jsx
 │   │
 │
 │   ├── services/

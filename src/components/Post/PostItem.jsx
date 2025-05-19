@@ -41,6 +41,11 @@ const PostItem = ({ post }) => {
   const { content, media_urls, id } = post;
 
   const handleNavigate = () => {
+    // sessionStorage.setItem("scrollY", window.scrollY);
+    // navigate(`/post/${id}`, {
+    //   state: { from: location.pathname },
+    // });
+    sessionStorage.setItem("scrollY", window.scrollY);
     navigate(`/post/${id}`);
   };
 
