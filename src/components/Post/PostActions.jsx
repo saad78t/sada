@@ -3,6 +3,7 @@ import { FaHeart, FaComment, FaShare } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { getLikes } from "../../services/likeService";
 import { getComments } from "../../services/commentService";
+import { formatCount } from "../../utils/helpers";
 
 const ActionsWrapper = styled.div`
   display: flex;
@@ -41,10 +42,10 @@ const PostActions = ({ postId }) => {
   return (
     <ActionsWrapper>
       <ActionButton>
-        <FaHeart /> {likesLoading ? "..." : likes.length}
+        <FaHeart /> {likesLoading ? "..." : formatCount(likes.length)}
       </ActionButton>
       <ActionButton>
-        <FaComment /> {commentsLoading ? "..." : comments.length}
+        <FaComment /> {commentsLoading ? "..." : formatCount(comments.length)}
       </ActionButton>
       <ActionButton>
         <FaShare />
