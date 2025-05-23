@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 
 const FormWrapper = styled.form`
@@ -31,11 +32,25 @@ const ReplyButton = styled.button`
   }
 `;
 
-const ReplyForm = () => {
+const ReplyForm = ({ parentId, onSubmit }) => {
+  const [content, setContent] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!content.trim()) return;
+    onSubmit(content, parentId);
+    setContent(""); // Clear after submit
+  };
+
   return (
-    <FormWrapper>
-      <Input rows="2" placeholder="اكتب ردّك هنا..." />
-      <ReplyButton>رد</ReplyButton>
+    <FormWrapper onSubmit={handleSubmit}>
+      <Input
+        rows="2"
+        placeholder="اكتب ردّك هنا..."
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+      />
+      <ReplyButton type="submit">رد</ReplyButton>
     </FormWrapper>
   );
 };

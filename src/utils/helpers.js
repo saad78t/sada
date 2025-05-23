@@ -5,32 +5,56 @@ export function formatCount(num) {
   return num;
 }
 
+// export function timeAgo(date) {
+//   const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+
+//   let interval = Math.floor(seconds / 31536000);
+//   if (interval >= 1)
+//     return interval + (interval === 1 ? " year ago" : " years ago");
+
+//   interval = Math.floor(seconds / 2592000);
+//   if (interval >= 1)
+//     return interval + (interval === 1 ? " month ago" : " months ago");
+
+//   interval = Math.floor(seconds / 604800);
+//   if (interval >= 1)
+//     return interval + (interval === 1 ? " week ago" : " weeks ago");
+
+//   interval = Math.floor(seconds / 86400);
+//   if (interval >= 1)
+//     return interval + (interval === 1 ? " day ago" : " days ago");
+
+//   interval = Math.floor(seconds / 3600);
+//   if (interval >= 1)
+//     return interval + (interval === 1 ? " hour ago" : " hours ago");
+
+//   interval = Math.floor(seconds / 60);
+//   if (interval >= 1)
+//     return interval + (interval === 1 ? " minute ago" : " minutes ago");
+
+//   return "Just now";
+// }
+
 export function timeAgo(date) {
   const seconds = Math.floor((new Date() - new Date(date)) / 1000);
 
-  let interval = Math.floor(seconds / 31536000);
-  if (interval >= 1)
-    return interval + (interval === 1 ? " year ago" : " years ago");
+  if (seconds < 60) return `${seconds}s`;
 
-  interval = Math.floor(seconds / 2592000);
-  if (interval >= 1)
-    return interval + (interval === 1 ? " month ago" : " months ago");
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m`;
 
-  interval = Math.floor(seconds / 604800);
-  if (interval >= 1)
-    return interval + (interval === 1 ? " week ago" : " weeks ago");
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h`;
 
-  interval = Math.floor(seconds / 86400);
-  if (interval >= 1)
-    return interval + (interval === 1 ? " day ago" : " days ago");
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}d`;
 
-  interval = Math.floor(seconds / 3600);
-  if (interval >= 1)
-    return interval + (interval === 1 ? " hour ago" : " hours ago");
+  const weeks = Math.floor(days / 7);
+  if (weeks < 4) return `${weeks}w`;
 
-  interval = Math.floor(seconds / 60);
-  if (interval >= 1)
-    return interval + (interval === 1 ? " minute ago" : " minutes ago");
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months}mo`;
 
-  return "Just now";
+  const years = Math.floor(days / 365);
+  return `${years}y`;
 }

@@ -12,7 +12,6 @@ import PhotoModal from "../pages/PhotoModal";
 function AppRoutes({ toggleTheme, isDarkMode }) {
   return (
     <Routes>
-      {/* الصفحات العامة داخل الـ Layout */}
       <Route
         element={<Layout toggleTheme={toggleTheme} isDarkMode={isDarkMode} />}
       >
@@ -24,7 +23,6 @@ function AppRoutes({ toggleTheme, isDarkMode }) {
         <Route path="/post/:id/photo/:photoIndex" element={<PhotoModal />} />
       </Route>
 
-      {/* الصفحات الخاصة خارج الـ Layout */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
     </Routes>
