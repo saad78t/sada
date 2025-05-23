@@ -154,17 +154,17 @@ const HeaderWrapper = styled.div`
 const UserInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.75rem; /* Space between image and text */
+  gap: 0.25rem; /* قللنا المسافة بين الصورة والاسم */
 `;
 
 const UserNameDate = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem; /* Space between name and date */
+  gap: 0.5rem; /* المسافة بين الاسم والتاريخ */
   white-space: nowrap;
 `;
 
-const UserName = styled.span`
+const UserName = styled.div`
   font-weight: bold;
   color: ${({ theme }) => theme.textColor};
   font-size: 1rem;
@@ -172,8 +172,7 @@ const UserName = styled.span`
 
 const PostDate = styled.span`
   font-size: 0.85rem;
-  color: ${({ theme }) =>
-    theme.textColor}99; /* Light gray with transparency (as rgba) */
+  color: ${({ theme }) => theme.textColor}99;
 `;
 
 const OptionsButton = styled.button`
