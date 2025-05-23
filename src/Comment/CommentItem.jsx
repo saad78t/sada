@@ -1,77 +1,116 @@
-import { useState } from "react";
 import styled from "styled-components";
-import { MessageCircle, ThumbsUp } from "lucide-react";
+import { ThumbsUp, MessageCircle } from "lucide-react";
+import { useState } from "react";
+import UserAvatar from "../components/Post/UserAvatar";
+import ReplyForm from "./ReplyForm";
+import { timeAgo } from "../utils/helpers";
 
-const Wrapper = styled.div`
-  border-left: 2px solid #ccc;
-  margin-left: ${(props) => (props.level > 0 ? "20px" : "0")};
-  padding-left: 10px;
-  margin-top: 1rem;
+const CommentContainer = styled.div`
+  padding-left: ${({ depth }) => depth * 16}px;
+  margin-bottom: 1rem;
+  border-left: ${({ depth }) => (depth > 0 ? "2px solid #eee" : "none")};
 `;
 
-const Header = styled.div`
+const CommentHeader = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 8px;
 `;
 
-const Username = styled.span`
-  font-weight: bold;
+const UserName = styled.span`
+  font-weight: 600;
+  color: ${({ theme }) => theme.textColor};
 `;
 
-const Timestamp = styled.small`
-  color: gray;
+const CommentDate = styled.span`
+  font-size: 0.8rem;
+  color: ${({ theme }) => theme.borderColor};
 `;
 
-const Content = styled.p`
-  margin: 0.5rem 0;
+const CommentText = styled.p`
+  margin: 4px 0 6px 0;
+  line-height: 1.3;
 `;
 
-const Actions = styled.div`
+const CommentActions = styled.div`
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  font-size: 0.9rem;
-  color: #555;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: ${({ theme }) => theme.textColor};
+`;
+
+const ActionButton = styled.button`
+  background: none;
+  border: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: ${({ theme }) => theme.textColor};
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
-const CommentItem = ({ comment, comments, level = 0 }) => {
+const CommentItem = ({ comment, comments, depth = 0, onReplySubmit }) => {
   const [showReplies, setShowReplies] = useState(false);
+  const [replying, setReplying] = useState(false);
 
   const replies = comments?.filter((c) => c.parent_comment_id === comment.id);
 
+  const handleReply = (content) => {
+    onReplySubmit(content, comment.id);
+    setReplying(false);
+  };
+
   return (
-    <Wrapper level={level}>
-      <Header>
-        <img
-          src={comment.users?.avatar_url || "/default-avatar.png"}
-          alt="avatar"
-          style={{ width: 30, height: 30, borderRadius: "50%" }}
+    <CommentContainer depth={depth}>
+      <CommentHeader>
+        <UserAvatar
+          username={comment.users?.username}
+          profilePictureUrl={comment.users?.profile_picture_url}
         />
-        <Username>{comment.users?.username || "User"}</Username>
-        <Timestamp>{new Date(comment.created_at).toLocaleString()}</Timestamp>
-      </Header>
-      <Content>{comment.content}</Content>
-      <Actions>
-        <span onClick={() => setShowReplies((prev) => !prev)}>
-          <MessageCircle size={16} /> {replies?.length}
-        </span>
-        <span>
+        <div>
+          <UserName>{comment.users?.username}</UserName>{" "}
+          <CommentDate>· {timeAgo(comment.created_at)}</CommentDate>
+        </div>
+      </CommentHeader>
+
+      <CommentText>{comment.content}</CommentText>
+
+      <CommentActions>
+        <ActionButton>
           <ThumbsUp size={16} /> Like
-        </span>
-      </Actions>
+        </ActionButton>
+
+        {replies?.length > 0 && (
+          <ActionButton onClick={() => setShowReplies(!showReplies)}>
+            <MessageCircle size={16} />
+            {showReplies ? "Hide replies" : `View replies (${replies.length})`}
+          </ActionButton>
+        )}
+
+        <ActionButton onClick={() => setReplying(!replying)}>
+          Reply
+        </ActionButton>
+      </CommentActions>
+
+      {replying && (
+        <ReplyForm onSubmit={handleReply} onCancel={() => setReplying(false)} />
+      )}
 
       {showReplies &&
-        replies?.map((reply) => (
+        replies.map((reply) => (
           <CommentItem
             key={reply.id}
             comment={reply}
             comments={comments}
-            level={level + 1}
+            depth={depth + 1}
+            onReplySubmit={onReplySubmit}
           />
         ))}
-    </Wrapper>
+    </CommentContainer>
   );
 };
 

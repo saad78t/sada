@@ -28,3 +28,22 @@ export async function getAllComments() {
 
   return data;
 }
+
+export const addComment = async (postId, content, parentId = null) => {
+  const { data, error } = await supabase
+    .from("comments")
+    .insert([
+      {
+        post_id: postId,
+        content,
+        parent_comment_id: parentId,
+      },
+    ])
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+  return data;
+};

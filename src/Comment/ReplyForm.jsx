@@ -1,13 +1,12 @@
-import { useState } from "react";
 import styled from "styled-components";
+import { useState } from "react";
 
 const FormWrapper = styled.form`
   margin-top: 0.5rem;
-  display: flex;
-  flex-direction: column;
 `;
 
 const Input = styled.textarea`
+  width: 100%;
   padding: 0.5rem;
   border: 1px solid ${({ theme }) => theme.borderColor};
   border-radius: 8px;
@@ -17,9 +16,14 @@ const Input = styled.textarea`
   font-size: 0.9rem;
 `;
 
+const ButtonsRow = styled.div`
+  margin-top: 0.3rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+`;
+
 const ReplyButton = styled.button`
-  align-self: flex-end;
-  margin-top: 0.5rem;
   background-color: ${({ theme }) => theme.buttonBg};
   color: ${({ theme }) => theme.buttonText};
   border: none;
@@ -32,25 +36,38 @@ const ReplyButton = styled.button`
   }
 `;
 
-const ReplyForm = ({ parentId, onSubmit }) => {
+const CancelButton = styled.button`
+  background: transparent;
+  border: none;
+  color: ${({ theme }) => theme.textColor};
+  cursor: pointer;
+  font-size: 0.9rem;
+`;
+
+const ReplyForm = ({ onSubmit, onCancel }) => {
   const [content, setContent] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!content.trim()) return;
-    onSubmit(content, parentId);
-    setContent(""); // Clear after submit
+    onSubmit(content);
+    setContent("");
   };
 
   return (
     <FormWrapper onSubmit={handleSubmit}>
       <Input
-        rows="2"
-        placeholder="اكتب ردّك هنا..."
+        rows={3}
+        placeholder="Write your reply..."
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />
-      <ReplyButton type="submit">رد</ReplyButton>
+      <ButtonsRow>
+        <CancelButton type="button" onClick={onCancel}>
+          Cancel
+        </CancelButton>
+        <ReplyButton type="submit">Reply</ReplyButton>
+      </ButtonsRow>
     </FormWrapper>
   );
 };
