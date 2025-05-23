@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
+import Button from "../Shared/Button";
 
 const FormWrapper = styled.form`
   margin-top: 0.5rem;
@@ -44,7 +45,12 @@ const CancelButton = styled.button`
   font-size: 0.9rem;
 `;
 
-const ReplyForm = ({ onSubmit, onCancel }) => {
+const ReplyForm = ({
+  onSubmit,
+  onCancel,
+  buttonText = "Reply",
+  placeholder = "Write a reply...",
+}) => {
   const [content, setContent] = useState("");
 
   const handleSubmit = (e) => {
@@ -58,15 +64,17 @@ const ReplyForm = ({ onSubmit, onCancel }) => {
     <FormWrapper onSubmit={handleSubmit}>
       <Input
         rows={3}
-        placeholder="Write your reply..."
+        placeholder={placeholder}
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />
       <ButtonsRow>
-        <CancelButton type="button" onClick={onCancel}>
-          Cancel
-        </CancelButton>
-        <ReplyButton type="submit">Reply</ReplyButton>
+        {onCancel && (
+          <Button type="button" onClick={onCancel}>
+            Cancel
+          </Button>
+        )}
+        <Button type="submit">{buttonText}</Button>
       </ButtonsRow>
     </FormWrapper>
   );

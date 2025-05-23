@@ -6,7 +6,6 @@ import Profile from "../pages/Profile";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import Layout from "../layout/Layout";
-import CommentDetails from "../Comment/CommentDetails";
 import PhotoModal from "../pages/PhotoModal";
 
 function AppRoutes({ toggleTheme, isDarkMode }) {
@@ -19,7 +18,6 @@ function AppRoutes({ toggleTheme, isDarkMode }) {
         <Route path="/new" element={<NewPost />} />
         <Route path="/post/:id" element={<PostDetails />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/comment/:id" element={<CommentDetails />} />
         <Route path="/post/:id/photo/:photoIndex" element={<PhotoModal />} />
       </Route>
 
