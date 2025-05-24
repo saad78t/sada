@@ -8,6 +8,7 @@ import PostContent from "../components/Post/PostContent";
 import Spinner from "../Shared/Spinner";
 import UserAvatar from "../components/Post/UserAvatar";
 import { timeAgo } from "../utils/helpers";
+// import { useEffect } from "react";
 
 const Container = styled.div`
   max-width: 700px;
@@ -69,7 +70,7 @@ const VerticalLineWrapper = styled.div`
     content: "";
     position: absolute;
     left: 1.25rem; /* Image center (image width 40px) */
-    top: 48px; /* Starts from under the post image */
+    top: 40px; /* Starts from under the post image */
     height: calc(
       100% - 48px - 40px - 1.5rem - 1rem
     ); /* Ends at top of main commenter image */
@@ -84,6 +85,15 @@ const CommentThread = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const postId = queryParams.get("postId");
+
+  //   // Preserve scroll position after closing photo modal
+  //   useEffect(() => {
+  //     const scrollY = sessionStorage.getItem("scrollY");
+  //     if (scrollY) {
+  //       window.scrollTo(0, parseInt(scrollY));
+  //       sessionStorage.removeItem("scrollY");
+  //     }
+  //   }, []); // Empty dependency array to run once on mount
 
   const { data: post, isLoading: loadingPost } = useQuery({
     queryKey: ["post", postId],
