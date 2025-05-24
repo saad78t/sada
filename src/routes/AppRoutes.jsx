@@ -7,6 +7,7 @@ import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import Layout from "../layout/Layout";
 import PhotoModal from "../pages/PhotoModal";
+import CommentThread from "../Comment/CommentThread";
 
 function AppRoutes({ toggleTheme, isDarkMode }) {
   return (
@@ -19,6 +20,7 @@ function AppRoutes({ toggleTheme, isDarkMode }) {
         <Route path="/post/:id" element={<PostDetails />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/post/:id/photo/:photoIndex" element={<PhotoModal />} />
+        <Route path="/comment/:commentId" element={<CommentThread />} />
       </Route>
 
       <Route path="/login" element={<Login />} />

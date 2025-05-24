@@ -18,6 +18,7 @@ sada-app/
 │   │   ├── Comment/
 │   │   │   ├── CommentItem.jsx
 │   │   │   └── ReplyForm.jsx
+│   │   │   └── CommentThread.jsx
 │   │   │
 │   │   ├── Shared/
 │   │   │   ├── Avatar.jsx
