@@ -15,26 +15,16 @@ const PostItemWrapper = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   position: relative;
   overflow: hidden;
+  cursor: pointer; /* مؤشر بصري للنقر */
 
   /* Hover feedback */
-  &:hover .clickable-overlay {
+  &:hover {
     background-color: ${({ theme }) => theme.hoverBg || "rgba(0, 0, 0, 0.03)"};
   }
 `;
 
-const ClickableOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  cursor: pointer;
-  border-radius: 12px;
-  transition: background-color 0.2s ease;
-`;
-
 const PostContentWrapper = styled.div`
   position: relative;
-  z-index: 2;
-  pointer-events: auto;
 `;
 
 const PostItem = ({ post }) => {
@@ -43,20 +33,15 @@ const PostItem = ({ post }) => {
   const location = useLocation();
 
   const handleNavigate = () => {
-    sessionStorage.setItem("scrollY", window.scrollY); // Preserve scroll position
-    sessionStorage.setItem("returnToPost", location.pathname); // Store the current page path (Home or PostDetails)
+    sessionStorage.setItem("scrollY", window.scrollY);
+    sessionStorage.setItem("returnToPost", location.pathname);
     navigate(`/post/${id}`, {
-      state: { from: location.pathname }, //It sends a state containing the page you came (from), so that when you come back you know where you were.
+      state: { from: location.pathname },
     });
   };
 
   return (
-    <PostItemWrapper>
-      <ClickableOverlay
-        className="clickable-overlay"
-        onClick={handleNavigate}
-      />
-
+    <PostItemWrapper onClick={handleNavigate}>
       <PostContentWrapper>
         <PostHeader
           username={post.users?.username || post.username}

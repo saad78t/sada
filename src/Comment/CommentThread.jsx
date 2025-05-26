@@ -1,14 +1,15 @@
 import styled from "styled-components";
-import { useParams, useLocation } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getComments } from "../services/commentService";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getComments, addComment } from "../services/commentService";
 import { getPostById } from "../services/postService";
 import PostHeader from "../components/Post/PostHeader";
 import PostContent from "../components/Post/PostContent";
 import Spinner from "../Shared/Spinner";
 import UserAvatar from "../components/Post/UserAvatar";
 import { timeAgo } from "../utils/helpers";
-// import { useEffect } from "react";
+import { MessageCircle, ThumbsUp, ArrowLeft } from "lucide-react";
+import { useState } from "react";
 
 const Container = styled.div`
   max-width: 700px;
@@ -16,8 +17,32 @@ const Container = styled.div`
   padding: 2rem 1rem;
 `;
 
+const BackButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #1da1f2; /* لون تويتر */
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px; /* زر دائري */
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #1a91da; /* لون أغمق عند التحويل */
+  }
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+`;
+
 const RepliesWrapper = styled.div`
-  margin-left: 3rem; /* move replies right */
+  margin-left: 3rem;
 `;
 
 const CommentContainer = styled.div`
@@ -58,9 +83,27 @@ const CommentText = styled.div`
   direction: ${({ content }) =>
     /[\u0600-\u06FF]/.test(content) ? "rtl" : "ltr"};
   text-align: start;
+  cursor: pointer;
 `;
 
-//Vertical line between the post and the main comment
+const CommentActions = styled.div`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 0.5rem;
+`;
+
+const ActionButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: ${({ theme }) => theme.textColor};
+  font-size: 0.85rem;
+`;
+
 const VerticalLineWrapper = styled.div`
   position: relative;
   display: flex;
@@ -69,15 +112,38 @@ const VerticalLineWrapper = styled.div`
   &::before {
     content: "";
     position: absolute;
-    left: 1.25rem; /* Image center (image width 40px) */
-    top: 40px; /* Starts from under the post image */
-    height: calc(
-      100% - 48px - 40px - 1.5rem - 1rem
-    ); /* Ends at top of main commenter image */
+    left: 1.25rem;
+    top: 40px;
+    height: calc(100% - 48px - 40px - 1.5rem - 1rem);
     width: 2px;
     background: ${({ theme }) => theme.borderColor || "#ccc"};
     z-index: 0;
   }
+`;
+
+const InlineForm = styled.form`
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+  gap: 0.5rem;
+`;
+
+const Input = styled.input`
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+  border: 1px solid ${({ theme }) => theme.borderColor};
+  border-radius: 5px;
+`;
+
+const SubmitButton = styled.button`
+  padding: 0.3rem 0.8rem;
+  font-size: 0.85rem;
+  background: ${({ theme }) => theme.textColor};
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 `;
 
 const CommentThread = () => {
@@ -85,15 +151,12 @@ const CommentThread = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const postId = queryParams.get("postId");
+  const navigate = useNavigate();
 
-  //   // Preserve scroll position after closing photo modal
-  //   useEffect(() => {
-  //     const scrollY = sessionStorage.getItem("scrollY");
-  //     if (scrollY) {
-  //       window.scrollTo(0, parseInt(scrollY));
-  //       sessionStorage.removeItem("scrollY");
-  //     }
-  //   }, []); // Empty dependency array to run once on mount
+  const queryClient = useQueryClient();
+  const [replyingTo, setReplyingTo] = useState(null);
+  const [replyContent, setReplyContent] = useState("");
+  const [openReplies, setOpenReplies] = useState({});
 
   const { data: post, isLoading: loadingPost } = useQuery({
     queryKey: ["post", postId],
@@ -107,6 +170,16 @@ const CommentThread = () => {
     enabled: !!postId,
   });
 
+  const addCommentMutation = useMutation({
+    mutationFn: ({ content, parentId }) =>
+      addComment(postId, content, parentId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["comments", postId]);
+      setReplyingTo(null);
+      setReplyContent("");
+    },
+  });
+
   if (loadingPost || loadingComments) return <Spinner />;
 
   const mainComment = comments.find((c) => c.id === Number(commentId));
@@ -116,8 +189,91 @@ const CommentThread = () => {
 
   if (!mainComment) return <p>Comment not found.</p>;
 
+  const handleReplySubmit = (e, parentId) => {
+    e.preventDefault();
+    if (!replyContent.trim()) return;
+    addCommentMutation.mutate({ content: replyContent, parentId });
+  };
+
+  const renderComment = (comment) => {
+    const nestedReplies = comments.filter(
+      (c) => c.parent_comment_id === comment.id
+    );
+    const showReplies = openReplies[comment.id];
+
+    const isMainComment = comment.id === Number(commentId);
+
+    return (
+      <CommentContainer key={comment.id}>
+        <UserAvatar
+          username={comment.users?.username}
+          profilePictureUrl={comment.users?.profile_picture_url}
+        />
+        <CommentContent>
+          <AuthorRow>
+            <UserName>{comment.users?.username}</UserName>
+            <PostDate>
+              • {new Date(comment.created_at).toLocaleString()}
+            </PostDate>
+          </AuthorRow>
+          <CommentText
+            content={comment.content}
+            onClick={() => setReplyingTo(comment.id)}
+          >
+            {comment.content}
+          </CommentText>
+          <CommentActions>
+            <ActionButton
+              onClick={isMainComment ? null : () => toggleReplies(comment.id)}
+            >
+              <MessageCircle size={16} />
+              {nestedReplies.length > 0 && <span>{nestedReplies.length}</span>}
+            </ActionButton>
+            <ActionButton>
+              <ThumbsUp size={16} />
+            </ActionButton>
+          </CommentActions>
+
+          {replyingTo === comment.id && (
+            <InlineForm onSubmit={(e) => handleReplySubmit(e, comment.id)}>
+              <Input
+                type="text"
+                value={replyContent}
+                onChange={(e) => setReplyContent(e.target.value)}
+                placeholder="Write a reply..."
+              />
+              <SubmitButton type="submit">Reply</SubmitButton>
+            </InlineForm>
+          )}
+
+          {showReplies && (
+            <RepliesWrapper>
+              {nestedReplies.map((reply) => renderComment(reply))}
+            </RepliesWrapper>
+          )}
+        </CommentContent>
+      </CommentContainer>
+    );
+  };
+
+  const toggleReplies = (commentId) => {
+    setOpenReplies((prev) => ({
+      ...prev,
+      [commentId]: !prev[commentId],
+    }));
+    setReplyingTo(null);
+  };
+
+  const handleBackClick = () => {
+    navigate(`/post/${postId}`); // العودة لصفحة PostDetails
+  };
+
   return (
     <Container>
+      <BackButton onClick={handleBackClick}>
+        <ArrowLeft />
+        Back to Post
+      </BackButton>
       <VerticalLineWrapper>
         <PostHeader
           username={post.users?.username}
@@ -130,46 +286,12 @@ const CommentThread = () => {
           mediaUrls={post.media_urls}
           postId={post.id}
         />
-        <CommentContainer>
-          <UserAvatar
-            username={mainComment.users?.username}
-            profilePictureUrl={mainComment.users?.profile_picture_url}
-          />
-          <CommentContent>
-            <AuthorRow>
-              <UserName>{mainComment.users?.username}</UserName>
-              <PostDate>
-                • {new Date(mainComment.created_at).toLocaleString()}
-              </PostDate>
-            </AuthorRow>
-            <CommentText content={mainComment.content}>
-              {mainComment.content}
-            </CommentText>
-          </CommentContent>
-        </CommentContainer>
+        {renderComment(mainComment)}
       </VerticalLineWrapper>
 
       {replies.length > 0 && (
         <RepliesWrapper>
-          {replies.map((reply) => (
-            <CommentContainer key={reply.id}>
-              <UserAvatar
-                username={reply.users?.username}
-                profilePictureUrl={reply.users?.profile_picture_url}
-              />
-              <CommentContent>
-                <AuthorRow>
-                  <UserName>{reply.users?.username}</UserName>
-                  <PostDate>
-                    • {new Date(reply.created_at).toLocaleString()}
-                  </PostDate>
-                </AuthorRow>
-                <CommentText content={reply.content}>
-                  {reply.content}
-                </CommentText>
-              </CommentContent>
-            </CommentContainer>
-          ))}
+          {replies.map((reply) => renderComment(reply))}
         </RepliesWrapper>
       )}
     </Container>

@@ -154,6 +154,7 @@ const PostContent = ({ content, mediaUrls, postId }) => {
   const textContent = isTextExpanded ? content : `${content?.slice(0, 65)}...`;
 
   return (
+    // <ContentWrapper lang={lang} onClick={handleTextClick}>
     <ContentWrapper lang={lang} onClick={handleTextClick}>
       <TextContent>
         {content?.length > 65 ? (
