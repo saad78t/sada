@@ -6,9 +6,9 @@ import ReplyForm from "./ReplyForm";
 import { timeAgo } from "../utils/helpers";
 
 const CommentContainer = styled.div`
-  padding-left: ${({ depth }) => depth * 16}px;
+  padding-left: ${({ $depth }) => $depth * 16}px;
   margin-bottom: 1rem;
-  border-left: ${({ depth }) => (depth > 0 ? "2px solid #eee" : "none")};
+  border-left: ${({ $depth }) => ($depth > 0 ? "2px solid #eee" : "none")};
 `;
 
 const CommentHeader = styled.div`
@@ -65,7 +65,7 @@ const CommentItem = ({ comment, comments, depth = 0, onReplySubmit }) => {
   };
 
   return (
-    <CommentContainer depth={depth}>
+    <CommentContainer $depth={depth}>
       <CommentHeader>
         <UserAvatar
           username={comment.users?.username}

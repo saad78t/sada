@@ -29,16 +29,27 @@ const ArrowButtonWrapper = styled.div`
 `;
 
 const StyledArrowButton = styled.button`
-  position: absolute;
-  top: -40px;
-  left: -10px;
-  background: white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #1da1f2; /* لون تويتر */
+  color: white;
   border: none;
-  border-radius: 50%;
-  padding: 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  padding: 0.5rem 1rem;
+  border-radius: 9999px; /* زر دائري */
   cursor: pointer;
-  z-index: 10;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #1a91da; /* لون أغمق عند التحويل */
+  }
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
 `;
 
 const CommentContainer = styled.div`
@@ -225,6 +236,7 @@ const PostDetails = () => {
         <ArrowButtonWrapper>
           <StyledArrowButton onClick={handleBack}>
             <ArrowLeft />
+            Back to Posts
           </StyledArrowButton>
 
           <PostHeader

@@ -74,6 +74,20 @@ const ArrowRight = styled(ArrowLeft)`
   right: 1rem;
 `;
 
+const StyledVideo = styled.video`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #000;
+`;
+
+const StyledImage = styled.img`
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+`;
+
 const PhotoModal = () => {
   const { id, photoIndex } = useParams();
   const navigate = useNavigate();
@@ -102,7 +116,9 @@ const PhotoModal = () => {
 
   const mediaUrl = post.media_urls?.[photoIndex];
   const currentIndex = parseInt(photoIndex);
-  const totalImages = post.media_urls?.length || 0;
+  const totalImages = post.media_urls?.length;
+
+  const isVideo = /\.(mp4|webm|ogg)/i.test(mediaUrl);
 
   const handlePrev = () => {
     if (currentIndex > 0) {
@@ -121,6 +137,11 @@ const PhotoModal = () => {
   };
 
   const handleClose = () => {
+    document.querySelectorAll("video").forEach((v) => {
+      v.pause();
+      v.currentTime = 0;
+    });
+
     //navigate(from, { replace: true }); // Replace history to avoid photo routes
     navigate(from);
     sessionStorage.removeItem("returnToPost");
@@ -134,8 +155,23 @@ const PhotoModal = () => {
         <CloseButton onClick={handleClose}>
           <X />
         </CloseButton>
-
-        {mediaUrl && <img src={mediaUrl} alt="Post media" />}
+        {isVideo ? (
+          <StyledVideo
+            key={mediaUrl}
+            src={mediaUrl}
+            controls
+            preload="metadata"
+            autoPlay
+            onError={(e) => console.error("Video failed:", mediaUrl, e.message)}
+          />
+        ) : (
+          <StyledImage
+            key={mediaUrl}
+            src={mediaUrl}
+            alt="Post media"
+            onError={(e) => console.error("Image failed:", mediaUrl, e.message)}
+          />
+        )}
 
         {currentIndex < totalImages - 1 && (
           <ArrowRight onClick={handleNext}>→</ArrowRight>

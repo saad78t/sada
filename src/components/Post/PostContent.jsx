@@ -4,24 +4,28 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const ContentWrapper = styled.div`
   direction: ${({ lang }) => (lang === "ar" ? "rtl" : "ltr")};
-  text-align: start;
+  text-align: start; /*Using start instead of left or right makes the code dynamically support both directions.*/
   margin-bottom: 0.5rem;
-  padding-left: 52px; /* محاذاة المحتوى مع بداية الاسم */
-  padding-right: 16px; /* مسافة على اليمين زي السكرين شوت */
+  padding-left: 52px; /* Align content with the beginning of the name */
+  padding-right: 16px;
 `;
 
 const TextContent = styled.div`
   margin-bottom: 10px;
-  white-space: pre-wrap;
+  white-space: pre-wrap; /*Preserves lines and spaces and automatically breaks a line if it gets too narrow.*/
 `;
 
 const MediaGrid = styled.div`
   display: grid;
+  direction: ltr;
   gap: 4px;
-  width: 100%;
+  width: 100%; /*The grid takes up the entire width of the parent element. */
   ${({ $count }) => {
     if ($count === 1) return `grid-template-columns: 1fr;`;
     if ($count === 2) return `grid-template-columns: 1fr 1fr;`;
+    /* The first column takes "2fr" → meaning twice the size of the second column.
+     * fr means "Fraction" (relative fraction of the remaining area).
+     */
     if ($count === 3)
       return `
         grid-template-columns: 2fr 1fr;
@@ -30,6 +34,7 @@ const MediaGrid = styled.div`
           'main side1'
           'main side2';
       `;
+    /*max-height prevents the grid from growing larger than 360px. */
     return `
       grid-template-columns: repeat(2, 1fr);
       grid-template-rows: repeat(2, 1fr);
@@ -69,7 +74,7 @@ const ReadMoreSpan = styled.span`
   cursor: pointer;
   font-weight: 500;
   margin-left: 4px;
-  white-space: nowrap; /* خلي Read more على سطر واحد */
+  white-space: nowrap; /* Keep Read more on one line */
   &:hover {
     text-decoration: underline;
   }
@@ -121,14 +126,20 @@ const PostContent = ({ content, mediaUrls, postId }) => {
     return /\.(mp4|webm|ogg)/i.test(url);
   });
 
-  // const handleImageClick = (index, e) => {
-  //   e.stopPropagation();
-  //   sessionStorage.setItem("scrollY", window.scrollY);
-  //   sessionStorage.setItem("returnToPost", location.pathname);
-  //   navigate(`/post/${postId}/photo/${index}`, {
-  //     state: { from: location.pathname },
-  //   });
-  // };
+  /*  const totalMediaCount = images.length + videos.length;
+  const maxVisibleMedia = 4;
+  const visibleCount = Math.min(totalMediaCount, maxVisibleMedia);
+
+  const isLastVisibleItem = (index) => {
+    // في حالة الصور
+    if (index < images.length) {
+      return index + 1 === visibleCount;
+    }
+    // في حالة الفيديوهات (index هنا يبدأ من 0 بالنسبة للفيديوهات)
+    // لذلك نضيف عدد الصور عشان نحسب ترتيبه في القائمة الكاملة
+    const videoIndexInTotal = index + images.length + 1;
+    return videoIndexInTotal === visibleCount;
+  }; */
 
   const handleImageClick = (index, e) => {
     e.stopPropagation();
@@ -138,10 +149,6 @@ const PostContent = ({ content, mediaUrls, postId }) => {
     navigate(`/post/${postId}/photo/${index}`, {
       state: { from: location.pathname + location.search }, // يحفظ مسار CommentThread
     });
-  };
-
-  const handleTextClick = () => {
-    navigate(`/post/${postId}`);
   };
 
   const expandText = (e) => {
@@ -154,8 +161,7 @@ const PostContent = ({ content, mediaUrls, postId }) => {
   const textContent = isTextExpanded ? content : `${content?.slice(0, 65)}...`;
 
   return (
-    // <ContentWrapper lang={lang} onClick={handleTextClick}>
-    <ContentWrapper lang={lang} onClick={handleTextClick}>
+    <ContentWrapper lang={lang}>
       <TextContent>
         {content?.length > 65 ? (
           <>
@@ -170,10 +176,8 @@ const PostContent = ({ content, mediaUrls, postId }) => {
       </TextContent>
 
       {(images.length > 0 || videos.length > 0) && (
-        <MediaGrid
-          $count={Math.min(images.length + videos.length, 4)}
-          onClick={handleTextClick}
-        >
+        //Count the number of photos + videos, and the maximum is 4
+        <MediaGrid $count={Math.min(images.length + videos.length, 4)}>
           {images.slice(0, 4).map((url, index) => (
             <MediaItem
               key={index}
@@ -186,9 +190,10 @@ const PostContent = ({ content, mediaUrls, postId }) => {
                 alt={`media-${index}`}
                 onError={(e) => console.error("Image error:", url, e.message)}
               />
-              {index === 3 && images.length + videos.length > 4 && (
-                <Overlay>+{images.length + videos.length - 4}</Overlay>
-              )}
+              {index + 1 === Math.min(images.length + videos.length, 4) &&
+                images.length + videos.length > 4 && (
+                  <Overlay>+{images.length + videos.length - 4}</Overlay>
+                )}
             </MediaItem>
           ))}
           {videos.slice(0, 4 - images.length).map((url, index) => (
@@ -196,9 +201,14 @@ const PostContent = ({ content, mediaUrls, postId }) => {
               key={index + images.length}
               $count={images.length + videos.length}
               $index={index + images.length}
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation(),
+                  e.preventDefault(),
+                  handleImageClick(index + images.length, e);
+              }}
             >
               <StyledVideo
+                key={url}
                 controls
                 preload="metadata"
                 onError={(e) => console.error("Video error:", url, e.message)}
@@ -208,6 +218,11 @@ const PostContent = ({ content, mediaUrls, postId }) => {
                 <source src={url} type="video/ogg" />
                 Your browser does not support the video tag.
               </StyledVideo>
+              {index + images.length + 1 ===
+                Math.min(images.length + videos.length, 4) &&
+                images.length + videos.length > 4 && (
+                  <Overlay>+{images.length + videos.length - 4}</Overlay>
+                )}
             </MediaItem>
           ))}
         </MediaGrid>
