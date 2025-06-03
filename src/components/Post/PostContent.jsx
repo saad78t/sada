@@ -209,7 +209,9 @@ const PostContent = ({ content, mediaUrls, postId }) => {
             >
               <StyledVideo
                 key={url}
-                controls
+                muted={true}
+                autoPlay={true}
+                // controls
                 preload="metadata"
                 onError={(e) => console.error("Video error:", url, e.message)}
               >
@@ -232,3 +234,5 @@ const PostContent = ({ content, mediaUrls, postId }) => {
 };
 
 export default PostContent;
+
+// code video.js
