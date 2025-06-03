@@ -211,6 +211,7 @@ const PostContent = ({ content, mediaUrls, postId }) => {
                 key={url}
                 muted={true}
                 autoPlay={true}
+                loop={true}
                 // controls
                 preload="metadata"
                 onError={(e) => console.error("Video error:", url, e.message)}
