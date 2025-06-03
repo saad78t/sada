@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -109,9 +109,30 @@ const Overlay = styled.div`
   border-radius: 8px;
 `;
 
+const SoundToggleButton = styled.button`
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+`;
+
 const PostContent = ({ content, mediaUrls, postId }) => {
   const navigate = useNavigate();
   const safeMediaUrls = Array.isArray(mediaUrls) ? mediaUrls : [];
+  const [currentAudioIndex, setCurrentAudioIndex] = useState(null);
+  const videoRefs = useRef([]);
+
   const [isTextExpanded, setIsTextExpanded] = useState(false);
   const location = useLocation();
 
@@ -196,7 +217,7 @@ const PostContent = ({ content, mediaUrls, postId }) => {
                 )}
             </MediaItem>
           ))}
-          {videos.slice(0, 4 - images.length).map((url, index) => (
+          {/* {videos.slice(0, 4 - images.length).map((url, index) => (
             <MediaItem
               key={index + images.length}
               $count={images.length + videos.length}
@@ -227,7 +248,57 @@ const PostContent = ({ content, mediaUrls, postId }) => {
                   <Overlay>+{images.length + videos.length - 4}</Overlay>
                 )}
             </MediaItem>
-          ))}
+          ))} */}
+
+          {videos.slice(0, 4 - images.length).map((url, index) => {
+            const videoIndex = index + images.length;
+
+            return (
+              <MediaItem
+                key={videoIndex}
+                $count={images.length + videos.length}
+                $index={videoIndex}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  handleImageClick(videoIndex, e);
+                }}
+              >
+                <StyledVideo
+                  ref={(el) => (videoRefs.current[videoIndex] = el)}
+                  key={url}
+                  muted={currentAudioIndex !== videoIndex}
+                  autoPlay={true}
+                  loop={true}
+                  preload="metadata"
+                  onError={(e) => console.error("Video error:", url, e.message)}
+                >
+                  <source src={url} type="video/mp4" />
+                  <source src={url} type="video/webm" />
+                  <source src={url} type="video/ogg" />
+                  Your browser does not support the video tag.
+                </StyledVideo>
+
+                <SoundToggleButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    setCurrentAudioIndex((prev) =>
+                      prev === videoIndex ? null : videoIndex
+                    );
+                  }}
+                >
+                  {currentAudioIndex === videoIndex ? "🔈" : "🔇"}
+                </SoundToggleButton>
+
+                {videoIndex + 1 ===
+                  Math.min(images.length + videos.length, 4) &&
+                  images.length + videos.length > 4 && (
+                    <Overlay>+{images.length + videos.length - 4}</Overlay>
+                  )}
+              </MediaItem>
+            );
+          })}
         </MediaGrid>
       )}
     </ContentWrapper>
@@ -235,5 +306,3 @@ const PostContent = ({ content, mediaUrls, postId }) => {
 };
 
 export default PostContent;
-
-// code video.js

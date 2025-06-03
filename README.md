@@ -13,6 +13,7 @@ sada-app/
 │   │   │   ├── PostContent.jsx
 │   │   │   ├── PostActions.jsx
 │   │   │   ├── UserAvatar.jsx
+│   │   │   ├── VideoJsPlayer.jsx
 │   │   │
 │   │   │
 │   │   ├── Comment/

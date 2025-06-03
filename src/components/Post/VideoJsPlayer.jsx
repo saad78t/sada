@@ -56,7 +56,7 @@ const SkipArea = styled.div`
 `;
 
 const LeftSkip = styled(SkipArea)`
-  left: 0;
+  left: 40;
   border-top-right-radius: 60% 100%;
   border-bottom-right-radius: 60% 100%;
 `;
