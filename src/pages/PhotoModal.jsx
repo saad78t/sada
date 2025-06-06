@@ -16,18 +16,18 @@ import { useRef } from "react";
 
 const Overlay = styled.div`
   position: fixed;
-  top: 0;
+  top: 0; //top: 0 and left: 0 make the element start at the very top left of the screen.
   left: 0;
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.7);
-  display: flex;
+  display: flex; //So we can easily control the positioning of the internal elements.
   z-index: 1000;
 `;
 
 const ImageSection = styled.div`
   position: relative;
-  flex: 2;
+  flex: 2; //It means that it takes up twice the space compared to any other element in the same flex container. The ImageSection takes up two-thirds of the screen, while the InfoSection takes up only one-third.
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,14 +53,14 @@ const CloseButton = styled.button`
   cursor: pointer;
   color: white;
   padding: 0.3rem;
-  border-radius: 50%;
+  border-radius: 50%; //Converts the button to a perfect circle.
   z-index: 30;
 `;
 
 const ArrowLeft = styled.button`
   position: absolute;
   left: 1rem;
-  top: 50%;
+  top: 50%; //Places the button at the center of the container element's height.
   transform: translateY(-50%);
   font-size: 2rem;
   color: white;
@@ -71,7 +71,7 @@ const ArrowLeft = styled.button`
 `;
 
 const ArrowRight = styled(ArrowLeft)`
-  left: auto;
+  left: auto; //يلغي تأثير left: 1rem; الموروثة //left: auto; معناها: "انسَ مكان اليسار، لا تستخدمه"،
   right: 1rem;
 `;
 
@@ -79,6 +79,15 @@ const StyledImage = styled.img`
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+`;
+
+const PostContent = styled.p`
+  direction: ${({ $lang }) => ($lang === "ar" ? "rtl" : "ltr")};
+  text-align: start;
+  padding-left: 3rem;
+  text-align: start;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
 `;
 
 const PhotoModal = () => {
@@ -113,6 +122,8 @@ const PhotoModal = () => {
   const totalImages = post.media_urls?.length;
 
   const isVideo = /\.(mp4|webm|ogg)/i.test(mediaUrl);
+
+  const lang = /[\u0600-\u06FF]/.test(post?.content) ? "ar" : "en";
 
   const handlePrev = () => {
     if (currentIndex > 0) {
@@ -165,6 +176,7 @@ const PhotoModal = () => {
   const handlePlayerReady = (player) => {
     playerRef.current = player;
 
+    playerRef.current.pause();
     // You can handle player events here, for example:
     player.on("waiting", () => {
       videojs.log("player is waiting");
@@ -215,7 +227,8 @@ const PhotoModal = () => {
           createdAt={timeAgo(post.created_at)}
           postId={post.id}
         />
-        <p style={{ marginTop: "1rem" }}>{post.content}</p>
+        {/* <p style={{ marginTop: "1rem" }}>{post.content}</p> */}
+        <PostContent $lang={lang}>{post.content}</PostContent>
         <PostActions postId={post.id} />
 
         <div style={{ marginTop: "1rem" }}>

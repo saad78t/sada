@@ -47,7 +47,7 @@ const SkipArea = styled.div`
   bottom: 0;
   width: 25%;
   z-index: 20;
-  background: transparent; //The background is transparent – ​​because this area is only used as an interaction point and not as a permanent visual display.
+  background: transparent; //The background is transparent because this area is only used as an interaction point and not as a permanent visual display.
   transition: background 0.3s ease; // يجعل تغيّر الخلفية (عند hover مثلاً) يتم بشكل تدريجي خلال 0.3 ثانية بدلاً من تغيّره بشكل فوري
 
   &:hover {
@@ -109,9 +109,10 @@ function VideoJsPlayer({ options, onReady }) {
   useEffect(() => {
     const player = playerRef.current;
     return () => {
+      //If the player exists. If the player has not already been disposed!player.isDisposed().
       if (player && !player.isDisposed()) {
-        player.dispose();
-        playerRef.current = null;
+        player.dispose(); //This command completely deletes the driver from memory. It is very important so that the video does not remain playing in the background when we move to another page.
+        playerRef.current = null; //We revoke the reference after deleting it. This prevents future processes from attempting to use a player that no longer exists.
       }
     };
   }, []);

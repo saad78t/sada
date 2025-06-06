@@ -28,12 +28,15 @@ const CommentDate = styled.span`
 `;
 
 const CommentText = styled.p`
-  margin: 4px 0 6px 0;
+  direction: ${({ $lang }) => ($lang === "ar" ? "rtl" : "ltr")};
+  padding-left: 3.75rem;
+  margin: 0px 1px;
   line-height: 1.3;
 `;
 
 const CommentActions = styled.div`
   display: flex;
+  padding-left: 3.5rem;
   gap: 12px;
   font-size: 0.85rem;
   color: ${({ theme }) => theme.textColor};
@@ -58,6 +61,7 @@ const CommentItem = ({ comment, comments, depth = 0, onReplySubmit }) => {
   const [replying, setReplying] = useState(false);
 
   const replies = comments?.filter((c) => c.parent_comment_id === comment.id);
+  const lang = /[\u0600-\u06FF]/.test(comment?.content) ? "ar" : "en";
 
   const handleReply = (content) => {
     onReplySubmit(content, comment.id);
@@ -77,7 +81,7 @@ const CommentItem = ({ comment, comments, depth = 0, onReplySubmit }) => {
         </div>
       </CommentHeader>
 
-      <CommentText>{comment.content}</CommentText>
+      <CommentText $lang={lang}>{comment.content}</CommentText>
 
       <CommentActions>
         <ActionButton>
