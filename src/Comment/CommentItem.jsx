@@ -1,59 +1,86 @@
-import styled from "styled-components";
-import { ThumbsUp, MessageCircle } from "lucide-react";
 import { useState } from "react";
+import styled from "styled-components";
+import { ThumbsUp } from "lucide-react";
 import UserAvatar from "../components/Post/UserAvatar";
 import ReplyForm from "./ReplyForm";
+import TreeLineSVG from "./TreeLineSVG";
 import { timeAgo } from "../utils/helpers";
 
 const CommentContainer = styled.div`
-  padding-left: ${({ $depth }) => $depth * 16}px;
-  margin-bottom: 1rem;
-  border-left: ${({ $depth }) => ($depth > 0 ? "2px solid #eee" : "none")};
-`;
-
-const CommentHeader = styled.div`
+  position: relative;
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
 `;
 
-const UserName = styled.span`
-  font-weight: 600;
-  color: ${({ theme }) => theme.textColor};
+const CommentBody = styled.div`
+  flex: 1;
+`;
+
+const Username = styled.span`
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-right: 0.5rem;
 `;
 
 const CommentDate = styled.span`
   font-size: 0.8rem;
-  color: ${({ theme }) => theme.borderColor};
+  color: #65676b;
 `;
 
 const CommentText = styled.p`
+  margin: 4px 0;
+  line-height: 1.4;
   direction: ${({ $lang }) => ($lang === "ar" ? "rtl" : "ltr")};
-  padding-left: 3.75rem;
-  margin: 0px 1px;
-  line-height: 1.3;
 `;
 
 const CommentActions = styled.div`
   display: flex;
-  padding-left: 3.5rem;
-  gap: 12px;
+  gap: 1rem;
   font-size: 0.85rem;
-  color: ${({ theme }) => theme.textColor};
+  color: #1a1a1a;
+  margin: 0.5rem 0;
 `;
 
 const ActionButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
+  color: #1a1a1a;
   display: flex;
   align-items: center;
-  gap: 6px;
-  color: ${({ theme }) => theme.textColor};
+  gap: 4px;
 
   &:hover {
     text-decoration: underline;
   }
+`;
+
+const RepliesContainer = styled.div`
+  margin-top: 0.5rem;
+  margin-left: 48px;
+`;
+
+const ReplyViewButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #385898;
+  font-size: 0.85rem;
+  padding: 0;
+  margin: 0.25rem 0 0 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const ReplyFormStyled = styled(ReplyForm)`
+  background-color: #d4edda;
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
 `;
 
 const CommentItem = ({ comment, comments, depth = 0, onReplySubmit }) => {
@@ -61,7 +88,7 @@ const CommentItem = ({ comment, comments, depth = 0, onReplySubmit }) => {
   const [replying, setReplying] = useState(false);
 
   const replies = comments?.filter((c) => c.parent_comment_id === comment.id);
-  const lang = /[\u0600-\u06FF]/.test(comment?.content) ? "ar" : "en";
+  const lang = /[\u0600-\u06FF]/.test(comment.content) ? "ar" : "en";
 
   const handleReply = (content) => {
     onReplySubmit(content, comment.id);
@@ -69,52 +96,58 @@ const CommentItem = ({ comment, comments, depth = 0, onReplySubmit }) => {
   };
 
   return (
-    <CommentContainer $depth={depth}>
-      <CommentHeader>
+    <div>
+      <CommentContainer>
         <UserAvatar
           username={comment.users?.username}
           profilePictureUrl={comment.users?.profile_picture_url}
+          style={{ position: "relative", zIndex: 1 }}
         />
-        <div>
-          <UserName>{comment.users?.username}</UserName>{" "}
-          <CommentDate>· {timeAgo(comment.created_at)}</CommentDate>
-        </div>
-      </CommentHeader>
+        {replies?.length > 0 && depth === 0 && <TreeLineSVG depth={depth} />}
+        <CommentBody>
+          <div>
+            <Username>{comment.users?.username}</Username>
+            <CommentDate>· {timeAgo(comment.created_at)}</CommentDate>
+          </div>
+          <CommentText $lang={lang}>{comment.content}</CommentText>
+          <CommentActions>
+            <ActionButton>
+              <ThumbsUp size={14} /> Like
+            </ActionButton>
+            <ActionButton onClick={() => setReplying(!replying)}>
+              Reply
+            </ActionButton>
+          </CommentActions>
+          {replying && (
+            <ReplyFormStyled
+              onSubmit={handleReply}
+              onCancel={() => setReplying(false)}
+            />
+          )}
+          {replies?.length > 0 && (
+            <ReplyViewButton onClick={() => setShowReplies(!showReplies)}>
+              {showReplies
+                ? "Hide replies"
+                : `View all ${replies.length} replies`}
+            </ReplyViewButton>
+          )}
+        </CommentBody>
+      </CommentContainer>
 
-      <CommentText $lang={lang}>{comment.content}</CommentText>
-
-      <CommentActions>
-        <ActionButton>
-          <ThumbsUp size={16} /> Like
-        </ActionButton>
-
-        {replies?.length > 0 && (
-          <ActionButton onClick={() => setShowReplies(!showReplies)}>
-            <MessageCircle size={16} />
-            {showReplies ? "Hide replies" : `View replies (${replies.length})`}
-          </ActionButton>
-        )}
-
-        <ActionButton onClick={() => setReplying(!replying)}>
-          Reply
-        </ActionButton>
-      </CommentActions>
-
-      {replying && (
-        <ReplyForm onSubmit={handleReply} onCancel={() => setReplying(false)} />
+      {showReplies && replies?.length > 0 && (
+        <RepliesContainer>
+          {replies.map((reply) => (
+            <CommentItem
+              key={reply.id}
+              comment={reply}
+              comments={comments}
+              depth={depth + 1}
+              onReplySubmit={onReplySubmit}
+            />
+          ))}
+        </RepliesContainer>
       )}
-
-      {showReplies &&
-        replies.map((reply) => (
-          <CommentItem
-            key={reply.id}
-            comment={reply}
-            comments={comments}
-            depth={depth + 1}
-            onReplySubmit={onReplySubmit}
-          />
-        ))}
-    </CommentContainer>
+    </div>
   );
 };
 

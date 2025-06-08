@@ -90,6 +90,11 @@ const PostContent = styled.p`
   margin-bottom: 0.5rem;
 `;
 
+const handleReplySubmit = (content, parentId) => {
+  console.log("رد جديد:", content, "على التعليق:", parentId);
+  // هنا تقدر تضيف POST للـ API أو تحديث الحالة مثلاً
+};
+
 const PhotoModal = () => {
   const { id, photoIndex } = useParams();
   const navigate = useNavigate();
@@ -230,11 +235,17 @@ const PhotoModal = () => {
         {/* <p style={{ marginTop: "1rem" }}>{post.content}</p> */}
         <PostContent $lang={lang}>{post.content}</PostContent>
         <PostActions postId={post.id} />
-
         <div style={{ marginTop: "1rem" }}>
-          {comments.map((comment) => (
-            <CommentItem key={comment.id} comment={comment} />
-          ))}
+          {comments.map((comment) =>
+            !comment.parent_comment_id ? (
+              <CommentItem
+                key={comment.id}
+                comment={comment}
+                comments={comments}
+                onReplySubmit={handleReplySubmit}
+              />
+            ) : null
+          )}
         </div>
       </InfoSection>
     </Overlay>
