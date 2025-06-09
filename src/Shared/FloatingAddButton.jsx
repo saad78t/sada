@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Plus } from "lucide-react";
 
@@ -32,9 +32,11 @@ const AddButton = styled.button`
 
 const FloatingAddButton = () => {
   const navigate = useNavigate();
+  const { id, photoIndex } = useParams();
   const { pathname } = useLocation();
 
-  if (pathname === "/new") return null; // إخفاء الزر في صفحة الإضافة
+  if (pathname === "/new" || pathname === `/post/${id}/photo/${photoIndex}`)
+    return null; // إخفاء الزر في صفحة الإضافة
 
   return (
     <AddButton onClick={() => navigate("/new")}>
