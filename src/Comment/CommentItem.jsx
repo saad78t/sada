@@ -442,12 +442,11 @@ const CommentItem = ({ comment, comments, depth = 0, onReplySubmit }) => {
   const [showReplies, setShowReplies] = useState(false);
   const [replying, setReplying] = useState(false);
   const [showNewTree, setShowNewTree] = useState(false);
-  const [containerHeight, setContainerHeight] = useState(0);
-  const [branchPositions, setBranchPositions] = useState([]);
+  const [containerHeight, setContainerHeight] = useState(0); //This value represents the height of the current comment's base container (the large element that contains the comment).
+  const [branchPositions, setBranchPositions] = useState([]); //Represents the locations of tree line branches (the small branches that go to the responses).
 
-  const containerRef = useRef(null);
-  const repliesRef = useRef(null);
-  const replyRefs = useRef([]);
+  const containerRef = useRef(null); //To point to the comment element itself (so we can get its height).
+  const replyRefs = useRef([]); //The Refs array stores DOM elements for responses (so we know exactly where each response is located).
 
   const replies = comments?.filter((c) => c.parent_comment_id === comment.id);
   const lang = /[\u0600-\u06FF]/.test(comment.content) ? "ar" : "en";
@@ -458,20 +457,37 @@ const CommentItem = ({ comment, comments, depth = 0, onReplySubmit }) => {
   };
 
   useEffect(() => {
+    let animationFrameId;
+
     if (containerRef.current) {
-      setContainerHeight(containerRef.current.offsetHeight);
-    }
-    if (showReplies && replyRefs.current.length) {
-      const positions = replyRefs.current.map((ref) => {
-        if (ref) {
-          const rect = ref.getBoundingClientRect();
-          const containerRect = containerRef.current.getBoundingClientRect();
-          return rect.top - containerRect.top + 16;
+      //requestAnimationFrame executes the code after the browser has finished drawing the DOM. It will not read the offsetHeight until all elements are ready.
+      animationFrameId = requestAnimationFrame(() => {
+        if (containerRef.current) {
+          setContainerHeight(containerRef.current.offsetHeight);
         }
-        return 0;
       });
-      setBranchPositions(positions);
     }
+
+    if (showReplies && replyRefs.current.length) {
+      animationFrameId = requestAnimationFrame(() => {
+        const positions = replyRefs.current.map((ref) => {
+          if (ref) {
+            const rect = ref.getBoundingClientRect();
+            const containerRect = containerRef.current.getBoundingClientRect();
+            return rect.top - containerRect.top + 16;
+          }
+          return 0;
+        });
+        setBranchPositions(positions);
+      });
+    }
+
+    // Clean up
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
   }, [showReplies, replying, replies]);
 
   return (
@@ -526,9 +542,14 @@ const CommentItem = ({ comment, comments, depth = 0, onReplySubmit }) => {
       </CommentContainer>
 
       {showReplies && replies?.length > 0 && (
-        <RepliesContainer ref={repliesRef}>
+        <RepliesContainer>
           {replies.map((reply, index) => (
-            <div key={reply.id} ref={(el) => (replyRefs.current[index] = el)}>
+            <div
+              key={reply.id}
+              // Store each reply's div element in replyRefs by its index
+              // To access their positions later for drawing branches
+              ref={(el) => (replyRefs.current[index] = el)}
+            >
               <CommentItem
                 comment={reply}
                 comments={comments}

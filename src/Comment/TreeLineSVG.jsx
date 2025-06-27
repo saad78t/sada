@@ -167,8 +167,9 @@ const TreeLineSVG = ({ height, showNewTree, branchPositions }) => {
       >
         <path
           d={`M${startX} 0 L${startX} ${lastY}`}
-          stroke="#4a704a"
-          strokeWidth="3"
+          // stroke="#4a704a"
+          stroke="#ddd"
+          strokeWidth="2"
           fill="none"
           strokeLinecap="round"
         />
@@ -179,7 +180,8 @@ const TreeLineSVG = ({ height, showNewTree, branchPositions }) => {
             d={`M${startX} ${y - branchOffset} 
         Q${startX + 20} ${y - branchOffset + 10} 
         ${targetX + 20} ${y - branchOffset}`}
-            stroke="#4a704a"
+            // stroke="#4a704a"
+            stroke="#ddd"
             strokeWidth="2"
             fill="none"
             strokeLinecap="round"
