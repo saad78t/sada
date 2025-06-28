@@ -1,5 +1,5 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import styled from "styled-components";
 import { getPostById } from "../services/postService";
 import { getComments } from "../services/commentService";
@@ -90,11 +90,6 @@ const PostContent = styled.p`
   margin-bottom: 0.5rem;
 `;
 
-const handleReplySubmit = (content, parentId) => {
-  console.log("رد جديد:", content, "على التعليق:", parentId);
-  // هنا تقدر تضيف POST للـ API أو تحديث الحالة مثلاً
-};
-
 const PhotoModal = () => {
   const { id, photoIndex } = useParams();
   const navigate = useNavigate();
@@ -102,6 +97,7 @@ const PhotoModal = () => {
   const returnToPost = sessionStorage.getItem("returnToPost");
   const from = returnToPost || location.state?.from || "/";
   const playerRef = useRef(null);
+  const queryClient = useQueryClient();
 
   const {
     data: post,
@@ -118,6 +114,13 @@ const PhotoModal = () => {
     queryFn: () => getComments(id),
     enabled: !!id,
   });
+
+  const handleReplySubmit = (newComment) => {
+    queryClient.setQueryData(["comments", id], (oldComments = []) => [
+      ...oldComments,
+      newComment,
+    ]);
+  };
 
   if (isLoading) return <Spinner />;
   if (error || !post) return <p>Error loading post</p>;
