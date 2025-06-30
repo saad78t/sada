@@ -109,46 +109,13 @@ const CommentItem = ({ comment, comments, depth = 0, onReplySubmit }) => {
     }
   };
 
-  // useEffect(() => {
-  //   let animationFrameId;
-
-  //   if (containerRef.current) {
-  //     //requestAnimationFrame executes the code after the browser has finished drawing the DOM. It will not read the offsetHeight until all elements are ready.
-  //     animationFrameId = requestAnimationFrame(() => {
-  //       if (containerRef.current) {
-  //         setContainerHeight(containerRef.current.offsetHeight);
-  //       }
-  //     });
-  //   }
-
-  //   if (showReplies && replyRefs.current.length) {
-  //     animationFrameId = requestAnimationFrame(() => {
-  //       const positions = replyRefs.current.map((ref) => {
-  //         if (ref) {
-  //           const rect = ref.getBoundingClientRect();
-  //           const containerRect = containerRef.current.getBoundingClientRect();
-  //           return rect.top - containerRect.top + 16;
-  //         }
-  //         return 0;
-  //       });
-  //       setBranchPositions(positions);
-  //     });
-  //   }
-
-  //   // Clean up
-  //   return () => {
-  //     if (animationFrameId) {
-  //       cancelAnimationFrame(animationFrameId);
-  //     }
-  //   };
-  // }, [showReplies, replying, replies]);
-
   useEffect(() => {
     let animationFrameId;
 
     const updatePositions = () => {
       if (showReplies && replyRefs.current.length) {
         const positions = replyRefs.current.map((ref) => {
+          //it pass through each reply (via replyRefs.current)
           if (ref) {
             const rect = ref.getBoundingClientRect();
             const containerRect = containerRef.current.getBoundingClientRect();
@@ -161,16 +128,19 @@ const CommentItem = ({ comment, comments, depth = 0, onReplySubmit }) => {
     };
 
     if (containerRef.current) {
+      //requestAnimationFrame executes the code after the browser has finished drawing the DOM. It will not read the offsetHeight until all elements are ready.
       animationFrameId = requestAnimationFrame(() => {
         setContainerHeight(containerRef.current.offsetHeight);
         updatePositions();
       });
 
+      //To make sure that if the size of the container or any of the replies changes (due to new content / collapse / expand ), the containerHeight and branchPositions are updated immediately.
       const resizeObserver = new ResizeObserver(() => {
         setContainerHeight(containerRef.current.offsetHeight);
         updatePositions();
       });
 
+      //monitor the container and every reply element and any change in their size → the observer executes setContainerHeight and updatePositions
       resizeObserver.observe(containerRef.current);
 
       replyRefs.current.forEach((ref) => {
