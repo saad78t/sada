@@ -53,8 +53,8 @@ const TreeLineSVG = ({ height, showNewTree, branchPositions }) => {
         {branchPositions.map((y, index) => (
           <path
             key={index}
-            d={`M${startX} ${y - branchOffset} 
-        Q${startX + 20} ${y - branchOffset + 10} 
+            d={`M${startX} ${y - branchOffset}
+        Q${startX + 20} ${y - branchOffset + 10}
         ${targetX + 20} ${y - branchOffset}`}
             // stroke="#4a704a"
             stroke="#ddd"
