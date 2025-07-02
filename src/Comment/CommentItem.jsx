@@ -6,6 +6,8 @@ import ReplyForm from "./ReplyForm";
 import TreeLineSVG from "./TreeLineSVG";
 import { timeAgo } from "../utils/helpers";
 import { addComment } from "../services/commentService";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 const CommentContainer = styled.div`
   position: relative;
@@ -85,13 +87,13 @@ const ReplyFormStyled = styled(ReplyForm)`
   margin-top: 0.5rem;
 `;
 
-const CommentItem = ({ comment, comments, depth = 0, onReplySubmit }) => {
+const CommentItem = ({ comment, comments, depth = 0 }) => {
   const [showReplies, setShowReplies] = useState(false);
   const [replying, setReplying] = useState(false);
   const [showNewTree, setShowNewTree] = useState(false);
   const [containerHeight, setContainerHeight] = useState(0); //This value represents the height of the current comment's base container (the large element that contains the comment).
   const [branchPositions, setBranchPositions] = useState([]); //Represents the locations of tree line branches (the small branches that go to the responses).
-
+  const queryClient = useQueryClient();
   const containerRef = useRef(null); //To point to the comment element itself (so we can get its height).
   const replyRefs = useRef([]); //The Refs array stores DOM elements for responses (so we know exactly where each response is located).
 
@@ -99,15 +101,26 @@ const CommentItem = ({ comment, comments, depth = 0, onReplySubmit }) => {
 
   const lang = /[\u0600-\u06FF]/.test(comment.content) ? "ar" : "en";
 
-  const handleReply = async (content) => {
-    try {
-      const newComment = await addComment(comment.post_id, content, comment.id);
-      onReplySubmit(newComment);
+  // const handleReply = async (content) => {
+  //   try {
+  //     const newComment = await addComment(comment.post_id, content, comment.id);
+  //     onReplySubmit(newComment);
+  //     setReplying(false);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  const { mutate } = useMutation({
+    mutationFn: ({ postId, content, parentId }) =>
+      addComment(postId, content, parentId),
+    onSuccess: () => {
+      toast.success("Comment added successfully"),
+        queryClient.invalidateQueries(["comments", comment.id]);
       setReplying(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    },
+    onError: (err) => toast.error(err.message),
+  });
 
   useEffect(() => {
     let animationFrameId;
@@ -186,8 +199,13 @@ const CommentItem = ({ comment, comments, depth = 0, onReplySubmit }) => {
           </CommentActions>
           {replying && (
             <ReplyFormStyled
-              onSubmit={handleReply}
-              onCancel={() => setReplying(false)}
+              onSubmit={(content) =>
+                mutate({
+                  postId: comment.post_id,
+                  content,
+                  parentId: comment.id,
+                })
+              }
             />
           )}
           {replies?.length > 0 && (
@@ -218,7 +236,6 @@ const CommentItem = ({ comment, comments, depth = 0, onReplySubmit }) => {
                 comment={reply}
                 comments={comments}
                 depth={depth + 1}
-                onReplySubmit={onReplySubmit}
               />
             </div>
           ))}

@@ -63,6 +63,7 @@ const ReplyForm = ({
   onCancel,
   buttonText = "Reply",
   placeholder = "Write a reply...",
+  className,
 }) => {
   const [text, setText] = useState("");
 
@@ -76,7 +77,7 @@ const ReplyForm = ({
   const lang = /[\u0600-\u06FF]/.test(text) ? "ar" : "en";
 
   return (
-    <FormContainer>
+    <FormContainer className={className}>
       <UserAvatar username="you" profilePictureUrl={null} />
       <InputArea>
         <form onSubmit={handleSubmit}>
