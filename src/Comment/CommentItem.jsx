@@ -8,6 +8,7 @@ import { timeAgo } from "../utils/helpers";
 import { addComment, deleteComment } from "../services/commentService";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { IoSendSharp } from "react-icons/io5";
 
 const CommentContainer = styled.div`
   position: relative;
@@ -81,10 +82,33 @@ const ReplyViewButton = styled.button`
 `;
 
 const ReplyFormStyled = styled(ReplyForm)`
-  background-color: #d4edda;
+  position: relative;
   border-radius: 4px;
   padding: 0.5rem;
   margin-top: 0.5rem;
+  textarea {
+    min-height: 10px;
+    border: 2px solid #0e0d0d52;
+    background-color: #d4edda;
+    border-radius: 5px;
+  }
+
+  button {
+    position: absolute;
+    /* bottom: -0.7rem; */
+    padding: 0.4rem 0.7rem;
+    right: 0.5rem;
+    background-color: #1d9bf0;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.7rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+  }
 `;
 
 const OptionsButton = styled.button`
@@ -289,6 +313,7 @@ const CommentItem = ({ comment, comments, depth = 0 }) => {
                   parentId: comment.id,
                 })
               }
+              buttonText={<IoSendSharp />}
             />
           )}
 
