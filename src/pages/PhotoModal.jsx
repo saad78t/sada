@@ -290,21 +290,22 @@ import videojs from "video.js";
 import VideoJsPlayer from "../components/Post/VideoJsPlayer";
 import { useRef } from "react";
 import toast from "react-hot-toast";
+import { FaPaperPlane } from "react-icons/fa";
 
 const Overlay = styled.div`
   position: fixed;
-  top: 0; //top: 0 and left: 0 make the element start at the very top left of the screen.
+  top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.7);
-  display: flex; //So we can easily control the positioning of the internal elements.
+  display: flex;
   z-index: 1000;
 `;
 
 const ImageSection = styled.div`
   position: relative;
-  flex: 2; //It means that it takes up twice the space compared to any other element in the same flex container. The ImageSection takes up two-thirds of the screen, while the InfoSection takes up only one-third.
+  flex: 2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -319,6 +320,7 @@ const InfoSection = styled.div`
   padding: 1rem;
   overflow-y: auto;
   position: relative;
+  padding-bottom: 100px; /* مسافة تكفي للفورم الثابتة أسفل */
 `;
 
 const CloseButton = styled.button`
@@ -330,14 +332,14 @@ const CloseButton = styled.button`
   cursor: pointer;
   color: white;
   padding: 0.3rem;
-  border-radius: 50%; //Converts the button to a perfect circle.
+  border-radius: 50%;
   z-index: 30;
 `;
 
 const ArrowLeft = styled.button`
   position: absolute;
   left: 1rem;
-  top: 50%; //Places the button at the center of the container element's height.
+  top: 50%;
   transform: translateY(-50%);
   font-size: 2rem;
   color: white;
@@ -348,7 +350,7 @@ const ArrowLeft = styled.button`
 `;
 
 const ArrowRight = styled(ArrowLeft)`
-  left: auto; //يلغي تأثير left: 1rem; الموروثة //left: auto; معناها: "انسَ مكان اليسار، لا تستخدمه"،
+  left: auto;
   right: 1rem;
 `;
 
@@ -362,28 +364,45 @@ const PostContent = styled.p`
   direction: ${({ $lang }) => ($lang === "ar" ? "rtl" : "ltr")};
   text-align: start;
   padding-left: 3rem;
-  text-align: start;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
 `;
 
 const ReplyFormStyled = styled(ReplyForm)`
-  padding: 0.5rem;
-  display: flex;
-  gap: 0.5rem;
-  z-index: 9999;
-  textarea {
-    height: 60px;
-  }
-`;
-
-const CommentWrapper = styled.div`
-  position: sticky;
-  width: 100%;
-  height: 20%;
-  padding: 5px;
-  bottom: 5px;
+  position: fixed;
+  bottom: -20px;
+  right: 20px;
+  width: 400px;
+  max-width: 90%;
   background-color: #f5f5f5;
+  padding: 1rem;
+  border-radius: 8px;
+  z-index: 1001;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+  textarea {
+    width: 100%;
+    min-height: 60px;
+    border-radius: 4px;
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+
+  button {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 2rem;
+    background-color: #1d9bf0;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.7rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+  }
 `;
 
 const PhotoModal = () => {
@@ -394,8 +413,6 @@ const PhotoModal = () => {
   const from = returnToPost || location.state?.from || "/";
   const playerRef = useRef(null);
   const queryClient = useQueryClient();
-
-  //1. const queryClient = useQueryClient();
 
   const {
     data: post,
@@ -416,19 +433,11 @@ const PhotoModal = () => {
   const { mutate } = useMutation({
     mutationFn: ({ postId, content }) => addComment(postId, content),
     onSuccess: () => {
-      toast.success("Comment added successfully"),
-        queryClient.invalidateQueries(["comments", id]);
+      toast.success("Comment added successfully");
+      queryClient.invalidateQueries(["comments", id]);
     },
     onError: (err) => toast.error(err.message),
   });
-
-  //2.
-  // const handleReplySubmit = (newComment) => {
-  //   queryClient.setQueryData(["comments", id], (oldComments = []) => [
-  //     ...oldComments,
-  //     newComment,
-  //   ]);
-  // };
 
   if (isLoading) return <Spinner />;
   if (error || !post) return <p>Error loading post</p>;
@@ -436,9 +445,7 @@ const PhotoModal = () => {
   const mediaUrl = post.media_urls?.[photoIndex];
   const currentIndex = parseInt(photoIndex);
   const totalImages = post.media_urls?.length;
-
   const isVideo = /\.(mp4|webm|ogg)/i.test(mediaUrl);
-
   const lang = /[\u0600-\u06FF]/.test(post?.content) ? "ar" : "en";
 
   const handlePrev = () => {
@@ -462,8 +469,6 @@ const PhotoModal = () => {
       v.pause();
       v.currentTime = 0;
     });
-
-    //navigate(from, { replace: true }); // Replace history to avoid photo routes
     navigate(from);
     sessionStorage.removeItem("returnToPost");
   };
@@ -491,9 +496,8 @@ const PhotoModal = () => {
 
   const handlePlayerReady = (player) => {
     playerRef.current = player;
-
     playerRef.current.pause();
-    // You can handle player events here, for example:
+
     player.on("waiting", () => {
       videojs.log("player is waiting");
     });
@@ -512,15 +516,6 @@ const PhotoModal = () => {
           <X />
         </CloseButton>
         {isVideo ? (
-          // <StyledVideo
-          //   key={mediaUrl}
-          //   src={mediaUrl}
-          //   controls
-          //   preload="metadata"
-          //   autoPlay
-          //   onError={(e) => console.error("Video failed:", mediaUrl, e.message)}
-          // />
-
           <VideoJsPlayer options={videoJsOptions} onReady={handlePlayerReady} />
         ) : (
           <StyledImage
@@ -543,7 +538,6 @@ const PhotoModal = () => {
           createdAt={timeAgo(post.created_at)}
           postId={post.id}
         />
-        {/* <p style={{ marginTop: "1rem" }}>{post.content}</p> */}
         <PostContent $lang={lang}>{post.content}</PostContent>
         <PostActions postId={post.id} />
         <div style={{ marginTop: "1rem" }}>
@@ -553,23 +547,20 @@ const PhotoModal = () => {
                 key={comment.id}
                 comment={comment}
                 comments={comments}
-                //3. onReplySubmit={handleReplySubmit}
               />
             ) : null
           )}
         </div>
-        <CommentWrapper>
-          <ReplyFormStyled
-            onSubmit={(content) =>
-              mutate({
-                postId: post.id,
-                content,
-              })
-            }
-            placeholder="Add a comment..."
-            buttonText="Add"
-          />
-        </CommentWrapper>
+        <ReplyFormStyled
+          onSubmit={(content) =>
+            mutate({
+              postId: post.id,
+              content,
+            })
+          }
+          placeholder="Add a comment..."
+          buttonText={<FaPaperPlane />}
+        />
       </InfoSection>
     </Overlay>
   );
