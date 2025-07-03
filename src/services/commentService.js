@@ -47,3 +47,13 @@ export const addComment = async (postId, content, parentId = null) => {
   }
   return data;
 };
+
+export const deleteComment = async (commentId) => {
+  const { error } = await supabase
+    .from("comments")
+    .delete()
+    .eq("id", commentId);
+  if (error) {
+    throw error;
+  }
+};

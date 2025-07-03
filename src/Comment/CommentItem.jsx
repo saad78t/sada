@@ -5,7 +5,7 @@ import UserAvatar from "../components/Post/UserAvatar";
 import ReplyForm from "./ReplyForm";
 import TreeLineSVG from "./TreeLineSVG";
 import { timeAgo } from "../utils/helpers";
-import { addComment } from "../services/commentService";
+import { addComment, deleteComment } from "../services/commentService";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -87,15 +87,57 @@ const ReplyFormStyled = styled(ReplyForm)`
   margin-top: 0.5rem;
 `;
 
+const OptionsButton = styled.button`
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: ${({ theme }) => theme.textColor};
+  cursor: pointer;
+`;
+
+const DropdownMenu = styled.div`
+  position: absolute;
+  top: 25%;
+  right: 0;
+  min-width: 140px;
+  background-color: ${({ theme }) => theme.bgColor};
+  border: 1px solid ${({ theme }) => theme.borderColor};
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+`;
+
+const MenuItem = styled.button`
+  background: none;
+  border: none;
+  padding: 0.6rem 1rem;
+  width: 100%;
+  text-align: left;
+  color: ${({ theme }) => theme.textColor};
+  font-size: 0.95rem;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.borderColor};
+  }
+`;
+
 const CommentItem = ({ comment, comments, depth = 0 }) => {
   const [showReplies, setShowReplies] = useState(false);
   const [replying, setReplying] = useState(false);
   const [showNewTree, setShowNewTree] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const [containerHeight, setContainerHeight] = useState(0); //This value represents the height of the current comment's base container (the large element that contains the comment).
   const [branchPositions, setBranchPositions] = useState([]); //Represents the locations of tree line branches (the small branches that go to the responses).
   const queryClient = useQueryClient();
   const containerRef = useRef(null); //To point to the comment element itself (so we can get its height).
   const replyRefs = useRef([]); //The Refs array stores DOM elements for responses (so we know exactly where each response is located).
+  const menuRef = useRef();
 
   const replies = comments?.filter((c) => c.parent_comment_id === comment.id);
 
@@ -111,13 +153,44 @@ const CommentItem = ({ comment, comments, depth = 0 }) => {
   //   }
   // };
 
-  const { mutate } = useMutation({
+  function toggleMenu() {
+    setShowMenu((menu) => !menu);
+  }
+
+  const handleClickOutside = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setShowMenu(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showMenu]);
+
+  const { mutate: addCommentMutate } = useMutation({
     mutationFn: ({ postId, content, parentId }) =>
       addComment(postId, content, parentId),
     onSuccess: () => {
       toast.success("Comment added successfully"),
         queryClient.invalidateQueries(["comments", comment.id]);
       setReplying(false);
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const { mutate: deleteCommentMutate } = useMutation({
+    mutationFn: deleteComment,
+    onSuccess: () => {
+      toast.success("Comment deleted successfully"),
+        queryClient.invalidateQueries(["comments"]);
     },
     onError: (err) => toast.error(err.message),
   });
@@ -187,6 +260,16 @@ const CommentItem = ({ comment, comments, depth = 0 }) => {
           <div>
             <Username>{comment.users?.username}</Username>
             <CommentDate>· {timeAgo(comment.created_at)}</CommentDate>
+            <div ref={menuRef}>
+              <OptionsButton onClick={toggleMenu}>⋮</OptionsButton>
+              {showMenu && (
+                <DropdownMenu>
+                  <MenuItem onClick={() => deleteCommentMutate(comment.id)}>
+                    Delete
+                  </MenuItem>
+                </DropdownMenu>
+              )}
+            </div>
           </div>
           <CommentText $lang={lang}>{comment.content}</CommentText>
           <CommentActions>
@@ -200,7 +283,7 @@ const CommentItem = ({ comment, comments, depth = 0 }) => {
           {replying && (
             <ReplyFormStyled
               onSubmit={(content) =>
-                mutate({
+                addCommentMutate({
                   postId: comment.post_id,
                   content,
                   parentId: comment.id,
@@ -208,6 +291,7 @@ const CommentItem = ({ comment, comments, depth = 0 }) => {
               }
             />
           )}
+
           {replies?.length > 0 && (
             <ReplyViewButton
               onClick={() => {
