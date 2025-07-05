@@ -20,7 +20,10 @@ sada-app/
 │   │   │   ├── CommentItem.jsx
 │   │   │   └── ReplyForm.jsx
 │   │   │   └── CommentThread.jsx
-│   │   │   └── TreeLineSVG.jsx.jsx
+│   │   │   └── TreeLineSVG.jsx
+│   │   │   └── CommentActions.jsx
+│   │   │   └── CommentOptionsMenu.jsx
+│   │   │   └── CommentHeader.jsx
 │   │   │
 │   │   ├── Shared/
 │   │   │   ├── Avatar.jsx
