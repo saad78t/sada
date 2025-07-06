@@ -1,0 +1,31 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addComment, deleteComment } from "../services/commentService";
+import toast from "react-hot-toast";
+
+export function useAddComment(postId) {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: ({ content, parentId }) =>
+      addComment(postId, content, parentId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["comments", postId]);
+    },
+  });
+
+  return mutation;
+}
+
+export function useDeleteComment() {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: deleteComment,
+    onSuccess: () => {
+      toast.success("Comment deleted successfully");
+      queryClient.invalidateQueries(["comments"]);
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  return mutation;
+}

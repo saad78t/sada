@@ -1,9 +1,7 @@
 import styled from "styled-components";
 import { timeAgo } from "../utils/helpers";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteComment } from "../services/commentService";
 import CommentOptionsMenu from "./CommentOptionsMenu";
-import toast from "react-hot-toast";
+import { useDeleteComment } from "../hooks/useComments";
 
 const HeaderRow = styled.div`
   display: flex;
@@ -23,16 +21,17 @@ const CommentDate = styled.span`
 `;
 
 function CommentHeader({ comment }) {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
-  const { mutate: deleteCommentMutate } = useMutation({
-    mutationFn: deleteComment,
-    onSuccess: () => {
-      toast.success("Comment deleted successfully"),
-        queryClient.invalidateQueries(["comments"]);
-    },
-    onError: (err) => toast.error(err.message),
-  });
+  // const { mutate: deleteCommentMutate } = useMutation({
+  //   mutationFn: deleteComment,
+  //   onSuccess: () => {
+  //     toast.success("Comment deleted successfully"),
+  //       queryClient.invalidateQueries(["comments"]);
+  //   },
+  //   onError: (err) => toast.error(err.message),
+  // });
+  const { mutate: deleteCommentMutate } = useDeleteComment();
 
   return (
     <HeaderRow>
