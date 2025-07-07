@@ -1,13 +1,10 @@
-import PostContent from "../Post/PostContent";
+import PostDetailsMedia from "./PostDetailsMedia";
 
 function PostDetailsContent({ post }) {
   return (
     <div>
-      <PostContent
-        content={post.content}
-        mediaUrls={post.media_urls}
-        postId={post.id}
-      />
+      {post.content}
+      <PostDetailsMedia mediaUrls={post.media_urls} />
     </div>
   );
 }

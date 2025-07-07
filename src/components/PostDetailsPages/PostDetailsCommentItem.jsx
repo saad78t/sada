@@ -76,9 +76,9 @@ function PostDetailsCommentItem({
   post,
   comment,
   allComments,
-  deleteCommentMutate,
   expandedComments,
   setExpandedComments,
+  deleteCommentMutate,
 }) {
   const navigate = useNavigate();
   const addCommentMutation = useAddComment(post?.id);
