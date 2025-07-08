@@ -1,9 +1,7 @@
 import styled from "styled-components";
 import { FaHeart, FaComment, FaShare } from "react-icons/fa";
-import { useQuery } from "@tanstack/react-query";
-import { getLikes } from "../../services/likeService";
-import { getComments } from "../../services/commentService";
 import { formatCount } from "../../utils/helpers";
+import { usePostStatus } from "../../hooks/usePostStats";
 
 const ActionsWrapper = styled.div`
   display: flex;
@@ -32,24 +30,19 @@ const ActionButton = styled.button`
   }
 `;
 
-const PostActions = ({ postId }) => {
-  const { data: likes = [], isLoading: likesLoading } = useQuery({
-    queryKey: ["likes", postId],
-    queryFn: () => getLikes(postId),
-  });
-
-  const { data: comments = [], isLoading: commentsLoading } = useQuery({
-    queryKey: ["comments", postId],
-    queryFn: () => getComments(postId),
-  });
+const PostActions = ({ postId, showCounts = true }) => {
+  const { likes, likesLoading, comments, commentsLoading } =
+    usePostStatus(postId);
 
   return (
     <ActionsWrapper onClick={(e) => e.stopPropagation()}>
       <ActionButton>
-        <FaHeart /> {likesLoading ? "..." : formatCount(likes.length)}
+        <FaHeart />{" "}
+        {showCounts && (likesLoading ? "..." : formatCount(likes.length))}
       </ActionButton>
       <ActionButton>
-        <FaComment /> {commentsLoading ? "..." : formatCount(comments.length)}
+        <FaComment />{" "}
+        {showCounts && (commentsLoading ? "..." : formatCount(comments.length))}
       </ActionButton>
       <ActionButton>
         <FaShare />

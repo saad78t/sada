@@ -9,6 +9,7 @@ import PostDetailsContent from "../components/PostDetailsPages/PostDetailsConten
 import PostDetailsActions from "../components/PostDetailsPages/PostDetailsActions";
 import PostDetailsComments from "../components/PostDetailsPages/PostDetailsComments";
 import { useAddComment } from "../hooks/useComments";
+import PostDetailsMeta from "../components/PostDetailsPages/PostDetailsMeta";
 
 const Container = styled.div`
   max-width: 700px;
@@ -44,7 +45,23 @@ const PostDetails = () => {
       <Container>
         <PostDetailsHeader post={post} />
         <PostDetailsContent post={post} />
-        <PostDetailsActions post={post} />
+
+        <div style={{ marginTop: "0.5rem" }}>
+          <PostDetailsMeta post={post} />
+        </div>
+
+        {/* أكشن مع خط فوق وتحت */}
+        <div
+          style={{
+            marginTop: "0.5rem",
+            borderTop: "1px solid #eee",
+            borderBottom: "1px solid #eee",
+            padding: "0.5rem 0",
+          }}
+        >
+          <PostDetailsActions post={post} />
+        </div>
+
         <div style={{ marginTop: "2rem" }}>
           <ReplyForm
             onSubmit={(content) => addCommentMutation.mutate({ content })}
