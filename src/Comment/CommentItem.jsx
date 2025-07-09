@@ -476,12 +476,12 @@ const CommentItem = ({ comment, comments, depth = 0 }) => {
 
     if (containerRef.current) {
       animationFrameId = requestAnimationFrame(() => {
-        setContainerHeight(containerRef.current.offsetHeight);
+        setContainerHeight(containerRef.current?.offsetHeight);
         updatePositions();
       });
 
       const resizeObserver = new ResizeObserver(() => {
-        setContainerHeight(containerRef.current.offsetHeight);
+        setContainerHeight(containerRef.current?.offsetHeight);
         updatePositions();
       });
 

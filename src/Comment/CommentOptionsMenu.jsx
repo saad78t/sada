@@ -4,7 +4,7 @@ import styled from "styled-components";
 const OptionsButton = styled.button`
   position: absolute;
   right: 0;
-  top: 0;
+  top: ${({ $optionTop }) => $optionTop || 0};
 
   background: none;
   border: none;
@@ -15,7 +15,7 @@ const OptionsButton = styled.button`
 
 const DropdownMenu = styled.div`
   position: absolute;
-  top: 25%;
+  top: ${({ $top }) => $top || "25%"};
   right: 0;
   min-width: 140px;
   background-color: ${({ theme }) => theme.bgColor};
@@ -41,7 +41,7 @@ const MenuItem = styled.button`
   }
 `;
 
-function CommentOptionsMenu({ onDelete }) {
+function CommentOptionsMenu({ onDelete, top, optionTop }) {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef();
 
@@ -69,9 +69,11 @@ function CommentOptionsMenu({ onDelete }) {
 
   return (
     <div ref={menuRef}>
-      <OptionsButton onClick={toggleMenu}>⋮</OptionsButton>
+      <OptionsButton $optionTop={optionTop} onClick={toggleMenu}>
+        ⋮
+      </OptionsButton>
       {showMenu && (
-        <DropdownMenu>
+        <DropdownMenu $top={top}>
           <MenuItem onClick={onDelete}>Delete</MenuItem>
         </DropdownMenu>
       )}

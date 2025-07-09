@@ -124,6 +124,8 @@ function PostDetailsCommentItem({
           >
             <CommentOptionsMenu
               onDelete={() => deleteCommentMutate(comment.id)}
+              top="20px"
+              optionTop="-10px"
             />
           </div>
           <UserName>{comment.users?.username}</UserName>

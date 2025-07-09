@@ -1,3 +1,4 @@
+import React from "react";
 import PostContent from "../Post/PostContent";
 import PostDetailsMedia from "./PostDetailsMedia";
 
@@ -10,4 +11,4 @@ function PostDetailsContent({ post }) {
   );
 }
 
-export default PostDetailsContent;
+export default React.memo(PostDetailsContent); //To prevent the video from restarting from the beginning when adding a comment, as when adding a comment a component rendering problem occurred.
