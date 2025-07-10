@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 import PostHeader from "./PostHeader";
-import PostContent from "./PostContent";
+import PostContent from "../Post/PostContent";
 import PostActions from "./PostActions";
 import { timeAgo } from "../../utils/helpers";
 

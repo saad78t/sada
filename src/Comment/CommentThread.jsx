@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getComments, addComment } from "../services/commentService";
-import { getPostById } from "../services/postService";
 import PostHeader from "../components/Post/PostHeader";
 import PostContent from "../components/Post/PostContent";
 import Spinner from "../Shared/Spinner";
@@ -10,6 +9,7 @@ import UserAvatar from "../components/Post/UserAvatar";
 import { timeAgo } from "../utils/helpers";
 import { MessageCircle, ThumbsUp, ArrowLeft } from "lucide-react";
 import { useState } from "react";
+import { usePost } from "../hooks/usePost";
 
 const Container = styled.div`
   max-width: 700px;
@@ -158,11 +158,7 @@ const CommentThread = () => {
   const [replyContent, setReplyContent] = useState("");
   const [openReplies, setOpenReplies] = useState({});
 
-  const { data: post, isLoading: loadingPost } = useQuery({
-    queryKey: ["post", postId],
-    queryFn: () => getPostById(postId),
-    enabled: !!postId,
-  });
+  const { post, isLoading } = usePost(postId);
 
   const { data: comments = [], isLoading: loadingComments } = useQuery({
     queryKey: ["comments", postId],
@@ -180,7 +176,7 @@ const CommentThread = () => {
     },
   });
 
-  if (loadingPost || loadingComments) return <Spinner />;
+  if (isLoading || loadingComments) return <Spinner />;
 
   const mainComment = comments.find((c) => c.id === Number(commentId));
   const replies = comments.filter(

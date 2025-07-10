@@ -1,7 +1,5 @@
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getPostById } from "../services/postService";
 import Spinner from "../Shared/Spinner";
 import ReplyForm from "../Comment/ReplyForm";
 import PostDetailsHeader from "../components/PostDetailsPages/PostDetailsHeader";
@@ -10,6 +8,7 @@ import PostDetailsActions from "../components/PostDetailsPages/PostDetailsAction
 import PostDetailsComments from "../components/PostDetailsPages/PostDetailsComments";
 import { useAddComment } from "../hooks/useComments";
 import PostDetailsMeta from "../components/PostDetailsPages/PostDetailsMeta";
+import { usePost } from "../hooks/usePost";
 
 const Container = styled.div`
   max-width: 700px;
@@ -25,15 +24,7 @@ const ContentWrapper = styled.div`
 const PostDetails = () => {
   const { id } = useParams();
 
-  const {
-    data: post,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["post", id],
-    queryFn: () => getPostById(id),
-    enabled: !!id,
-  });
+  const { post, isLoading, error } = usePost(id);
 
   const addCommentMutation = useAddComment(post?.id);
 

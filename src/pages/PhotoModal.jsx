@@ -1,23 +1,14 @@
 import PhotoModalOverlay from "../components/PhotoModalPages/PhotoModalOverlay";
 import PhotoModalImageSection from "../components/PhotoModalPages/PhotoModalImageSection";
 import PhotoModalInfoSection from "../components/PhotoModalPages/PhotoModalInfoSection";
-import { useQuery } from "@tanstack/react-query";
-import { getPostById } from "../services/postService";
 import { useParams } from "react-router-dom";
 import Spinner from "../Shared/Spinner";
+import { usePost } from "../hooks/usePost";
 
 const PhotoModal = () => {
   const { id } = useParams();
 
-  const {
-    data: post,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["post", id],
-    queryFn: () => getPostById(id),
-    enabled: !!id,
-  });
+  const { post, isLoading, error } = usePost(id);
 
   if (isLoading) return <Spinner />;
   if (error || !post) return <p>Error loading post</p>;
