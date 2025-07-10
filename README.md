@@ -7,83 +7,97 @@ sada-app/
 │   ├── assets/
 │
 │   ├── components/
+│   │   ├── Auth/
+│   │   │   ├── LoginForm.jsx
+│   │   │   ├── SignupForm.jsx
+│   │   │   ├── ForgotPassword.jsx
+│   │   │   └── AuthWrapper.jsx
+│   │
+│   │   ├── Comment/
+│   │   │   ├── CommentActions.jsx
+│   │   │   ├── CommentHeader.jsx
+│   │   │   ├── CommentItem.jsx
+│   │   │   ├── CommentOptionsMenu.jsx
+│   │   │   ├── CommentThread.jsx
+│   │   │   ├── ReplyForm.jsx
+│   │   │   └── TreeLineSVG.jsx
+│   │
+│   │   ├── PhotoModalPages/
+│   │   │   ├── PhotoModalCloseButton.jsx
+│   │   │   ├── PhotoModalCommentsList.jsx
+│   │   │   ├── PhotoModalImageSection.jsx
+│   │   │   ├── PhotoModalInfoSection.jsx
+│   │   │   ├── PhotoModalMediaViewer.jsx
+│   │   │   ├── PhotoModalNavButtons.jsx
+│   │   │   ├── PhotoModalOverlay.jsx
+│   │   │   ├── PhotoModalPostActions.jsx
+│   │   │   ├── PhotoModalPostContent.jsx
+│   │   │   ├── PhotoModalPostHeader.jsx
+│   │   │   └── PhotoModalReplyForm.jsx
+│   │
 │   │   ├── Post/
-│   │   │   ├── PostItem.jsx
-│   │   │   ├── PostHeader.jsx
-│   │   │   ├── PostContent.jsx
 │   │   │   ├── PostActions.jsx
+│   │   │   ├── PostContent.jsx
+│   │   │   ├── PostHeader.jsx
+│   │   │   ├── PostItem.jsx
 │   │   │   ├── UserAvatar.jsx
 │   │   │   └── VideoJsPlayer.jsx
 │   │
 │   │   ├── PostDetailsPages/
-│   │   │   ├── PostDetailsHeader.jsx
-│   │   │   ├── PostDetailsContent.jsx
-│   │   │   ├── PostDetailsMedia.jsx
 │   │   │   ├── PostDetailsActions.jsx
 │   │   │   ├── PostDetailsComments.jsx
 │   │   │   ├── PostDetailsCommentItem.jsx
 │   │   │   ├── PostDetailsCommentsList.jsx
+│   │   │   ├── PostDetailsContent.jsx
+│   │   │   ├── PostDetailsHeader.jsx
 │   │   │   └── PostDetailsMeta.jsx
+│   │
+│   │   ├── Shared/
+│   │   │   ├── Button.jsx
+│   │   │   ├── FloatingAddButton.jsx
+│   │   │   ├── Modal.jsx
+│   │   │   ├── ReadMoreButton.jsx
+│   │   │   └── Spinner.jsx
+│   │
+│   │   ├── layout/
+│   │   │   ├── BottomNav.jsx
+│   │   │   ├── Header.jsx
+│   │   │   └── Layout.jsx
 │
-│   ├── Comment/
-│   │   ├── CommentItem.jsx
-│   │   ├── ReplyForm.jsx
-│   │   ├── CommentThread.jsx
-│   │   ├── TreeLineSVG.jsx
-│   │   ├── CommentActions.jsx
-│   │   ├── CommentOptionsMenu.jsx
-│   │   └── CommentHeader.jsx
+│   ├── hooks/
+│   │   ├── useAuth.js
+│   │   ├── useComments.js
+│   │   └── usePostStats.js
 │
-│   ├── Shared/
-│   │   ├── ReadMoreButton.jsx
-│   │   ├── Button.jsx
-│   │   ├── Modal.jsx
-│   │   ├── Spinner.jsx
-│   │   └── FloatingAddButton.jsx
-│
-│   ├── Auth/
-│   │   ├── LoginForm.jsx
-│   │   ├── SignupForm.jsx
-│   │   ├── ForgotPassword.jsx
-│   │   └── AuthWrapper.jsx
-│
-│   ├── layout/
-│   │   ├── Header.jsx
-│   │   ├── BottomNav.jsx
-│   │   └── Layout.jsx
+│   ├── pages/
+│   │   ├── Home.jsx
+│   │   ├── Login.jsx
+│   │   ├── NewPost.jsx
+│   │   ├── PhotoModal.jsx
+│   │   ├── PostDetails.jsx
+│   │   ├── Profile.jsx
+│   │   ├── Signup.jsx
+│   │   └── PostDetails.jsx
 │
 │   ├── routes/
 │   │   └── AppRoutes.jsx
 │
-│   ├── pages/
-│   │   ├── Home.jsx
-│   │   ├── NewPost.jsx
-│   │   ├── PostDetails.jsx
-│   │   ├── Profile.jsx
-│   │   ├── Login.jsx
-│   │   ├── Signup.jsx
-│   │   └── PhotoModal.jsx
-│
 │   ├── services/
-│   │   ├── supabaseClient.js
 │   │   ├── api.js
 │   │   ├── authService.js
-│   │   ├── userService.js
-│   │   ├── postService.js
 │   │   ├── commentService.js
 │   │   ├── likeService.js
-│   │   └── notificationService.js
+│   │   ├── notificationService.js
+│   │   ├── postService.js
+│   │   ├── supabaseClient.js
+│   │   └── userService.js
 │
-│   ├── hooks/
-│   │   ├── useAuth.js
-│   │   └── useComments.js
-│   │   └── usePostStats.js
+│   ├── styles/
+│   │   ├── GlobalStyle.js
+│   │   └── theme.js.js
 │
 │   ├── utils/
 │   │   └── helpers.js
-│
-│   ├── styles/
-│   │   └── GlobalStyle.js
 │
 │   ├── App.jsx
 │   └── main.jsx

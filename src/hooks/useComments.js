@@ -8,8 +8,10 @@ export function useAddComment(postId) {
     mutationFn: ({ content, parentId }) =>
       addComment(postId, content, parentId),
     onSuccess: () => {
+      toast.success("Comment added successfully");
       queryClient.invalidateQueries(["comments", postId]);
     },
+    onError: (err) => toast.error(err.message),
   });
 
   return mutation;
