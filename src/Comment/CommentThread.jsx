@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getComments, addComment } from "../services/commentService";
+import { useQuery } from "@tanstack/react-query";
+import { getComments } from "../services/commentService";
 import PostHeader from "../components/Post/PostHeader";
 import PostContent from "../components/Post/PostContent";
 import Spinner from "../Shared/Spinner";
@@ -10,6 +10,7 @@ import { timeAgo } from "../utils/helpers";
 import { MessageCircle, ThumbsUp, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { usePost } from "../hooks/usePost";
+import { useAddComment } from "../hooks/useComments";
 
 const Container = styled.div`
   max-width: 700px;
@@ -153,7 +154,7 @@ const CommentThread = () => {
   const postId = queryParams.get("postId");
   const navigate = useNavigate();
 
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyContent, setReplyContent] = useState("");
   const [openReplies, setOpenReplies] = useState({});
@@ -166,15 +167,17 @@ const CommentThread = () => {
     enabled: !!postId,
   });
 
-  const addCommentMutation = useMutation({
-    mutationFn: ({ content, parentId }) =>
-      addComment(postId, content, parentId),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["comments", postId]);
-      setReplyingTo(null);
-      setReplyContent("");
-    },
-  });
+  // const addCommentMutation = useMutation({
+  //   mutationFn: ({ content, parentId }) =>
+  //     addComment(postId, content, parentId),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(["comments", postId]);
+  //     setReplyingTo(null);
+  //     setReplyContent("");
+  //   },
+  // });
+
+  const { mutate: addCommentMutate } = useAddComment(postId);
 
   if (isLoading || loadingComments) return <Spinner />;
 
@@ -188,7 +191,9 @@ const CommentThread = () => {
   const handleReplySubmit = (e, parentId) => {
     e.preventDefault();
     if (!replyContent.trim()) return;
-    addCommentMutation.mutate({ content: replyContent, parentId });
+    // addCommentMutation.mutate({ content: replyContent, parentId });
+    addCommentMutate({ content: replyContent, parentId });
+    setReplyContent("");
   };
 
   const renderComment = (comment) => {

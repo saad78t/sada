@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { FaHeart, FaComment, FaShare } from "react-icons/fa";
 import { formatCount } from "../../utils/helpers";
-import { usePostStatus } from "../../hooks/usePostStats";
+import { useGetLikes } from "../../hooks/useLikes";
+import { useGetComments } from "../../hooks/useComments";
 
 const ActionsWrapper = styled.div`
   display: flex;
@@ -31,9 +32,8 @@ const ActionButton = styled.button`
 `;
 
 const PostActions = ({ postId, showCounts = true }) => {
-  const { likes, likesLoading, comments, commentsLoading } =
-    usePostStatus(postId);
-
+  const { comments, commentsLoading } = useGetComments(postId);
+  const { likes, likesLoading } = useGetLikes(postId);
   return (
     <ActionsWrapper onClick={(e) => e.stopPropagation()}>
       <ActionButton>

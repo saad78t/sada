@@ -1,5 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
-import { getPostById } from "../services/postService";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deletePost, getPostById } from "../services/postService";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export function usePost(postId) {
   const {
@@ -16,4 +18,22 @@ export function usePost(postId) {
     isLoading,
     error,
   };
+}
+
+export function useDeletePost() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { isLoading: isDeleting, mutate } = useMutation({
+    mutationFn: deletePost,
+    onSuccess: () => {
+      toast.success("Post successfully deleted 💥");
+      navigate("/");
+      queryClient.invalidateQueries({
+        queryKey: ["Posts"],
+      });
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  return { isDeleting, mutate };
 }

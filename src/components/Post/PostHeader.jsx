@@ -1,10 +1,7 @@
 import styled from "styled-components";
 import UserAvatar from "./UserAvatar";
-import { useEffect, useRef, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deletePost } from "../../services/postService";
-import { useLocation, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { useDeletePost } from "../../hooks/usePost";
+import { useToggleMenu } from "../../hooks/useToggleMenu";
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -74,46 +71,8 @@ const MenuItem = styled.button`
 `;
 
 const PostHeader = ({ username, createdAt, avatarUrl, postId }) => {
-  const [showMenu, setShowMenu] = useState(false);
-  const menuRef = useRef();
-
-  function toggleMenu() {
-    setShowMenu((menu) => !menu);
-  }
-
-  const handleClickOutside = (event) => {
-    if (menuRef.current && !menuRef.current.contains(event.target)) {
-      setShowMenu(false);
-    }
-  };
-
-  useEffect(() => {
-    if (showMenu) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showMenu]);
-
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-
-  const queryClient = useQueryClient();
-  const { isLoading: isDeleting, mutate } = useMutation({
-    mutationFn: deletePost,
-    onSuccess: () => {
-      toast.success("Post successfully deleted");
-      if (pathname === `/post/${postId}`) navigate(-1);
-      queryClient.invalidateQueries({
-        queryKey: ["Posts"],
-      });
-    },
-    onError: (err) => toast.error(err.message),
-  });
+  const { isDeleting, mutate } = useDeletePost(postId);
+  const { showMenu, toggleMenu, menuRef } = useToggleMenu();
 
   return (
     <HeaderWrapper onClick={(e) => e.stopPropagation()}>

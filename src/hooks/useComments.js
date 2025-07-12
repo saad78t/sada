@@ -1,5 +1,9 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addComment, deleteComment } from "../services/commentService";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  addComment,
+  deleteComment,
+  getComments,
+} from "../services/commentService";
 import toast from "react-hot-toast";
 
 export function useAddComment(postId) {
@@ -8,7 +12,7 @@ export function useAddComment(postId) {
     mutationFn: ({ content, parentId }) =>
       addComment(postId, content, parentId),
     onSuccess: () => {
-      toast.success("Comment added successfully");
+      toast.success("Comment added successfully from hook💥💥💥💥💥💥");
       queryClient.invalidateQueries(["comments", postId]);
     },
     onError: (err) => toast.error(err.message),
@@ -30,4 +34,13 @@ export function useDeleteComment() {
   });
 
   return mutation;
+}
+
+export function useGetComments(postId) {
+  const { data: comments = [], isLoading: commentsLoading } = useQuery({
+    queryKey: ["comments", postId],
+    queryFn: () => getComments(postId),
+    enabled: !!postId,
+  });
+  return { comments, commentsLoading };
 }

@@ -67,7 +67,9 @@ sada-app/
 │   ├── hooks/
 │   │   ├── useAuth.js
 │   │   ├── useComments.js
-│   │   └── usePostStats.js
+│   │   ├── useLikes.js
+│   │   ├── usePost.js
+│   │   └── useToggleMenu.js
 │
 │   ├── layout/
 │   │   ├── BottomNav.jsx

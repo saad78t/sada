@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { formatDistanceToNow } from "date-fns";
-import { usePostStatus } from "../../hooks/usePostStats";
+import { useGetLikes } from "../../hooks/useLikes";
 import { formatCount } from "../../utils/helpers";
+import { useGetComments } from "../../hooks/useComments";
 
 const MetaWrapper = styled.div`
   display: flex;
@@ -13,12 +14,15 @@ const MetaWrapper = styled.div`
 `;
 
 function PostDetailsMeta({ post }) {
-  const { likes, comments } = usePostStatus(post.id);
+  const { comments, commentsLoading } = useGetComments(post.id);
+  const { likes, likesLoading } = useGetLikes(post.id);
 
   return (
     <MetaWrapper>
-      <span>💙 {formatCount(likes.length)} Likes</span>
-      <span>💬 {formatCount(comments.length)} Comments</span>
+      <span>💙 {likesLoading ? "..." : formatCount(likes.length)} Likes</span>
+      <span>
+        💬 {commentsLoading ? "..." : formatCount(comments.length)} Comments
+      </span>
       <span>📅 {formatDistanceToNow(new Date(post.created_at))} ago</span>
     </MetaWrapper>
   );

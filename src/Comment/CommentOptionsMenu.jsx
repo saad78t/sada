@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { useToggleMenu } from "../hooks/useToggleMenu";
 
 const OptionsButton = styled.button`
   position: absolute;
@@ -42,30 +42,7 @@ const MenuItem = styled.button`
 `;
 
 function CommentOptionsMenu({ onDelete, top, optionTop }) {
-  const [showMenu, setShowMenu] = useState(false);
-  const menuRef = useRef();
-
-  function toggleMenu() {
-    setShowMenu((menu) => !menu);
-  }
-
-  const handleClickOutside = (event) => {
-    if (menuRef.current && !menuRef.current.contains(event.target)) {
-      setShowMenu(false);
-    }
-  };
-
-  useEffect(() => {
-    if (showMenu) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showMenu]);
+  const { showMenu, toggleMenu, menuRef } = useToggleMenu();
 
   return (
     <div ref={menuRef}>

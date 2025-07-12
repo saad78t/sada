@@ -1,8 +1,6 @@
 import { useParams } from "react-router-dom";
-import { getComments } from "../../services/commentService";
 import { useState } from "react";
-import { useDeleteComment } from "../../hooks/useComments";
-import { useQuery } from "@tanstack/react-query";
+import { useDeleteComment, useGetComments } from "../../hooks/useComments";
 import PostDetailsCommentsList from "./PostDetailsCommentsList";
 
 function PostDetailsComments({ post }) {
@@ -10,14 +8,11 @@ function PostDetailsComments({ post }) {
   const { mutate: deleteCommentMutate } = useDeleteComment();
   const { id } = useParams();
 
-  const { data: comments = [], isLoading: loadingComments } = useQuery({
-    queryKey: ["comments", id],
-    queryFn: () => getComments(id),
-  });
+  const { comments, commentsLoading } = useGetComments(id);
 
   return (
     <div style={{ marginTop: "2rem" }}>
-      {loadingComments ? (
+      {commentsLoading ? (
         <p>Loading comments...</p>
       ) : (
         <PostDetailsCommentsList
