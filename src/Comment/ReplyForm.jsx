@@ -1,107 +1,3 @@
-// import { useState } from "react";
-// import styled from "styled-components";
-// import UserAvatar from "../components/Post/UserAvatar";
-
-// const FormContainer = styled.div`
-//   display: flex;
-//   align-items: flex-start;
-//   gap: 0.75rem;
-//   margin-bottom: 1.5rem;
-// `;
-
-// const InputArea = styled.div`
-//   flex: 1;
-// `;
-
-// const Textarea = styled.textarea`
-//   width: 100%;
-//   resize: none;
-//   padding: 0.75rem;
-//   border-radius: 1rem;
-//   border: 1px solid ${({ theme }) => theme.borderColor};
-//   font-size: 1rem;
-//   font-family: inherit;
-//   background-color: ${({ theme }) => theme.inputBackground};
-//   color: ${({ theme }) => theme.textColor};
-//   direction: ${({ $lang }) => ($lang === "ar" ? "rtl" : "ltr")};
-//   text-align: ${({ $lang }) => ($lang === "ar" ? "right" : "left")};
-// `;
-
-// const ButtonRow = styled.div`
-//   display: flex;
-//   justify-content: flex-end;
-//   gap: 0.5rem;
-//   margin-top: 0.5rem;
-// `;
-
-// const SubmitButton = styled.button`
-//   background-color: #1d9bf0;
-//   color: white;
-//   border: none;
-//   padding: 0.4rem 1rem;
-//   border-radius: 9999px;
-//   font-weight: bold;
-//   cursor: pointer;
-//   font-size: 0.95rem;
-
-//   &:disabled {
-//     opacity: 0.5;
-//     cursor: not-allowed;
-//   }
-// `;
-
-// const CancelButton = styled.button`
-//   background: none;
-//   border: none;
-//   color: ${({ theme }) => theme.textColor};
-//   cursor: pointer;
-//   font-size: 0.9rem;
-// `;
-
-// const ReplyForm = ({
-//   onSubmit,
-//   onCancel,
-//   buttonText = "Reply",
-//   placeholder = "Write a reply...",
-//   className,
-// }) => {
-//   const [text, setText] = useState("");
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     if (!text.trim()) return;
-//     onSubmit(text.trim());
-//     setText("");
-//   };
-
-//   const lang = /[\u0600-\u06FF]/.test(text) ? "ar" : "en";
-
-//   return (
-//     <FormContainer className={className}>
-//       <UserAvatar username="you" profilePictureUrl={null} />
-//       <InputArea>
-//         <form onSubmit={handleSubmit}>
-//           <Textarea
-//             rows="3"
-//             value={text}
-//             onChange={(e) => setText(e.target.value)}
-//             placeholder={placeholder}
-//             $lang={lang}
-//           />
-//           <ButtonRow>
-//             {onCancel && <CancelButton onClick={onCancel}>Cancel</CancelButton>}
-//             <SubmitButton type="submit" disabled={!text.trim()}>
-//               {buttonText}
-//             </SubmitButton>
-//           </ButtonRow>
-//         </form>
-//       </InputArea>
-//     </FormContainer>
-//   );
-// };
-
-// export default ReplyForm;
-
 import { useState } from "react";
 import styled from "styled-components";
 import UserAvatar from "../components/Post/UserAvatar";
@@ -154,16 +50,26 @@ const SubmitButton = styled.button`
 `;
 
 const CancelButton = styled.button`
-  background: none;
+  background: #e0245e; // أحمر
+  color: white;
   border: none;
-  color: ${({ theme }) => theme.textColor};
+  padding: 0.6rem 0.8rem;
+  border-radius: 9999px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: #c81e50;
+  }
 `;
 
 const ReplyForm = ({
   onSubmit,
   onCancel,
+  cancelText,
   buttonText = "Reply",
   placeholder = "Write a reply...",
   className,
@@ -204,7 +110,11 @@ const ReplyForm = ({
             }}
           />
           <ButtonRow>
-            {onCancel && <CancelButton onClick={onCancel}>Cancel</CancelButton>}
+            {onCancel && (
+              <CancelButton type="button" onClick={onCancel}>
+                {cancelText}
+              </CancelButton>
+            )}
             <SubmitButton type="submit" disabled={!text.trim()}>
               {buttonText}
             </SubmitButton>

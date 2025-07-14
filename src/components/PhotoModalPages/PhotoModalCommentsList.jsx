@@ -1,14 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
 import CommentItem from "../../Comment/CommentItem";
-import { getComments } from "../../services/commentService";
 import PhotoModalReplyForm from "./PhotoModalReplyForm";
+import { useGetComments } from "../../hooks/useComments";
 
 function PhotoModalCommentsList({ post }) {
-  const { data: comments = [] } = useQuery({
-    queryKey: ["comments", post.id],
-    queryFn: () => getComments(post.id),
-    enabled: !!post.id,
-  });
+  const { comments } = useGetComments(post.id);
 
   return (
     <>

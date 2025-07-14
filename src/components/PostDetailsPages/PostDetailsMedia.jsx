@@ -4,7 +4,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import styled from "styled-components";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 import videojs from "video.js";
 import VideoJsPlayer from "../Post/VideoJsPlayer";
 
@@ -37,6 +37,7 @@ const StyledVideoWrapper = styled.div`
 `;
 
 const PostDetailsMedia = ({ mediaUrls = [] }) => {
+  console.log("PostDetailsMedia render");
   const playerRef = useRef([]);
 
   if (!mediaUrls?.length) return null;
@@ -124,4 +125,4 @@ const PostDetailsMedia = ({ mediaUrls = [] }) => {
   );
 };
 
-export default PostDetailsMedia;
+export default memo(PostDetailsMedia);

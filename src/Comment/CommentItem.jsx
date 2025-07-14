@@ -3,9 +3,6 @@ import styled from "styled-components";
 import UserAvatar from "../components/Post/UserAvatar";
 import ReplyForm from "./ReplyForm";
 import TreeLineSVG from "./TreeLineSVG";
-// import { addComment } from "../services/commentService";
-// import { useMutation, useQueryClient } from "@tanstack/react-query";
-// import toast from "react-hot-toast";
 import { IoSendSharp } from "react-icons/io5";
 import CommentActions from "./CommentActions";
 import CommentHeader from "./CommentHeader";
@@ -82,24 +79,11 @@ const CommentItem = ({ comment, comments, depth = 0 }) => {
   const [showNewTree, setShowNewTree] = useState(false);
   const [containerHeight, setContainerHeight] = useState(0);
   const [branchPositions, setBranchPositions] = useState([]);
-  // const queryClient = useQueryClient();
   const containerRef = useRef(null);
   const replyRefs = useRef([]);
 
   const replies = comments?.filter((c) => c.parent_comment_id === comment.id);
   const lang = /[\u0600-\u06FF]/.test(comment.content) ? "ar" : "en";
-
-  // const { mutate: addCommentMutate } = useMutation({
-  //   mutationFn: ({ postId, content, parentId }) =>
-  //     addComment(postId, content, parentId),
-  //   onSuccess: () => {
-  //     toast.success("Comment added successfully"),
-  //       queryClient.invalidateQueries(["comments", comment.id]);
-  //     setReplying(false);
-  //   },
-  //   onError: (err) => toast.error(err.message),
-  // });
-
   const { mutate: addCommentMutate } = useAddComment(comment.post_id);
 
   useEffect(() => {

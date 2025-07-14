@@ -27,7 +27,7 @@ export function useDeleteComment() {
   const mutation = useMutation({
     mutationFn: deleteComment,
     onSuccess: () => {
-      toast.success("Comment deleted successfully");
+      toast.success("Comment deleted successfully 💥");
       queryClient.invalidateQueries(["comments"]);
     },
     onError: (err) => toast.error(err.message),
