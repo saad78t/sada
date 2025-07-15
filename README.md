@@ -268,6 +268,7 @@ bash
 npm install
 npm run dev
 
+```
 
 app tree
 
@@ -400,7 +401,6 @@ sada-app/
 
 ```
 
-
 📬 Contact
 For inquiries, feedback, or collaboration:
 
@@ -411,4 +411,7 @@ For inquiries, feedback, or collaboration:
 📄 License
 This project is open-source for review purposes and private use.
 Commercial deployment is not permitted without explicit consent.
+
+```
+
 ```
