@@ -56,7 +56,7 @@ Below are some current screenshots from the application to showcase the UI and f
 
 ### Screenshot showing two posts:
 
-The first post contains an English text with a Read More option and no media.
+The first post contains an English text with a Read More option and no media.  
 The second post starts with Arabic text, includes four images, and displays a +2 badge to indicate two additional images beyond the visible four.
 
 ![post_media_plus_two](./screenshots/post_media_plus_two.png)
@@ -69,15 +69,11 @@ The second post starts with Arabic text, includes four images, and displays a +2
 
 This page appears after clicking on a post’s text. It displays:
 
-A Back button to return to the post feed.
-
-Full post details including user name, time of posting, and attached media (images or videos).
-
-Below the media section, it shows comment count and like count in a clean and distinct layout.
-
-A precise timestamp displaying the exact date and time of publication.
-
-Action buttons at the bottom to like the post or share it.
+- A Back button to return to the post feed.
+- Full post details including user name, time of posting, and attached media (images or videos).
+- Below the media section, it shows comment count and like count in a clean and distinct layout.
+- A precise timestamp displaying the exact date and time of publication.
+- Action buttons at the bottom to like the post or share it.
 
 ![post_details_page](./screenshots/post_details_page.png)
 
@@ -85,17 +81,12 @@ Action buttons at the bottom to like the post or share it.
 
 This section appears within the Post Details page and displays:
 
-A comment input field with a placeholder text “Write a comment…” allowing users to add a new top-level comment.
-
-A list of existing top-level comments only (no replies shown directly here).
-
-Each comment includes:
-
-A Like button.
-
-A visible count of how many replies are attached to it.
-
-The comments are arranged vertically in chronological order beneath the input field.
+- A comment input field with a placeholder text “Write a comment…” allowing users to add a new top-level comment.
+- A list of existing top-level comments only (no replies shown directly here).
+- Each comment includes:
+  - A Like button.
+  - A visible count of how many replies are attached to it.
+- The comments are arranged vertically in chronological order beneath the input field.
 
 ![post_details_page_2](./screenshots/post_details_page_2.png)
 
@@ -103,21 +94,14 @@ The comments are arranged vertically in chronological order beneath the input fi
 
 This page appears after clicking on a specific comment within the Post Details page to view its direct replies. It includes:
 
-The main post displayed at the top.
-
-The selected parent comment shown directly below the post, connected visually by a continuous vertical gray line linking the post author's avatar and the commenter's avatar.
-
-Below the parent comment, a list of direct replies to this comment is displayed.
-
-Each direct reply includes:
-
-The author's name.
-
-A like button.
-
-A count of replies attached to it.
-
-A menu button represented by three vertical dots (⋮) that opens a side menu with actions like Delete.
+- The main post displayed at the top.
+- The selected parent comment shown directly below the post, connected visually by a continuous vertical gray line linking the post author's avatar and the commenter's avatar.
+- Below the parent comment, a list of direct replies to this comment is displayed.
+- Each direct reply includes:
+  - The author's name.
+  - A like button.
+  - A count of replies attached to it.
+  - A menu button represented by three vertical dots (⋮) that opens a side menu with actions like Delete.
 
 ![comment_thread](./screenshots/comment_thread.png)
 
@@ -125,109 +109,67 @@ A menu button represented by three vertical dots (⋮) that opens a side menu wi
 
 This page displays nested replies inside a direct reply on the Comment Thread page:
 
-One of the direct replies has two nested replies.
-
-When clicking the comments icon on a direct reply, its nested replies appear indented beneath it to visually indicate a reply structure.
-
-Each nested reply displays:
-
-The author’s name.
-
-A like button.
-
-If there are additional replies on it, a counter showing the number of replies.
-
-When clicking on any reply text, a reply form appears containing:
-
-A text input placeholder.
-
-A cancel button to close the form.
-
-A send button shaped like a paper plane ✈️, which stays disabled until text is entered.
+- One of the direct replies has two nested replies.
+- When clicking the comments icon on a direct reply, its nested replies appear indented beneath it to visually indicate a reply structure.
+- Each nested reply displays:
+  - The author’s name.
+  - A like button.
+  - If there are additional replies on it, a counter showing the number of replies.
+- When clicking on any reply text, a reply form appears containing:
+  - A text input placeholder.
+  - A cancel button to close the form.
+  - A send button shaped like a paper plane ✈️, which stays disabled until text is entered.
 
 ![comment_thread_2](./screenshots/comment_thread_2.png)
 
 ### 📸 Photo Modal — Screenshot 1 (Post Details & Comments Layout)
 
-Displays media (images/videos) on the left side with navigation arrows (left arrow hidden on the first media item).
-
-A close (X) button at the top-left to exit the media viewer and return to the main post list.
-
-On the right side:
-
-Post text followed by action buttons (Comment, Like, Share) directly beneath the post content.
-
-A three-dots menu button for post actions like (Delete Post).
-
-Main comments section where:
-
-Each main comment displays:
-
-A visual connector line starting from the commenter's avatar, moving downward and bending horizontally towards the 'View X Replies' button indicating the relationship between the main comment and its replies.
-
-Below each comment:
-
-Like button
-
-Reply button
-
-Three-dots menu for comment actions (Delete Comment)
-
-No like or reply actions are inside the three-dots menu — they are visible as buttons directly below each comment.
-
-A fixed comment input field at the bottom of the comment section, containing:
-
-A text input placeholder (Write a comment...)
-
-A paper plane button for sending (disabled until text is entered)
+- Displays media (images/videos) on the left side with navigation arrows (left arrow hidden on the first media item).
+- A close (X) button at the top-left to exit the media viewer and return to the main post list.
+- On the right side:
+  - Post text followed by action buttons (Comment, Like, Share) directly beneath the post content.
+  - A three-dots menu button for post actions like (Delete Post).
+- Main comments section where:
+  - Each main comment displays:
+    - A visual connector line starting from the commenter's avatar, moving downward and bending horizontally towards the 'View X Replies' button indicating the relationship between the main comment and its replies.
+  - Below each comment:
+    - Like button
+    - Reply button
+    - Three-dots menu for comment actions (Delete Comment)
+  - No like or reply actions are inside the three-dots menu — they are visible as buttons directly below each comment.
+- A fixed comment input field at the bottom of the comment section, containing:
+  - A text input placeholder (Write a comment...)
+  - A paper plane button for sending (disabled until text is entered)
 
 ![browse_picture_comment_tree1](./screenshots/browse_picture_comment_tree1.png)
 
 ### 📸 Photo Modal — Screenshot 2 (Nested Replies View)
 
-After tapping ‘View X Replies’ under a main comment:
-
-A tree-like visual structure appears:
-
-Connector lines from the main commenter’s avatar to each direct reply
-
-Nested lines for replies to those replies, forming a clear hierarchical tree for the conversation.
-
-Each reply still displays:
-
-Like button
-
-Reply button
-
-Three-dots menu for actions like (Delete Comment)
-
-After tapping the Reply button on any comment:
-
-A reply form appears with:
-
-A placeholder text (Write a reply...)
-
-A paper plane send button (disabled until text is entered)
+- After tapping ‘View X Replies’ under a main comment:
+  - A tree-like visual structure appears:
+    - Connector lines from the main commenter’s avatar to each direct reply
+    - Nested lines for replies to those replies, forming a clear hierarchical tree for the conversation.
+- Each reply still displays:
+  - Like button
+  - Reply button
+  - Three-dots menu for actions like (Delete Comment)
+- After tapping the Reply button on any comment:
+  - A reply form appears with:
+    - A placeholder text (Write a reply...)
+    - A paper plane send button (disabled until text is entered)
 
 ![browse_picture_comment_tree2](./screenshots/browse_picture_comment_tree2.png)
 
 ### 📸 Photo Modal — Screenshot 3 (Video & Comments Tree)
 
-The media area now displays a video player instead of an image.
-
-Progress bar and custom seek controls:
-
-Tap on video edges to seek +10s / -10s
-
-Buttons for precise +10s / -10s jump
-
-Full comment tree is displayed:
-
-Visual lines connect main comments to their direct replies
-
-Nested replies (replies to replies) are connected with additional branches
-
-The existing interaction buttons and menus remain consistent as in previous screens.
+- The media area now displays a video player instead of an image.
+- Progress bar and custom seek controls:
+  - Tap on video edges to seek +10s / -10s
+  - Buttons for precise +10s / -10s jump
+- Full comment tree is displayed:
+  - Visual lines connect main comments to their direct replies
+  - Nested replies (replies to replies) are connected with additional branches
+- The existing interaction buttons and menus remain consistent as in previous screens.
 
 ![browse_picture_comment_tree3](./screenshots/browse_picture_comment_tree3.png)
 
