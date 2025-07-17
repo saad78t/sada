@@ -41,7 +41,6 @@ const PostDetails = () => {
           <PostDetailsMeta post={post} />
         </div>
 
-        {/* أكشن مع خط فوق وتحت */}
         <div
           style={{
             marginTop: "0.5rem",

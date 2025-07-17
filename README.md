@@ -218,7 +218,6 @@ app tree
 
 ```
 sada-app/
-│
 ├── src/
 │   ├── assets/
 │
@@ -236,6 +235,12 @@ sada-app/
 │   │   ├── CommentThread.jsx
 │   │   ├── ReplyForm.jsx
 │   │   ├── TreeLineSVG.jsx
+│   │   ├── CommentItemParts/
+│   │   │   ├── CommentContainer.jsx
+│   │   │   ├── ReplyFormStyledWrapper.jsx
+│   │   │   ├── ReplyViewButton.jsx
+│   │   │   ├── RepliesContainer.jsx
+│   │   │   └── replyTreeLayout.js
 │   │   └── CommentThreadPages/
 │   │       ├── BackButton.jsx
 │   │       ├── CommentActions.jsx
@@ -286,6 +291,7 @@ sada-app/
 │   │   │   ├── PostDetailsCommentsList.jsx
 │   │   │   ├── PostDetailsContent.jsx
 │   │   │   ├── PostDetailsHeader.jsx
+│   │   │   ├── PostDetailsMedia.jsx
 │   │   │   └── PostDetailsMeta.jsx
 │
 │   ├── hooks/
