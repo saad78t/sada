@@ -58,3 +58,11 @@ export function timeAgo(date) {
   const years = Math.floor(days / 365);
   return `${years}y`;
 }
+
+export const resetVideos = (videos) => {
+  videos.forEach((v) => {
+    v.pause();
+    v.onended = null;
+    v.currentTime = 0;
+  });
+};

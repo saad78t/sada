@@ -22,16 +22,30 @@ const CommentText = styled.p`
   direction: ${({ $lang }) => ($lang === "ar" ? "rtl" : "ltr")};
 `;
 
-const CommentItem = ({ comment, comments, depth = 0 }) => {
+const isThreadFullyDeleted = (comment, comments) => {
+  if (!comment.is_deleted) return false;
+
+  const replies = comments?.filter((c) => c.parent_comment_id === comment.id);
+  if (!replies || replies.length === 0) return true;
+
+  return replies.every((reply) => isThreadFullyDeleted(reply, comments));
+};
+
+const CommentItem = ({ comment, comments, repliesMap, depth = 0 }) => {
   const [showReplies, setShowReplies] = useState(false);
   const [replying, setReplying] = useState(false);
-  // const [showNewTree, setShowNewTree] = useState(false);
   const [containerHeight, setContainerHeight] = useState(0);
   const [branchPositions, setBranchPositions] = useState([]);
   const containerRef = useRef(null);
   const replyRefs = useRef([]);
 
+  /*
+  *Used a Map to build repliesMap once instead of filtering for each comment — improves performance for large comment trees and keeps parent-child relationships organized.
+  *Map was used in the parent PhotoModalCommentsList component instead of this line to avoid duplication every time we get replies using the filter function.
   const replies = comments?.filter((c) => c.parent_comment_id === comment.id);
+  */
+  const replies = repliesMap.get(comment.id) || [];
+
   const lang = /[\u0600-\u06FF]/.test(comment.content) ? "ar" : "en";
   const { mutate: addCommentMutate } = useAddComment(comment.post_id);
 
@@ -44,13 +58,24 @@ const CommentItem = ({ comment, comments, depth = 0 }) => {
     setBranchPositions,
   });
 
+  // خزنت نتيجة الفنكشن لتجنب حسابها أكثر من مرة وتحسين الأداء والوضوح.
+  const isFullyDeleted = isThreadFullyDeleted(comment, comments);
+
+  if (isFullyDeleted) {
+    return null;
+  }
+
+  // فلترة الردود لعرض الردود الغير محذوفة أو اللي عندها ردود غير محذوفة
+  const visibleReplies = replies?.filter(
+    (reply) => !isThreadFullyDeleted(reply, comments)
+  );
+
   return (
     <div>
       <CommentContainer ref={containerRef}>
-        {replies?.length > 0 && (
+        {visibleReplies?.length > 0 && (
           <TreeLineSVG
             height={containerHeight - 55}
-            // showNewTree={showNewTree}
             showNewTree={showReplies}
             branchPositions={branchPositions}
           />
@@ -61,11 +86,18 @@ const CommentItem = ({ comment, comments, depth = 0 }) => {
           profilePictureUrl={comment.users?.profile_picture_url}
           style={{ position: "relative", zIndex: 1 }}
         />
-
         <CommentBody>
-          <CommentHeader comment={comment} />
-          <CommentText $lang={lang}>{comment.content}</CommentText>
-          <CommentActions replying={replying} setReplying={setReplying} />
+          {comment.is_deleted ? (
+            <CommentText style={{ fontStyle: "italic" }}>
+              deleted comment 🗑️
+            </CommentText>
+          ) : (
+            <>
+              <CommentHeader comment={comment} />
+              <CommentText $lang={lang}>{comment.content}</CommentText>
+              <CommentActions replying={replying} setReplying={setReplying} />
+            </>
+          )}
 
           {replying && (
             <ReplyFormStyled
@@ -80,7 +112,7 @@ const CommentItem = ({ comment, comments, depth = 0 }) => {
             />
           )}
 
-          {replies?.length > 0 && (
+          {visibleReplies?.length > 0 && (
             <ReplyViewButton
               onClick={() => {
                 setShowReplies(!showReplies);
@@ -89,20 +121,21 @@ const CommentItem = ({ comment, comments, depth = 0 }) => {
             >
               {showReplies
                 ? "Hide replies"
-                : `View all ${replies.length} replies`}
+                : `View all ${visibleReplies.length} replies`}
             </ReplyViewButton>
           )}
         </CommentBody>
       </CommentContainer>
 
-      {showReplies && replies?.length > 0 && (
+      {showReplies && visibleReplies?.length > 0 && (
         <RepliesContainer>
-          {replies.map((reply, index) => (
+          {visibleReplies.map((reply, index) => (
             <div key={reply.id} ref={(el) => (replyRefs.current[index] = el)}>
               <CommentItem
                 comment={reply}
                 comments={comments}
                 depth={depth + 1}
+                repliesMap={repliesMap}
               />
             </div>
           ))}
