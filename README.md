@@ -293,11 +293,18 @@ sada-app/
 │   │   │   ├── PostDetailsHeader.jsx
 │   │   │   ├── PostDetailsMedia.jsx
 │   │   │   └── PostDetailsMeta.jsx
+│   │   │
+│   │   ├── newpostpages/
+│   │   │   ├── MediaPreviewList.jsx
+│   │   │   ├── NewPostForm.jsx
+│   │   │   ├── styles.jsx
+│   │   │   └── UploadButton.js
 │
 │   ├── hooks/
 │   │   ├── useAuth.js
 │   │   ├── useComments.js
 │   │   ├── useLikes.js
+│   │   ├── useMediaPreview.js
 │   │   ├── usePost.js
 │   │   └── useToggleMenu.js
 │

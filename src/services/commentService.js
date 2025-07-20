@@ -48,7 +48,7 @@ export const addComment = async (postId, content, parentId = null) => {
   return data;
 };
 
-//This is the old deletion method that used to delete the comment from the database. We will keep it as a reference.
+//This is the old deletion method that used to delete the comment from the database. I will keep it as a reference.
 // export const deleteComment = async (commentId) => {
 //   const { error } = await supabase
 //     .from("comments")
