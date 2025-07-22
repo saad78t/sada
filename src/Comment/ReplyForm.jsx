@@ -1,7 +1,7 @@
-import { useState } from "react";
 import styled from "styled-components";
 import UserAvatar from "../components/Post/UserAvatar";
 import TextareaAutosize from "react-textarea-autosize";
+import { useForm } from "react-hook-form";
 
 const FormContainer = styled.div`
   display: flex;
@@ -50,7 +50,7 @@ const SubmitButton = styled.button`
 `;
 
 const CancelButton = styled.button`
-  background: #e0245e; // أحمر
+  background: #e0245e;
   color: white;
   border: none;
   padding: 0.6rem 0.8rem;
@@ -74,14 +74,16 @@ const ReplyForm = ({
   placeholder = "Write a reply...",
   className,
 }) => {
-  const [text, setText] = useState("");
+  const { register, handleSubmit, reset, watch } = useForm();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const onFormSubmit = ({ text }) => {
     if (!text.trim()) return;
     onSubmit(text.trim());
-    setText("");
+    reset();
   };
+
+  const text = watch("text");
+  const trimmedText = (text || "").trim();
 
   const lang = /[\u0600-\u06FF]/.test(text) ? "ar" : "en";
 
@@ -89,18 +91,9 @@ const ReplyForm = ({
     <FormContainer className={className}>
       <UserAvatar username="you" profilePictureUrl={null} />
       <InputArea>
-        <form onSubmit={handleSubmit}>
-          {/* <Textarea
-            rows="3"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder={placeholder}
-            $lang={lang}
-          /> */}
-
+        <form onSubmit={handleSubmit(onFormSubmit)}>
           <Textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
+            {...register("text")}
             minRows={1}
             placeholder={placeholder}
             $lang={lang}
@@ -115,7 +108,7 @@ const ReplyForm = ({
                 {cancelText}
               </CancelButton>
             )}
-            <SubmitButton type="submit" disabled={!text.trim()}>
+            <SubmitButton type="submit" disabled={!trimmedText}>
               {buttonText}
             </SubmitButton>
           </ButtonRow>

@@ -7,6 +7,7 @@ function useReplyTreeLayout({
   setBranchPositions,
   replying,
   setContainerHeight,
+  visibleReplies,
 }) {
   useEffect(() => {
     let animationFrameId;
@@ -53,6 +54,7 @@ function useReplyTreeLayout({
     replyRefs,
     setContainerHeight,
     setBranchPositions,
+    visibleReplies,
   ]);
 }
 

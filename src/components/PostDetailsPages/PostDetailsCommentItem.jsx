@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { useAddComment } from "../../hooks/useComments";
+// import { useAddComment } from "../../hooks/useComments";
 import { MessageCircle, ThumbsUp } from "lucide-react";
 import styled from "styled-components";
 import UserAvatar from "../Post/UserAvatar";
 import CommentOptionsMenu from "../../Comment/CommentOptionsMenu";
-import ReplyForm from "../../Comment/ReplyForm";
+// import ReplyForm from "../../Comment/ReplyForm";
 
 const CommentContainer = styled.div`
   display: flex;
@@ -76,12 +76,12 @@ function PostDetailsCommentItem({
   post,
   comment,
   allComments,
-  expandedComments,
+  // expandedComments,
   setExpandedComments,
   deleteCommentMutate,
 }) {
   const navigate = useNavigate();
-  const addCommentMutation = useAddComment(post?.id);
+  // const addCommentMutation = useAddComment(post?.id);
 
   const toggleReplies = (commentId) => {
     setExpandedComments((prev) => ({
@@ -95,7 +95,7 @@ function PostDetailsCommentItem({
   };
 
   const replies = allComments.filter((c) => c.parent_comment_id === comment.id);
-  const showReplies = expandedComments[comment.id];
+  // const showReplies = expandedComments[comment.id];
 
   return (
     <CommentContainer
@@ -143,7 +143,7 @@ function PostDetailsCommentItem({
           </ActionButton>
         </CommentActions>
 
-        {showReplies && (
+        {/* {showReplies && (
           <>
             {replies.map((reply) => (
               <PostDetailsCommentItem
@@ -158,8 +158,8 @@ function PostDetailsCommentItem({
             ))}
 
             <ReplyForm
-              onSubmit={(content, commentId) =>
-                addCommentMutation.mutate({ content, commentId })
+              onSubmit={(content) =>
+                addCommentMutation.mutate({ content, parentId: comment.id })
               }
               onCancel={() =>
                 setExpandedComments((prev) => ({
@@ -169,7 +169,7 @@ function PostDetailsCommentItem({
               }
             />
           </>
-        )}
+        )} */}
       </CommentContent>
     </CommentContainer>
   );

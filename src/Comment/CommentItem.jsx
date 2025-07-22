@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import styled from "styled-components";
 import UserAvatar from "../components/Post/UserAvatar";
 import TreeLineSVG from "./TreeLineSVG";
@@ -20,6 +20,8 @@ const CommentText = styled.p`
   margin: 4px 0;
   line-height: 1.4;
   direction: ${({ $lang }) => ($lang === "ar" ? "rtl" : "ltr")};
+  word-break: break-word;
+  overflow-wrap: anywhere;
 `;
 
 // Returns true only if the comment is deleted AND all of its replies (and their nested replies) are also deleted.
@@ -46,33 +48,33 @@ const CommentItem = ({ comment, comments, repliesMap, depth = 0 }) => {
   const replies = comments?.filter((c) => c.parent_comment_id === comment.id);
   */
 
-  //Give me all replies to this current comment (comment.id). If there are no replies (i.e. undefined), return an empty array instead of returning undefined and ruining the job.
-  const replies = repliesMap.get(comment.id) || [];
-
   const lang = /[\u0600-\u06FF]/.test(comment.content) ? "ar" : "en";
   const { mutate: addCommentMutate } = useAddComment(comment.post_id);
+
+  // خزنت نتيجة الفنكشن لتجنب حسابها أكثر من مرة وتحسين الأداء والوضوح.
+  const isFullyDeleted = isThreadFullyDeleted(comment, repliesMap);
+
+  // فلترة الردود لعرض الردود الغير محذوفة أو اللي عندها ردود غير محذوفة
+  const visibleReplies = useMemo(() => {
+    //Give me all replies to this current comment (comment.id). If there are no replies (i.e. undefined), return an empty array instead of returning undefined and ruining the job.
+    const replies = repliesMap.get(comment.id) || [];
+    return replies.filter((reply) => !isThreadFullyDeleted(reply, repliesMap));
+  }, [comment.id, repliesMap]);
 
   useReplyTreeLayout({
     showReplies,
     replyRefs,
     containerRef,
     replying,
+    visibleReplies,
     setContainerHeight,
     setBranchPositions,
   });
-
-  // خزنت نتيجة الفنكشن لتجنب حسابها أكثر من مرة وتحسين الأداء والوضوح.
-  const isFullyDeleted = isThreadFullyDeleted(comment, repliesMap);
 
   // Returning `null` from a React component means nothing will be rendered to the DOM — it's as if the component doesn't exist visually.
   if (isFullyDeleted) {
     return null;
   }
-
-  // فلترة الردود لعرض الردود الغير محذوفة أو اللي عندها ردود غير محذوفة
-  const visibleReplies = replies?.filter(
-    (reply) => !isThreadFullyDeleted(reply, repliesMap)
-  );
 
   return (
     <div>
@@ -105,13 +107,14 @@ const CommentItem = ({ comment, comments, repliesMap, depth = 0 }) => {
 
           {replying && (
             <ReplyFormStyled
-              onSubmit={(content) =>
+              onSubmit={(content) => {
                 addCommentMutate({
                   postId: comment.post_id,
                   content,
                   parentId: comment.id,
-                })
-              }
+                });
+                setReplying(false);
+              }}
               buttonText={<IoSendSharp />}
             />
           )}
@@ -124,6 +127,8 @@ const CommentItem = ({ comment, comments, repliesMap, depth = 0 }) => {
             >
               {showReplies
                 ? "Hide replies"
+                : visibleReplies.length === 1
+                ? "View 1 reply"
                 : `View all ${visibleReplies.length} replies`}
             </ReplyViewButton>
           )}
