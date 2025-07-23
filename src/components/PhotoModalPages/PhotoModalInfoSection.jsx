@@ -13,12 +13,16 @@ const InfoSection = styled.div`
   padding-bottom: 100px; /* مسافة تكفي للفورم الثابتة أسفل */
 `;
 
-function PhotoModalInfoSection({ post }) {
+function PhotoModalInfoSection({ post, likesMap, likesLoading }) {
   return (
     <InfoSection onClick={(e) => e.stopPropagation()}>
       <PhotoModalPostHeader post={post} />
       <PhotoModalPostContent post={post} />
-      <PhotoModalPostActions post={post} />
+      <PhotoModalPostActions
+        post={post}
+        likesMap={likesMap}
+        likesLoading={likesLoading}
+      />
       <PhotoModalCommentsList post={post} />
     </InfoSection>
   );

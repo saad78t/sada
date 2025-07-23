@@ -3,7 +3,8 @@ import PostItem from "../components/Post/PostItem";
 import Spinner from "../Shared/Spinner";
 import { useQuery } from "@tanstack/react-query";
 import { getPosts } from "../services/postService";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import { useGetLikesMap } from "../hooks/useGetLikesMap";
 
 const HomeContainer = styled.div`
   max-width: 600px;
@@ -43,6 +44,9 @@ const Home = () => {
     queryFn: getPosts,
   });
 
+  const postIds = useMemo(() => posts?.map((p) => p.id), [posts]);
+  const { likesMap, isLoading: likesLoading } = useGetLikesMap("post", postIds);
+
   if (error) {
     console.error(error);
     throw new Error("posts can't be loaded");
@@ -67,7 +71,14 @@ const Home = () => {
         )}
 
         {!isLoading &&
-          posts?.map((post) => <PostItem post={post} key={post.id} />)}
+          posts?.map((post) => (
+            <PostItem
+              post={post}
+              key={post.id}
+              likesMap={likesMap}
+              likesLoading={likesLoading}
+            />
+          ))}
       </PostList>
     </HomeContainer>
   );

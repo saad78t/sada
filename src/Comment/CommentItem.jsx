@@ -101,7 +101,12 @@ const CommentItem = ({ comment, comments, repliesMap, depth = 0 }) => {
             <>
               <CommentHeader comment={comment} />
               <CommentText $lang={lang}>{comment.content}</CommentText>
-              <CommentActions replying={replying} setReplying={setReplying} />
+              <CommentActions
+                comment={comment}
+                comments={comments}
+                replying={replying}
+                setReplying={setReplying}
+              />
             </>
           )}
 

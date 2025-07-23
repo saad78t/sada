@@ -1,7 +1,13 @@
 import PostActions from "../Post/PostActions";
 
-function PhotoModalPostActions({ post }) {
-  return <PostActions postId={post.id} />;
+function PhotoModalPostActions({ post, likesMap, likesLoading }) {
+  return (
+    <PostActions
+      postId={post.id}
+      likesMap={likesMap}
+      likesLoading={likesLoading}
+    />
+  );
 }
 
 export default PhotoModalPostActions;

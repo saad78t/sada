@@ -37,7 +37,7 @@ const StyledVideoWrapper = styled.div`
 `;
 
 const PostDetailsMedia = ({ mediaUrls = [] }) => {
-  console.log("PostDetailsMedia render");
+  // console.log("PostDetailsMedia render");
   const playerRef = useRef([]);
 
   if (!mediaUrls?.length) return null;

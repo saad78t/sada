@@ -17,6 +17,7 @@ export async function getLikes(postId) {
 }
    */
 
+/*
 export async function getLikes(postId) {
   let allLikes = [];
   let from = 0;
@@ -40,4 +41,68 @@ export async function getLikes(postId) {
   }
 
   return allLikes;
+}
+*/
+
+/* export async function getLikes(targetId, targetType) {
+  let allLikes = [];
+  let from = 0;
+  const batchSize = 1000;
+
+  while (true) {
+    const { data, error } = await supabase
+      .from("likes")
+      .select("*")
+      .eq("target_id", targetId)
+      .eq("target_type", targetType)
+      .range(from, from + batchSize - 1);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    allLikes = allLikes.concat(data);
+
+    if (data.length < batchSize) break;
+    from += batchSize;
+  }
+
+  return allLikes;
+} */
+
+export async function getLikesMap(targetType, targetIds) {
+  let allLikes = [];
+  let from = 0;
+  const batchSize = 1000;
+
+  while (true) {
+    const { data, error } = await supabase
+      .from("likes")
+      .select("*")
+      .in("target_id", targetIds)
+      .eq("target_type", targetType)
+      .range(from, from + batchSize - 1);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    allLikes = allLikes.concat(data);
+
+    if (data.length < batchSize) break;
+    from += batchSize;
+  }
+
+  // نرتبها على شكل Map: target_id -> [likes]
+  const map = new Map();
+  for (const like of allLikes) {
+    if (!map.has(like.target_id)) {
+      map.set(like.target_id, []);
+    }
+
+    map.get(like.target_id).push(like);
+  }
+  console.log("TARGET ID AT LIKESERVICES FILE", map);
+
+  return map;
 }

@@ -4,6 +4,10 @@ import { MessageCircle, ThumbsUp } from "lucide-react";
 import styled from "styled-components";
 import UserAvatar from "../Post/UserAvatar";
 import CommentOptionsMenu from "../../Comment/CommentOptionsMenu";
+import { formatCount } from "../../utils/helpers";
+// import { useGetLikes } from "../../hooks/useLikes";
+import { useGetLikesMap } from "../../hooks/useGetLikesMap";
+import { useMemo } from "react";
 // import ReplyForm from "../../Comment/ReplyForm";
 
 const CommentContainer = styled.div`
@@ -82,6 +86,14 @@ function PostDetailsCommentItem({
 }) {
   const navigate = useNavigate();
   // const addCommentMutation = useAddComment(post?.id);
+  // const { likes, likesLoading } = useGetLikes(comment.id, "comment");
+
+  const commentIds = useMemo(() => allComments.map((c) => c.id), [allComments]);
+  const { likesMap, isLoading: likesLoading } = useGetLikesMap(
+    "comment",
+    commentIds
+  );
+  const likes = likesMap.get(comment.id) || [];
 
   const toggleReplies = (commentId) => {
     setExpandedComments((prev) => ({
@@ -136,10 +148,12 @@ function PostDetailsCommentItem({
 
         <CommentActions>
           <ActionButton onClick={() => toggleReplies(comment.id)}>
-            <MessageCircle size={16} /> {replies.length}
+            <MessageCircle size={16} />{" "}
+            {replies.length ? formatCount(replies.length) : null}
           </ActionButton>
           <ActionButton>
-            <ThumbsUp size={16} /> Like
+            <ThumbsUp size={16} />{" "}
+            {likesLoading ? "..." : likes.length > 0 ? likes.length : null}
           </ActionButton>
         </CommentActions>
 

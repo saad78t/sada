@@ -1,11 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+/* import { useQuery } from "@tanstack/react-query";
 import { getLikes } from "../services/likeService";
 
-export function useGetLikes(postId) {
+export function useGetLikes(targetId, targetType) {
   const { data: likes = [], isLoading: likesLoading } = useQuery({
-    queryKey: ["likes", postId],
-    queryFn: () => getLikes(postId),
-    enabled: !!postId,
+    queryKey: ["likes", targetId, targetType],
+    queryFn: () => getLikes(targetId, targetType),
+    enabled: !!targetId && !!targetType,
   });
 
   return {
@@ -13,3 +13,4 @@ export function useGetLikes(postId) {
     likesLoading,
   };
 }
+ */

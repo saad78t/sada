@@ -27,7 +27,7 @@ const PostContentWrapper = styled.div`
   position: relative;
 `;
 
-const PostItem = ({ post }) => {
+const PostItem = ({ post, likesMap, likesLoading }) => {
   const navigate = useNavigate();
   const { content, media_urls, id } = post;
   const location = useLocation();
@@ -52,7 +52,11 @@ const PostItem = ({ post }) => {
 
         <PostContent content={content} mediaUrls={media_urls} postId={id} />
 
-        <PostActions postId={id} />
+        <PostActions
+          postId={id}
+          likesMap={likesMap}
+          likesLoading={likesLoading}
+        />
       </PostContentWrapper>
     </PostItemWrapper>
   );

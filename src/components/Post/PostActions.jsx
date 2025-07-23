@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { FaHeart, FaComment, FaShare } from "react-icons/fa";
 import { formatCount } from "../../utils/helpers";
-import { useGetLikes } from "../../hooks/useLikes";
+// import { useGetLikes } from "../../hooks/useLikes";
 import { useGetComments } from "../../hooks/useComments";
 
 const ActionsWrapper = styled.div`
@@ -31,18 +31,34 @@ const ActionButton = styled.button`
   }
 `;
 
-const PostActions = ({ postId, showCounts = true }) => {
+const PostActions = ({ postId, showCounts = true, likesMap, likesLoading }) => {
   const { comments, commentsLoading } = useGetComments(postId);
-  const { likes, likesLoading } = useGetLikes(postId);
+  // const { likes, likesLoading } = useGetLikes(postId, "post");
+
+  likesLoading && !likesMap;
+  const likes = likesMap?.get?.(postId) || [];
+
+  // console.log("POST ID RECEIVED:", postId);
+
   return (
     <ActionsWrapper onClick={(e) => e.stopPropagation()}>
       <ActionButton>
         <FaHeart />{" "}
-        {showCounts && (likesLoading ? "..." : formatCount(likes.length))}
+        {showCounts &&
+          (likesLoading
+            ? "..."
+            : likes.length > 0
+            ? formatCount(likes.length)
+            : null)}
       </ActionButton>
       <ActionButton>
         <FaComment />{" "}
-        {showCounts && (commentsLoading ? "..." : formatCount(comments.length))}
+        {showCounts &&
+          (commentsLoading
+            ? "..."
+            : comments.length
+            ? formatCount(comments.length)
+            : null)}
       </ActionButton>
       <ActionButton>
         <FaShare />
