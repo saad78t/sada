@@ -25,6 +25,7 @@ function CommentActions({
   setReplyingTo,
   setOpenReplies,
   nestedReplies,
+  hideLikeButton = false,
 }) {
   const isMainComment = comment.id === Number(commentId);
 
@@ -43,9 +44,7 @@ function CommentActions({
         <MessageCircle size={16} />
         {nestedReplies.length > 0 && <span>{nestedReplies.length}</span>}
       </ActionButton>
-      <ActionButton>
-        <ThumbsUp size={16} />
-      </ActionButton>
+      <ActionButton>{!hideLikeButton && <ThumbsUp size={16} />}</ActionButton>
     </CommentAction>
   );
 }

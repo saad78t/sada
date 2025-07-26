@@ -66,3 +66,32 @@ export const resetVideos = (videos) => {
     v.currentTime = 0;
   });
 };
+
+/*
+//الشكل القديم والاصلي لحذف التعليق اذاك لم يكن لديه ردود وسيتم استخدام النسخه ادناه لكي يتم العمل بطرق مختلفه اذا كانت ماب او مصفوفه
+const isThreadFullyDeleted = (comment, comments) => {
+  if (!comment.is_deleted) return false;
+
+  const replies = comments?.filter((c) => c.parent_comment_id === comment.id);
+  if (!replies || replies.length === 0) return true;
+
+  return replies.every((reply) => isThreadFullyDeleted(reply, comments));
+};
+
+*/
+
+export const isThreadFullyDeleted = (comment, repliesSource) => {
+  if (!comment?.is_deleted) return false;
+
+  let replies = [];
+
+  if (repliesSource instanceof Map) {
+    replies = repliesSource.get(comment.id) || [];
+  } else if (Array.isArray(repliesSource)) {
+    replies = repliesSource.filter((c) => c.parent_comment_id === comment.id);
+  }
+
+  if (!replies || replies.length === 0) return true;
+
+  return replies.every((reply) => isThreadFullyDeleted(reply, repliesSource));
+};

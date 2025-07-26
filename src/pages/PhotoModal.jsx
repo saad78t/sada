@@ -37,9 +37,7 @@ import PhotoModalInfoSection from "../components/PhotoModalPages/PhotoModalInfoS
 import { useParams } from "react-router-dom";
 import Spinner from "../Shared/Spinner";
 import { usePost } from "../hooks/usePost";
-import { useMemo } from "react";
-import { useGetLikesMap } from "../hooks/useGetLikesMap";
-import { useQueryClient } from "@tanstack/react-query";
+import { useCachedPostLikes } from "../hooks/useCachedPostLikes";
 
 const PhotoModal = () => {
   const { id } = useParams();
@@ -48,6 +46,7 @@ const PhotoModal = () => {
   // const postIds = useMemo(() => [Number(id)], [id]);
   // const { likesMap, isLoading: likesLoading } = useGetLikesMap("post", postIds);
 
+  /*
   const queryClient = useQueryClient();
 
   // نحاول نجيب اللايكات من الكاش العام (إذا المستخدم إجه من الصفحة الرئيسية)
@@ -73,6 +72,8 @@ const PhotoModal = () => {
     }
     return likesMap;
   }, [cachedLikesForThisPost, likesMap, id]);
+*/
+  const { finalLikesMap, likesLoading } = useCachedPostLikes(id);
 
   if (isLoading) return <Spinner />;
   if (error || !post) return <p>Error loading post</p>;
@@ -83,7 +84,7 @@ const PhotoModal = () => {
       <PhotoModalInfoSection
         post={post}
         likesMap={finalLikesMap}
-        likesLoading={!cachedLikesForThisPost && likesLoading}
+        likesLoading={likesLoading}
       />
     </PhotoModalOverlay>
   );

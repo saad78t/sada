@@ -240,14 +240,17 @@ sada-app/
 │   │   │   ├── ReplyFormStyledWrapper.jsx
 │   │   │   ├── ReplyViewButton.jsx
 │   │   │   ├── RepliesContainer.jsx
-│   │   │   └── replyTreeLayout.js
+│   │   │   └── useReplyTreeLayout.js
 │   │   └── CommentThreadPages/
 │   │       ├── BackButton.jsx
 │   │       ├── CommentActions.jsx
 │   │       ├── CommentContentText.jsx
 │   │       ├── CommentHeader.jsx
+│   │       ├── CommentThreadStyles.js
+│   │       ├── DeletedComment.jsx
 │   │       ├── RepliesList.jsx
 │   │       ├── ReplyFormStyled.jsx
+│   │       ├── RplyModal.jsx
 │   │       └── VerticalLineWrapper.jsx
 │
 │   ├── components/
@@ -302,10 +305,14 @@ sada-app/
 │
 │   ├── hooks/
 │   │   ├── useAuth.js
+│   │   ├── useCachedPostLikes.js
+│   │   ├── useCommentPagination.js
 │   │   ├── useComments.js
+│   │   ├── useGetLikesMap.js
 │   │   ├── useLikes.js
 │   │   ├── useMediaPreview.js
 │   │   ├── usePost.js
+│   │   ├── useRepliesMap.js
 │   │   └── useToggleMenu.js
 │
 │   ├── layout/

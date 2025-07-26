@@ -3,6 +3,7 @@ import { FaHeart, FaComment, FaShare } from "react-icons/fa";
 import { formatCount } from "../../utils/helpers";
 // import { useGetLikes } from "../../hooks/useLikes";
 import { useGetComments } from "../../hooks/useComments";
+import { useMemo } from "react";
 
 const ActionsWrapper = styled.div`
   display: flex;
@@ -35,10 +36,12 @@ const PostActions = ({ postId, showCounts = true, likesMap, likesLoading }) => {
   const { comments, commentsLoading } = useGetComments(postId);
   // const { likes, likesLoading } = useGetLikes(postId, "post");
 
-  likesLoading && !likesMap;
   const likes = likesMap?.get?.(postId) || [];
 
-  // console.log("POST ID RECEIVED:", postId);
+  const visibleComments = useMemo(
+    () => comments.filter((c) => !c.is_deleted),
+    [comments]
+  );
 
   return (
     <ActionsWrapper onClick={(e) => e.stopPropagation()}>
@@ -56,8 +59,8 @@ const PostActions = ({ postId, showCounts = true, likesMap, likesLoading }) => {
         {showCounts &&
           (commentsLoading
             ? "..."
-            : comments.length
-            ? formatCount(comments.length)
+            : visibleComments.length
+            ? formatCount(visibleComments.length)
             : null)}
       </ActionButton>
       <ActionButton>

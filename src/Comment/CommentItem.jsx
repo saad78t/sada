@@ -11,6 +11,7 @@ import ReplyFormStyled from "./CommentItemParts/ReplyFormStyledWrapper";
 import ReplyViewButton from "./CommentItemParts/ReplyViewButton";
 import RepliesContainer from "./CommentItemParts/RepliesContainer";
 import useReplyTreeLayout from "./CommentItemParts/useReplyTreeLayout";
+import { isThreadFullyDeleted } from "../utils/helpers";
 
 const CommentBody = styled.div`
   flex: 1;
@@ -23,16 +24,6 @@ const CommentText = styled.p`
   word-break: break-word;
   overflow-wrap: anywhere;
 `;
-
-// Returns true only if the comment is deleted AND all of its replies (and their nested replies) are also deleted.
-const isThreadFullyDeleted = (comment, repliesMap) => {
-  if (!comment.is_deleted) return false;
-
-  const replies = repliesMap.get(comment.id) || [];
-  if (!replies || replies.length === 0) return true;
-
-  return replies.every((reply) => isThreadFullyDeleted(reply, repliesMap));
-};
 
 const CommentItem = ({ comment, comments, repliesMap, depth = 0 }) => {
   const [showReplies, setShowReplies] = useState(false);

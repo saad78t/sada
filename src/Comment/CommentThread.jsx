@@ -1,8 +1,7 @@
-import styled from "styled-components";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Spinner from "../Shared/Spinner";
 import UserAvatar from "../components/Post/UserAvatar";
-import { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { usePost } from "../hooks/usePost";
 import {
   useAddComment,
@@ -10,7 +9,6 @@ import {
   useGetComments,
 } from "../hooks/useComments";
 import { IoSendSharp, IoCloseSharp } from "react-icons/io5";
-
 import CommentOptionsMenu from "./CommentOptionsMenu";
 import BackButton from "./CommentThreadPages/BackButton";
 import VerticalLineWrapper from "./CommentThreadPages/VerticalLineWrapper";
@@ -19,48 +17,16 @@ import CommentContentText from "./CommentThreadPages/CommentContentText";
 import CommentActions from "./CommentThreadPages/CommentActions";
 import RepliesList from "./CommentThreadPages/RepliesList";
 import ReplyFormStyled from "./CommentThreadPages/ReplyFormStyled";
-
-const Container = styled.div`
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-`;
-
-const RepliesWrapper = styled.div`
-  margin-left: 0.1rem;
-  margin-top: 1.5rem;
-`;
-
-const CommentContainer = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  position: relative;
-
-  &:not(:last-child) {
-    border-bottom: 1px solid ${({ theme }) => theme.borderColor || "#ddd"};
-  }
-`;
-
-const CommentContent = styled.div`
-  flex: 1;
-`;
-
-const FixedReplyFormWrapper = styled.div`
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 700px;
-  padding: 0.75rem 0.5rem;
-  background: #f9f9f9;
-  border-top: 1px solid #ddd;
-  z-index: 9999;
-`;
+import { useReplieceMap } from "../hooks/useRepliesMap";
+import DeletedComment from "./CommentThreadPages/DeletedComment";
+import {
+  CommentContainer,
+  CommentContent,
+  Container,
+  FixedReplyFormWrapper,
+  RepliesWrapper,
+} from "./CommentThreadPages/CommentThreadStyles";
+import { isThreadFullyDeleted } from "../utils/helpers";
 
 const CommentThread = () => {
   const { commentId } = useParams();
@@ -74,13 +40,27 @@ const CommentThread = () => {
   const { comments, commentsLoading } = useGetComments(postId);
   const { mutate: addCommentMutate } = useAddComment(postId);
   const { mutate: deleteCommentMutate } = useDeleteComment();
+  const navigate = useNavigate();
+  const repliesMap = useReplieceMap(comments);
+  const replies = repliesMap?.get(Number(commentId));
+
+  const visibleReplies = useMemo(() => {
+    return replies?.filter((reply) => !isThreadFullyDeleted(reply, repliesMap));
+  }, [replies, repliesMap]);
+
+  // Redirecting to post page if there are no visible replies.
+  // This navigation is placed inside useEffect to avoid triggering
+  // a state update during rendering, which causes a React warning.
+  // See: https://react.dev/link/setstate-in-render
+  useEffect(() => {
+    if (!commentsLoading && !isLoading && visibleReplies.length === 0) {
+      navigate(`/post/${postId}`);
+    }
+  }, [visibleReplies, postId, navigate, commentsLoading, isLoading]);
 
   if (isLoading || commentsLoading) return <Spinner />;
 
   const mainComment = comments.find((c) => c.id === Number(commentId));
-  const replies = comments.filter(
-    (c) => c.parent_comment_id === Number(commentId)
-  );
 
   if (!mainComment) return <p>Comment not found.</p>;
 
@@ -93,12 +73,29 @@ const CommentThread = () => {
   };
 
   const renderComment = (comment) => {
-    const nestedReplies = comments.filter(
-      (c) => c.parent_comment_id === comment.id
-    );
+    const nestedReplies = repliesMap?.get(comment.id) || [];
+
     const showReplies = openReplies[comment.id];
 
-    return (
+    const isFullyDeleted = isThreadFullyDeleted(comment, repliesMap);
+
+    if (isFullyDeleted && (repliesMap?.get(comment.id)?.length ?? 0) === 0) {
+      return null;
+    }
+
+    return comment.is_deleted ? (
+      <React.Fragment key={comment.id}>
+        <DeletedComment
+          nestedReplies={nestedReplies}
+          comment={comment}
+          commentId={commentId}
+          setReplyingTo={setReplyingTo}
+          setOpenReplies={setOpenReplies}
+          showReplies={showReplies}
+          renderComment={renderComment}
+        />
+      </React.Fragment>
+    ) : (
       <CommentContainer key={comment.id}>
         <UserAvatar
           username={comment.users?.username}
@@ -139,7 +136,7 @@ const CommentThread = () => {
           renderComment={renderComment}
           mainComment={mainComment}
         />
-        <RepliesList replies={replies} renderComment={renderComment} />
+        <RepliesList replies={visibleReplies} renderComment={renderComment} />
       </Container>
 
       {replyingTo && (

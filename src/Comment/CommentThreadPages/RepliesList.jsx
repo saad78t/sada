@@ -7,7 +7,7 @@ const RepliesWrapper = styled.div`
 function RepliesList({ replies, renderComment }) {
   return (
     <div>
-      {replies.length > 0 && (
+      {replies?.length > 0 && (
         <RepliesWrapper>
           {replies.map((reply) => renderComment(reply))}
         </RepliesWrapper>
