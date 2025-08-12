@@ -106,3 +106,14 @@ export async function getLikesMap(targetType, targetIds) {
 
   return map;
 }
+
+export async function getLikeCount(targetType, targetId) {
+  const { count, error } = await supabase
+    .from("likes")
+    .select("*", { count: "exact", head: true })
+    .eq("target_type", targetType)
+    .eq("target_id", targetId);
+
+  if (error) throw new Error(error.message);
+  return count || 0;
+}

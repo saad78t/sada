@@ -21,17 +21,20 @@ function PostDetailsCommentItem({
   post,
   comment,
   allComments,
-
   setExpandedComments,
   deleteCommentMutate,
 }) {
   const navigate = useNavigate();
 
-  const commentIds = useMemo(() => allComments.map((c) => c.id), [allComments]);
-  const { likesMap, isLoading: likesLoading } = useGetLikesMap(
-    "comment",
-    commentIds
-  );
+  // const commentIds = useMemo(() => allComments.map((c) => c.id), [allComments]);
+
+  // const { likesMap, isLoading: likesLoading } = useGetLikesMap(
+  //   "comment",
+  //   commentIds
+  // );
+  const { likesMap, isLoading: likesLoading } = useGetLikesMap("comment", [
+    comment.id,
+  ]);
   const likes = likesMap?.get?.(comment.id) || [];
 
   const toggleReplies = (commentId) => {
@@ -45,7 +48,14 @@ function PostDetailsCommentItem({
     navigate(`/comment/${commentId}?postId=${post.id}`);
   };
 
-  const replies = allComments.filter((c) => c.parent_comment_id === comment.id);
+  // const replies = allComments.filter((c) => c.parent_comment_id === comment.id);
+
+  const visibleReplies = useMemo(() => {
+    return allComments.filter(
+      (reply) => reply.parent_comment_id === comment.id && !reply.is_deleted
+    );
+  }, [comment.id, allComments]);
+
   const isDeleted = comment.is_deleted;
 
   const isFullyDeleted = isThreadFullyDeleted(comment, allComments);
@@ -77,10 +87,11 @@ function PostDetailsCommentItem({
         <CommentContent $isDeleted={isDeleted}>
           <div style={{ paddingLeft: "10px" }}>
             <p style={{ fontStyle: "italic" }}>deleted comment 🗑️</p>
-            {replies.length > 0 && (
+            {visibleReplies.length > 0 && (
               <CommentActions>
                 <ActionButton>
-                  <MessageCircle size={16} /> {formatCount(replies.length)}
+                  <MessageCircle size={16} />{" "}
+                  {formatCount(visibleReplies.length)}
                 </ActionButton>
               </CommentActions>
             )}
@@ -115,7 +126,9 @@ function PostDetailsCommentItem({
           <CommentActions>
             <ActionButton onClick={() => toggleReplies(comment.id)}>
               <MessageCircle size={16} />{" "}
-              {replies.length ? formatCount(replies.length) : null}
+              {visibleReplies.length
+                ? formatCount(visibleReplies.length)
+                : null}
             </ActionButton>
             <ActionButton>
               <ThumbsUp size={16} />{" "}

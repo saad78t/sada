@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { MessageCircle, ThumbsUp } from "lucide-react";
+import { useMemo } from "react";
+import { useGetLikesMap } from "../../hooks/useGetLikesMap";
 
 const CommentAction = styled.div`
   display: flex;
@@ -28,6 +30,14 @@ function CommentActions({
   hideLikeButton = false,
 }) {
   const isMainComment = comment.id === Number(commentId);
+  const visibleReplies = useMemo(() => {
+    return nestedReplies.filter((reply) => !reply.is_deleted);
+  }, [nestedReplies]);
+
+  const { likesMap, isLoading: likesLoading } = useGetLikesMap("comment", [
+    comment.id,
+  ]);
+  const likes = likesMap?.get(Number(comment.id)) || [];
 
   const toggleReplies = (commentId) => {
     setOpenReplies((prev) => ({
@@ -42,9 +52,17 @@ function CommentActions({
         onClick={isMainComment ? null : () => toggleReplies(comment.id)}
       >
         <MessageCircle size={16} />
-        {nestedReplies.length > 0 && <span>{nestedReplies.length}</span>}
+        {visibleReplies.length > 0 && <span>{visibleReplies.length}</span>}
       </ActionButton>
-      <ActionButton>{!hideLikeButton && <ThumbsUp size={16} />}</ActionButton>
+
+      <ActionButton>
+        {!hideLikeButton && (
+          <>
+            <ThumbsUp size={16} />
+            {likesLoading ? "..." : likes.length > 0 ? likes.length : null}
+          </>
+        )}
+      </ActionButton>
     </CommentAction>
   );
 }

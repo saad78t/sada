@@ -12,6 +12,7 @@ import ReplyViewButton from "./CommentItemParts/ReplyViewButton";
 import RepliesContainer from "./CommentItemParts/RepliesContainer";
 import useReplyTreeLayout from "./CommentItemParts/useReplyTreeLayout";
 import { isThreadFullyDeleted } from "../utils/helpers";
+import { DeletedAvatar } from "../Shared/DeletedAvater";
 
 const CommentBody = styled.div`
   flex: 1;
@@ -78,11 +79,16 @@ const CommentItem = ({ comment, comments, repliesMap, depth = 0 }) => {
           />
         )}
 
-        <UserAvatar
-          username={comment.users?.username}
-          profilePictureUrl={comment.users?.profile_picture_url}
-          style={{ position: "relative", zIndex: 1 }}
-        />
+        {comment.is_deleted ? (
+          <DeletedAvatar />
+        ) : (
+          <UserAvatar
+            username={comment.users?.username}
+            profilePictureUrl={comment.users?.profile_picture_url}
+            style={{ position: "relative", zIndex: 1 }}
+          />
+        )}
+
         <CommentBody>
           {comment.is_deleted ? (
             <CommentText style={{ fontStyle: "italic" }}>
@@ -94,7 +100,6 @@ const CommentItem = ({ comment, comments, repliesMap, depth = 0 }) => {
               <CommentText $lang={lang}>{comment.content}</CommentText>
               <CommentActions
                 comment={comment}
-                comments={comments}
                 replying={replying}
                 setReplying={setReplying}
               />
