@@ -14,7 +14,7 @@ This was done to preview multiple display states during the current design phase
 
 ---
 
-## 📸 Application Screenshots (As of July 2025)
+## 📸 Application Screenshots (As of August 2025)
 
 Below are some current screenshots from the application to showcase the UI and features developed so far:
 
