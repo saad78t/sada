@@ -8,7 +8,14 @@ function reducer(state, action) {
   switch (action.type) {
     case "replying/to":
       return { ...state, replyingTo: action.payload };
-
+    case "open/replies":
+      return {
+        ...state,
+        openReplies: {
+          ...state.openReplies,
+          [action.payload]: !state.openReplies[action.payload],
+        },
+      };
     default:
       throw new Error("SOMETHING WENT WRONG");
   }
@@ -24,9 +31,21 @@ function CommentThreadContext({ children }) {
     dispatch({ type: "replying/to", payload: commentId });
   }
 
+  function toggleReplies(commentId) {
+    dispatch({
+      type: "open/replies",
+      payload: commentId,
+    });
+  }
+
   return (
     <ThreadContext.Provider
-      value={{ replyingTo, openReplies, setReplyingTo: toggleReply }}
+      value={{
+        replyingTo,
+        openReplies,
+        setReplyingTo: toggleReply,
+        setOpenReplies: toggleReplies,
+      }}
     >
       {children}
     </ThreadContext.Provider>

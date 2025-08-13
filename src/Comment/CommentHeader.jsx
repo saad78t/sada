@@ -32,7 +32,6 @@ function CommentHeader({ comment }) {
   //   onError: (err) => toast.error(err.message),
   // });
   const { mutate: deleteCommentMutate } = useDeleteComment();
-
   return (
     <HeaderRow>
       <Username>{comment.users?.username}</Username>

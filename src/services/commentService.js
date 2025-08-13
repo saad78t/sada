@@ -59,6 +59,7 @@ export const addComment = async (postId, content, parentId = null) => {
 //   }
 // };
 
+//soft delete by updsating the value of is_deleted column
 export const deleteComment = async (commentId) => {
   const { error } = await supabase
     .from("comments")

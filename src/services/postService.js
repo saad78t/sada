@@ -29,8 +29,23 @@ export async function getPostById(id) {
   return data;
 }
 
+/*
+// the old function of deleting post which was depending on hard delete
 export async function deletePost(postId) {
   const { error } = await supabase.from("posts").delete().eq("id", postId);
+
+  if (error) {
+    console.error("Error deleting post:", error);
+    throw new Error("Failed to delete post");
+  }
+}
+  */
+
+export async function deletePost(postId) {
+  const { error } = await supabase
+    .from("posts")
+    .update({ is_deleted: true })
+    .eq("id", postId);
 
   if (error) {
     console.error("Error deleting post:", error);

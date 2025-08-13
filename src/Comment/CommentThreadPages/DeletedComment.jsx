@@ -63,9 +63,9 @@ function DeletedComment({
   showReplies,
   // eslint-disable-next-line no-unused-vars
   RenderComment,
-  repliesMap, // أضفت هذا
-  openReplies, // أضفت هذا
-  deleteCommentMutate, // أضفت هذا
+  repliesMap,
+  openReplies,
+  deleteCommentMutate,
 }) {
   return (
     <CommentContainer>
@@ -94,9 +94,9 @@ function DeletedComment({
                 commentId={commentId}
                 setReplyingTo={setReplyingTo}
                 setOpenReplies={setOpenReplies}
-                repliesMap={repliesMap} // مررت هذا
-                openReplies={openReplies} // مررت هذا
-                deleteCommentMutate={deleteCommentMutate} // مررت هذا
+                repliesMap={repliesMap}
+                openReplies={openReplies}
+                deleteCommentMutate={deleteCommentMutate}
               />
             ))}
           </RepliesWrapper>

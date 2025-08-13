@@ -61,6 +61,11 @@ const Home = () => {
     }
   }, []); // Empty dependency array to run once on mount
 
+  const visiblePosts = useMemo(
+    () => (posts || []).filter((p) => !p.is_deleted),
+    [posts]
+  );
+
   return (
     <HomeContainer>
       {isLoading && <Spinner />}
@@ -70,8 +75,10 @@ const Home = () => {
           <EmptyState>There are no posts currently.</EmptyState>
         )}
 
+        {/* Using filter before map improves performance by excluding deleted posts upfront,
+ so map only iterates over relevant items instead of all posts. */}
         {!isLoading &&
-          posts?.map((post) => (
+          visiblePosts.map((post) => (
             <PostItem
               post={post}
               key={post.id}

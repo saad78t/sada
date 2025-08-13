@@ -173,6 +173,53 @@ This page displays nested replies inside a direct reply on the Comment Thread pa
 
 ![browse_picture_comment_tree3](./screenshots/browse_picture_comment_tree3.png)
 
+# Soft-Delete Comment Feature
+
+The **Soft-Delete** feature allows comments to be removed from the user interface while keeping them in the database.
+
+## Behavior
+
+1. **Comments without replies**
+
+   - The comment disappears from the UI.
+   - Remains in the database for record-keeping or future review.
+
+2. **Comments with replies**
+   - A placeholder text `deleted comment` is shown.
+   - Replies remain visible under the deleted comment.
+
+## Database Persistence
+
+- Deleted comments are never permanently removed.
+- Allows for moderation review, dispute resolution, or restoration if needed.
+
+- This approach is applied to all pages where comments appear.
+
+![soft-delete-photomodal](./screenshots/soft-delete-photomodal.png)
+
+## Comments Pagination Approaches
+
+### 1. Automatic Load on Scroll (Photo Modal Page)
+
+In this approach, when the user scrolls to the end of the comments list and the “Loading more comments…” indicator becomes fully visible, the next batch of comments is automatically fetched and displayed.
+
+- **Purpose:** Prevents loading all comments at once, avoiding lag or slow performance, especially with a large number of comments.
+- **Benefit:** Creates a seamless experience where older comments appear automatically without user clicks.
+
+![comment-pagination-with-auto-loading](./screenshots/comment-pagination-with-auto-loading.png)
+
+### 2. Manual Load More Button (Post Details Page)
+
+This method uses the same loading logic and batching as the first approach, but instead of automatic loading, the user must click a “Load more comments” button to fetch the next set.
+
+- **Purpose:** Demonstrates a manual interaction alternative while keeping the same underlying pagination process.
+- **Benefit:** Gives users direct control over loading additional comments.
+
+> Both methods share the same pagination logic and goals — the difference lies only in the interaction style.  
+> For educational purposes, both styles were implemented to serve as a reference for future projects.
+
+![comment-pagination-button](./screenshots/comment-pagination-button.png)
+
 ## 📦 Technologies & Packages Used
 
 | Package                     | Version |
@@ -192,6 +239,7 @@ This page displays nested replies inside a direct reply on the Comment Thread pa
 | **Swiper**                  | 11.2.10 |
 | **Video.js**                | 8.22.0  |
 | **Supabase JS**             | 2.49.4  |
+| **date-fns**                | 4.1.0   |
 
 ---
 
@@ -246,8 +294,10 @@ sada-app/
 │   │       ├── CommentActions.jsx
 │   │       ├── CommentContentText.jsx
 │   │       ├── CommentHeader.jsx
+│   │       ├── CommentThreadContext.jsx
 │   │       ├── CommentThreadStyles.js
 │   │       ├── DeletedComment.jsx
+│   │       ├── RenderComment.jsx
 │   │       ├── RepliesList.jsx
 │   │       ├── ReplyFormStyled.jsx
 │   │       ├── RplyModal.jsx
