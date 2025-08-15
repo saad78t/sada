@@ -1,4 +1,7 @@
 import { createContext, useContext, useReducer } from "react";
+import { useGetComments } from "../../hooks/useComments";
+import { useReplieceMap } from "../../hooks/useRepliesMap";
+import { useLocation, useParams } from "react-router-dom";
 
 const ThreadContext = createContext();
 
@@ -27,6 +30,14 @@ function CommentThreadContext({ children }) {
     initialState
   );
 
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const postId = queryParams.get("postId");
+  const { comments, commentsLoading } = useGetComments(postId);
+  const repliesMap = useReplieceMap(comments);
+
+  const { commentId } = useParams();
+
   function toggleReply(commentId) {
     dispatch({ type: "replying/to", payload: commentId });
   }
@@ -43,6 +54,11 @@ function CommentThreadContext({ children }) {
       value={{
         replyingTo,
         openReplies,
+        comments,
+        commentsLoading,
+        repliesMap,
+        postId,
+        commentId,
         setReplyingTo: toggleReply,
         setOpenReplies: toggleReplies,
       }}

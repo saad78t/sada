@@ -21,6 +21,7 @@
 
 // export default CommentContentText;
 import styled from "styled-components";
+import { useThreadContext } from "./CommentThreadContext";
 
 const CommentText = styled.div`
   margin: 0.25rem 0;
@@ -30,7 +31,8 @@ const CommentText = styled.div`
   cursor: pointer;
 `;
 
-function CommentContentText({ comment, setReplyingTo }) {
+function CommentContentText({ comment }) {
+  const { setReplyingTo } = useThreadContext();
   return (
     <CommentText
       content={comment.content}
