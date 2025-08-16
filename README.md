@@ -239,7 +239,6 @@ This method uses the same loading logic and batching as the first approach, but 
 | **Swiper**                  | 11.2.10 |
 | **Video.js**                | 8.22.0  |
 | **Supabase JS**             | 2.49.4  |
-| **date-fns**                | 4.1.0   |
 
 ---
 

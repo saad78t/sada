@@ -3,6 +3,7 @@ import { timeAgo } from "../../utils/helpers";
 import PostHeader from "../../components/Post/PostHeader";
 import PostContent from "../../components/Post/PostContent";
 import PostDetailsMedia from "../../components/PostDetailsPages/PostDetailsMedia";
+import RenderComment from "./RenderComment";
 
 const VerticalLineWrapperGray = styled.div`
   position: relative;
@@ -26,12 +27,7 @@ const MediaWrapper = styled.div`
   box-sizing: border-box;
 `;
 
-function VerticalLineWrapper({
-  post,
-  // eslint-disable-next-line no-unused-vars
-  RenderComment,
-  mainComment,
-}) {
+function VerticalLineWrapper({ post, mainComment }) {
   return (
     <VerticalLineWrapperGray>
       <PostHeader

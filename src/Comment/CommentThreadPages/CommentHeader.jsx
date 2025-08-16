@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { timeAgo } from "../../utils/helpers";
 
 const AuthorRow = styled.div`
   display: flex;
@@ -21,7 +22,7 @@ function CommentHeader({ comment }) {
     <div>
       <AuthorRow>
         <UserName>{comment.users?.username}</UserName>
-        <PostDate>• {new Date(comment.created_at).toLocaleString()}</PostDate>
+        <PostDate>• {timeAgo(comment.created_at)}</PostDate>
       </AuthorRow>
     </div>
   );

@@ -13,7 +13,6 @@ import {
   FixedReplyFormWrapper,
 } from "./CommentThreadPages/CommentThreadStyles";
 import { isThreadFullyDeleted } from "../utils/helpers";
-import RenderComment from "./CommentThreadPages/RenderComment";
 import { useThreadContext } from "./CommentThreadPages/CommentThreadContext";
 
 const CommentThread = () => {
@@ -80,13 +79,9 @@ const CommentThread = () => {
     <>
       <Container>
         <BackButton postId={postId} />
-        <VerticalLineWrapper
-          post={post}
-          RenderComment={RenderComment}
-          mainComment={mainComment}
-        />
+        <VerticalLineWrapper post={post} mainComment={mainComment} />
 
-        <RepliesList replies={visibleReplies} RenderComment={RenderComment} />
+        <RepliesList replies={visibleReplies} />
       </Container>
 
       {replyingTo && (

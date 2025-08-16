@@ -5,14 +5,9 @@ import {
   CommentContent,
   RepliesWrapper,
 } from "./CommentThreadStyles";
+import RenderComment from "./RenderComment";
 
-function DeletedComment({
-  nestedReplies,
-  comment,
-  showReplies,
-  // eslint-disable-next-line no-unused-vars
-  RenderComment,
-}) {
+function DeletedComment({ nestedReplies, comment, showReplies }) {
   return (
     <CommentContainer>
       <DeletedAvatar />

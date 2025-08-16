@@ -30,13 +30,12 @@ function RenderComment({ comment }) {
         comment={comment}
         nestedReplies={nestedReplies}
         showReplies={showReplies}
-        RenderComment={RenderComment}
       />
     );
   }
 
   return (
-    <CommentContainer key={comment.id}>
+    <CommentContainer>
       <UserAvatar
         username={comment.users?.username}
         profilePictureUrl={comment.users?.profile_picture_url}
