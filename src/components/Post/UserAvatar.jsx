@@ -1,35 +1,40 @@
 import styled from "styled-components";
+import { getSizeByDebth } from "../../utils/helpers";
+
+const AvatarImage = styled.img`
+  width: ${({ depth }) => getSizeByDebth(depth, "avatar")};
+  height: ${({ depth }) => getSizeByDebth(depth, "avatar")};
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 0.5rem;
+`;
 
 const AvatarCircle = styled.div`
-  width: 40px;
-  height: 40px;
+  width: ${({ depth }) => getSizeByDebth(depth, "avatar")};
+  height: ${({ depth }) => getSizeByDebth(depth, "avatar")};
   border-radius: 50%;
   background-color: ${({ theme }) => theme.avatarBg || "#ccc"};
-  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
   font-weight: bold;
-  font-size: 1.2rem;
-  margin-right: 0.75rem;
+  font-size: ${({ depth }) => (depth === 0 ? "1rem" : "0.85rem")};
+  margin-right: 0.5rem;
 `;
 
-const AvatarImage = styled.img`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 0.75rem;
-`;
-
-const UserAvatar = ({ username, profilePictureUrl }) => {
+const UserAvatar = ({ username, profilePictureUrl, depth = 0 }) => {
   const firstLetter = username?.charAt(0).toUpperCase() || "?";
-
   if (profilePictureUrl) {
-    return <AvatarImage src={profilePictureUrl} alt={`${username}'s avatar`} />;
+    return (
+      <AvatarImage
+        src={profilePictureUrl}
+        depth={depth}
+        alt={`${username}'s avatar`}
+      />
+    );
   }
-
-  return <AvatarCircle>{firstLetter}</AvatarCircle>;
+  return <AvatarCircle depth={depth}>{firstLetter}</AvatarCircle>;
 };
 
 export default UserAvatar;

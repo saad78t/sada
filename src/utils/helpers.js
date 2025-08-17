@@ -5,36 +5,6 @@ export function formatCount(num) {
   return num;
 }
 
-// export function timeAgo(date) {
-//   const seconds = Math.floor((new Date() - new Date(date)) / 1000);
-
-//   let interval = Math.floor(seconds / 31536000);
-//   if (interval >= 1)
-//     return interval + (interval === 1 ? " year ago" : " years ago");
-
-//   interval = Math.floor(seconds / 2592000);
-//   if (interval >= 1)
-//     return interval + (interval === 1 ? " month ago" : " months ago");
-
-//   interval = Math.floor(seconds / 604800);
-//   if (interval >= 1)
-//     return interval + (interval === 1 ? " week ago" : " weeks ago");
-
-//   interval = Math.floor(seconds / 86400);
-//   if (interval >= 1)
-//     return interval + (interval === 1 ? " day ago" : " days ago");
-
-//   interval = Math.floor(seconds / 3600);
-//   if (interval >= 1)
-//     return interval + (interval === 1 ? " hour ago" : " hours ago");
-
-//   interval = Math.floor(seconds / 60);
-//   if (interval >= 1)
-//     return interval + (interval === 1 ? " minute ago" : " minutes ago");
-
-//   return "Just now";
-// }
-
 export function timeAgo(date) {
   const now = new Date();
   const past = new Date(date);
@@ -99,4 +69,27 @@ export const isThreadFullyDeleted = (comment, repliesSource) => {
   if (!replies || replies.length === 0) return true;
 
   return replies.every((reply) => isThreadFullyDeleted(reply, repliesSource));
+};
+
+export const getSizeByDebth = (depth, type = "avatar") => {
+  switch (type) {
+    case "avatar":
+      if (depth === 0) return "40px";
+      if (depth === 1) return "32px";
+      if (depth === 2) return "28px";
+      return "24px"; // أي عمق أكبر
+    case "username":
+      if (depth === 0) return "16px";
+      if (depth === 1) return "14px";
+      return "13px";
+    case "text":
+      if (depth === 0) return "14px";
+      if (depth === 1) return "13px";
+      return "12px";
+    case "actions":
+      if (depth === 0) return "14px";
+      return "12px";
+    default:
+      return "14px";
+  }
 };

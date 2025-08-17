@@ -13,7 +13,7 @@ import {
   RepliesWrapper,
 } from "./CommentThreadStyles";
 
-function RenderComment({ comment }) {
+function RenderComment({ comment, depth = 0 }) {
   const { openReplies, repliesMap } = useThreadContext();
   const { mutate: deleteComment } = useDeleteComment();
 
@@ -37,6 +37,7 @@ function RenderComment({ comment }) {
   return (
     <CommentContainer>
       <UserAvatar
+        depth={depth}
         username={comment.users?.username}
         profilePictureUrl={comment.users?.profile_picture_url}
       />
@@ -54,7 +55,7 @@ function RenderComment({ comment }) {
             {nestedReplies
               .filter((r) => !isThreadFullyDeleted(r, repliesMap))
               .map((r) => (
-                <RenderComment key={r.id} comment={r} />
+                <RenderComment key={r.id} comment={r} depth={depth + 1} />
               ))}
           </RepliesWrapper>
         )}
