@@ -2,6 +2,7 @@ import { createContext, useContext, useReducer } from "react";
 import { useGetComments } from "../../hooks/useComments";
 import { useReplieceMap } from "../../hooks/useRepliesMap";
 import { useLocation, useParams } from "react-router-dom";
+import { useGetLikesMap } from "../../hooks/useGetLikesMap";
 
 const ThreadContext = createContext();
 
@@ -38,6 +39,12 @@ function CommentThreadContext({ children }) {
 
   const { commentId } = useParams();
 
+  //هذا الاسلوب يجيب التعليقات جميعها دفعه واحده للايكات بحيث ما نشوف نقاط التحميل "..." لودنج
+  const { likesMap, isLoading: likesLoading } = useGetLikesMap(
+    "comment",
+    comments.map((comment) => comment.id)
+  );
+
   function toggleReply(commentId) {
     dispatch({ type: "replying/to", payload: commentId });
   }
@@ -59,6 +66,8 @@ function CommentThreadContext({ children }) {
         repliesMap,
         postId,
         commentId,
+        likesLoading,
+        likesMap,
         setReplyingTo: toggleReply,
         setOpenReplies: toggleReplies,
       }}

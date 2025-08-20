@@ -71,24 +71,33 @@ export const isThreadFullyDeleted = (comment, repliesSource) => {
   return replies.every((reply) => isThreadFullyDeleted(reply, repliesSource));
 };
 
-export const getSizeByDebth = (depth, type = "avatar") => {
+export const getSizeByDepth = (depth, type = "avatar") => {
   switch (type) {
     case "avatar":
       if (depth === 0) return "40px";
       if (depth === 1) return "32px";
       if (depth === 2) return "28px";
       return "24px"; // أي عمق أكبر
+
+    case "deletedavatar": // ✅ مخصص للأفاتار المحذوف
+      if (depth === 0) return "40";
+      if (depth === 1) return "32";
+      return "28";
     case "username":
       if (depth === 0) return "16px";
       if (depth === 1) return "14px";
       return "13px";
     case "text":
-      if (depth === 0) return "14px";
-      if (depth === 1) return "13px";
-      return "12px";
+      if (depth === 0) return "18px";
+      if (depth === 1) return "17px";
+      return "15px";
     case "actions":
-      if (depth === 0) return "14px";
-      return "12px";
+      if (depth === 0) return "16px";
+      return "14px";
+    case "deletedtext":
+      if (depth === 0) return "20px";
+      if (depth === 1) return "18px";
+      return "17px";
     default:
       return "14px";
   }

@@ -16,13 +16,16 @@ import {
 function RenderComment({ comment, depth = 0 }) {
   const { openReplies, repliesMap } = useThreadContext();
   const { mutate: deleteComment } = useDeleteComment();
-
   const nestedReplies = repliesMap?.get(comment.id) || [];
   const showReplies = openReplies?.[comment.id];
 
   // إذا التعليق محذوف وكل ردوده محذوفة أو ماكو ردود → ما نعرضه
-  if (isThreadFullyDeleted(comment, repliesMap) && nestedReplies.length === 0)
+  // if (isThreadFullyDeleted(comment, repliesMap) && nestedReplies.length === 0)
+  //   return null;
+
+  if (isThreadFullyDeleted(comment, repliesMap) && nestedReplies.length === 0) {
     return null;
+  }
 
   if (comment.is_deleted) {
     return (
@@ -30,6 +33,7 @@ function RenderComment({ comment, depth = 0 }) {
         comment={comment}
         nestedReplies={nestedReplies}
         showReplies={showReplies}
+        depth={depth}
       />
     );
   }
@@ -37,9 +41,9 @@ function RenderComment({ comment, depth = 0 }) {
   return (
     <CommentContainer>
       <UserAvatar
-        depth={depth}
         username={comment.users?.username}
         profilePictureUrl={comment.users?.profile_picture_url}
+        depth={depth}
       />
       <CommentOptionsMenu
         onDelete={() => deleteComment(comment.id)}
@@ -47,9 +51,13 @@ function RenderComment({ comment, depth = 0 }) {
         optionTop="-10px"
       />
       <CommentContent>
-        <CommentHeader comment={comment} />
-        <CommentContentText comment={comment} />
-        <CommentActions comment={comment} nestedReplies={nestedReplies} />
+        <CommentHeader comment={comment} depth={depth} />
+        <CommentContentText comment={comment} depth={depth} />
+        <CommentActions
+          comment={comment}
+          nestedReplies={nestedReplies}
+          depth={depth}
+        />
         {showReplies && (
           <RepliesWrapper>
             {nestedReplies

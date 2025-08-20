@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { timeAgo } from "../../utils/helpers";
+import { getSizeByDepth, timeAgo } from "../../utils/helpers";
 
 const AuthorRow = styled.div`
   display: flex;
@@ -9,6 +9,7 @@ const AuthorRow = styled.div`
 
 const UserName = styled.span`
   font-weight: bold;
+  font-size: ${({ $depth }) => getSizeByDepth($depth, "username")};
   color: ${({ theme }) => theme.textColor};
 `;
 
@@ -17,11 +18,11 @@ const PostDate = styled.span`
   color: ${({ theme }) => theme.borderColor};
 `;
 
-function CommentHeader({ comment }) {
+function CommentHeader({ comment, depth }) {
   return (
     <div>
       <AuthorRow>
-        <UserName>{comment.users?.username}</UserName>
+        <UserName $depth={depth}>{comment.users?.username}</UserName>
         <PostDate>• {timeAgo(comment.created_at)}</PostDate>
       </AuthorRow>
     </div>

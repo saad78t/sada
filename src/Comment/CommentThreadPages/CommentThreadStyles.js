@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { getSizeByDepth } from "../../utils/helpers";
 
 export const Container = styled.div`
   max-width: 700px;
@@ -8,7 +9,7 @@ export const Container = styled.div`
 
 export const RepliesWrapper = styled.div`
   margin-left: 0.1rem;
-  margin-top: 1.5rem;
+  margin-top: 0.1rem;
 `;
 
 // export const CommentContainer = styled.div`
@@ -48,6 +49,14 @@ export const CommentContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.25rem; /* قلل الفجوة بين الهيدر والنص والأزرار */
+`;
+
+export const DeletedText = styled.p`
+  font-style: italic;
+  color: ${({ theme }) => theme.mutedText};
+  margin: 0; /* شيل كل الهوامش */
+  line-height: 1; /* يمنع التباعد العمودي */
+  font-size: ${({ $depth }) => getSizeByDepth($depth, "deletedtext")};
 `;
 
 export const FixedReplyFormWrapper = styled.div`

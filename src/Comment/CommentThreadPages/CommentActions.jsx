@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { MessageCircle, ThumbsUp } from "lucide-react";
 import { useMemo } from "react";
-import { useGetLikesMap } from "../../hooks/useGetLikesMap";
+// import { useGetLikesMap } from "../../hooks/useGetLikesMap";
 import { useThreadContext } from "./CommentThreadContext";
+import { getSizeByDepth, isThreadFullyDeleted } from "../../utils/helpers";
 
 const CommentAction = styled.div`
   display: flex;
@@ -20,21 +21,35 @@ const ActionButton = styled.button`
   align-items: center;
   gap: 0.3rem;
   color: ${({ theme }) => theme.textColor};
-  font-size: 0.85rem;
+  font-size: ${({ $depth }) => getSizeByDepth($depth, "actions")};
 `;
 
-function CommentActions({ comment, nestedReplies, hideLikeButton = false }) {
-  const { setReplyingTo, setOpenReplies, commentId } = useThreadContext();
-
+function CommentActions({
+  comment,
+  nestedReplies,
+  hideLikeButton = false,
+  depth,
+}) {
+  const {
+    setReplyingTo,
+    setOpenReplies,
+    commentId,
+    repliesMap,
+    likesMap,
+    likesLoading,
+  } = useThreadContext();
   const isMainComment = comment.id === Number(commentId);
 
   const visibleReplies = useMemo(() => {
-    return nestedReplies.filter((reply) => !reply.is_deleted);
-  }, [nestedReplies]);
+    return nestedReplies.filter(
+      (reply) => !isThreadFullyDeleted(reply, repliesMap)
+    );
+  }, [nestedReplies, repliesMap]);
 
-  const { likesMap, isLoading: likesLoading } = useGetLikesMap("comment", [
-    comment.id,
-  ]);
+  //هذا الاسلوب يسمى ليزي يستخدم فقط اذا كان عندي الاف التعليقات وعليها الاف اللايكات فيجلب العدد فقط  عندما نستعرض التعليقات تاتي عدد اللايكات
+  // const { likesMap, isLoading: likesLoading } = useGetLikesMap("comment", [
+  //   comment.id,
+  // ]);
   const likes = likesMap?.get(Number(comment.id)) || [];
 
   // const toggleReplies = (commentId) => {
@@ -50,22 +65,24 @@ function CommentActions({ comment, nestedReplies, hideLikeButton = false }) {
   return (
     <CommentAction>
       <ActionButton
+        $depth={depth}
         onClick={
           disableRepliesButton
             ? undefined
             : () => {
-                setOpenReplies(comment.id), setReplyingTo(null);
+                setOpenReplies(comment.id);
+                setReplyingTo(null);
               }
         }
         disabled={disableRepliesButton}
       >
-        <MessageCircle size={16} />
+        <MessageCircle size={parseInt(getSizeByDepth(depth, "actions"))} />
         {visibleReplies.length > 0 && <span>{visibleReplies.length}</span>}
       </ActionButton>
 
       {!hideLikeButton && (
-        <ActionButton>
-          <ThumbsUp size={16} />
+        <ActionButton $depth={depth}>
+          <ThumbsUp size={parseInt(getSizeByDepth(depth, "actions"))} />
           {likesLoading ? "..." : likes.length > 0 ? likes.length : null}
         </ActionButton>
       )}

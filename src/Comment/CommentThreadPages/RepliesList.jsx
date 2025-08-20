@@ -11,7 +11,7 @@ function RepliesList({ replies }) {
       {replies?.length > 0 && (
         <RepliesWrapper>
           {replies.map((reply) => (
-            <RenderComment key={reply.id} comment={reply} />
+            <RenderComment key={reply.id} comment={reply} depth={1} />
           ))}
         </RepliesWrapper>
       )}
