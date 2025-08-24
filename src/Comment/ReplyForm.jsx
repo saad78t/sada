@@ -72,6 +72,7 @@ const ReplyForm = ({
   cancelText,
   buttonText = "Reply",
   placeholder = "Write a reply...",
+  depth,
   className,
 }) => {
   const { register, handleSubmit, reset, watch } = useForm();
@@ -89,7 +90,7 @@ const ReplyForm = ({
 
   return (
     <FormContainer className={className}>
-      <UserAvatar username="you" profilePictureUrl={null} />
+      <UserAvatar username="you" profilePictureUrl={null} depth={depth} />
       <InputArea>
         <form onSubmit={handleSubmit(onFormSubmit)}>
           <Textarea
@@ -98,7 +99,7 @@ const ReplyForm = ({
             placeholder={placeholder}
             $lang={lang}
             style={{
-              overflow: "hidden",
+              overflow: "auto",
               resize: "none",
             }}
           />

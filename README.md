@@ -97,6 +97,7 @@ This page appears after clicking on a specific comment within the Post Details p
 - The main post displayed at the top.
 - The selected parent comment shown directly below the post, connected visually by a continuous vertical gray line linking the post author's avatar and the commenter's avatar.
 - Below the parent comment, a list of direct replies to this comment is displayed.
+- Direct replies are visually distinguished from the parent comment by using smaller sizes for the avatar, author name, text content, and action buttons. These size adjustments vary depending on the reply’s depth, so deeper replies appear slightly more compact to reflect the hierarchy.
 - Each direct reply includes:
   - The author's name.
   - A like button.
@@ -111,6 +112,7 @@ This page displays nested replies inside a direct reply on the Comment Thread pa
 
 - One of the direct replies has two nested replies.
 - When clicking the comments icon on a direct reply, its nested replies appear indented beneath it to visually indicate a reply structure.
+- Nested replies are visually distinguished by progressively smaller sizes for the avatar, author name, text content, and action buttons, so the first-level nested reply appears larger than the second-level, and the second larger than the third, clearly indicating the depth.
 - Each nested reply displays:
   - The author’s name.
   - A like button.
@@ -153,6 +155,7 @@ This page displays nested replies inside a direct reply on the Comment Thread pa
   - Like button
   - Reply button
   - Three-dots menu for actions like (Delete Comment)
+- Replies are visually distinguished by progressively smaller avatar sizes, author names, and text content depending on the depth level, so that first-level replies appear larger than second-level replies, and so on, making the hierarchy more noticeable.
 - After tapping the Reply button on any comment:
   - A reply form appears with:
     - A placeholder text (Write a reply...)

@@ -33,7 +33,7 @@ export const RepliesWrapper = styled.div`
 export const CommentContainer = styled.div`
   display: flex;
   align-items: flex-start;
-  gap: 0.25rem; /* قلل الفجوة بين الصورة والمحتوى */
+  gap: 0.1rem; /* قلل الفجوة بين الصورة والمحتوى */
   margin-top: 1rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;

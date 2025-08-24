@@ -98,6 +98,26 @@ export const getSizeByDepth = (depth, type = "avatar") => {
       if (depth === 0) return "20px";
       if (depth === 1) return "18px";
       return "17px";
+    case "commentitemreplyformwidth":
+      if (depth === 0 || depth === 1) return "250px";
+      if (depth === 2 || depth === 3) return "230px";
+      if (depth === 4) return "200px";
+      if (depth === 5) return "190px";
+      return "160px";
+    case "commentitemtext":
+      if (depth === 0) return "16px";
+      return "15px";
+    case "commentitemrepliescontainer":
+      if (depth === 0) return "40px";
+      if (depth === 1) return "35px";
+      return "25px";
+    case "commentitemreplyformgap":
+      if (depth === 0) return "0.75rem";
+      return "0.1rem";
+    case "commentitemreplyformbutton":
+      if (depth === 0) return "2rem";
+      if (depth === 1 || depth === 2) return "1rem";
+      return "-0.5rem";
     default:
       return "14px";
   }

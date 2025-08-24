@@ -7,6 +7,7 @@ const AvatarImage = styled.img`
   border-radius: 50%;
   object-fit: cover;
   margin-right: 0.5rem;
+  flex-shrink: 0;
 `;
 
 const AvatarCircle = styled.div`
@@ -21,6 +22,7 @@ const AvatarCircle = styled.div`
   font-weight: bold;
   font-size: ${({ $depth }) => ($depth === 0 ? "1rem" : "0.85rem")};
   margin-right: 0.5rem;
+  flex-shrink: 0;
 `;
 
 const UserAvatar = ({ username, profilePictureUrl, depth = 0 }) => {
