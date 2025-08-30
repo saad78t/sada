@@ -408,6 +408,7 @@ sada-app/
 │
 │   ├── utils/
 │   │   └── helpers.js
+│   │   └── postHelpers.js
 │
 │   ├── App.jsx
 │   └── main.jsx

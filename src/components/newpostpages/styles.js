@@ -37,7 +37,7 @@ export const SubmitButton = styled.button`
   color: ${({ theme }) => theme.buttonText};
   border: none;
   border-radius: 8px;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   font-weight: bold;
   align-self: flex-end;
 

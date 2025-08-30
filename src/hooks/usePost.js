@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deletePost, getPostById } from "../services/postService";
+import { createPost, deletePost, getPostById } from "../services/postService";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -23,7 +23,7 @@ export function usePost(postId) {
 export function useDeletePost() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { isLoading: isDeleting, mutate } = useMutation({
+  const { isPending: isDeleting, mutate } = useMutation({
     mutationFn: deletePost,
     onSuccess: () => {
       toast.success("Post successfully deleted 💥");
@@ -36,4 +36,19 @@ export function useDeletePost() {
   });
 
   return { isDeleting, mutate };
+}
+
+export function useCreatePost() {
+  const { mutate, isPending } = useMutation({
+    mutationFn: createPost,
+    onSuccess: () => {
+      toast.success("Post successfully created");
+    },
+    onError: (err) => {
+      console.error("Error creating post:", err),
+        toast.error(err.message || "❌ Failed to create post");
+    },
+  });
+
+  return { mutate, isPending };
 }

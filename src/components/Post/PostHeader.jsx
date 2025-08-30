@@ -88,7 +88,7 @@ const PostHeader = ({ username, createdAt, avatarUrl, postId }) => {
         {showMenu && (
           <DropdownMenu>
             <MenuItem onClick={() => mutate(postId)} disabled={isDeleting}>
-              Delete Post
+              {isDeleting ? "Deleting..." : "Delete Post"}
             </MenuItem>
           </DropdownMenu>
         )}

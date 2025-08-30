@@ -4,23 +4,34 @@ import UploadButton from "../newpostpages/UploadButton";
 import MediaPreviewList from "../newpostpages/MediaPreviewList";
 import { useMediaPreview } from "../../hooks/useMediaPreview";
 import { Form, Input, TextArea, FileRow, SubmitButton } from "./styles";
+import { useNavigate } from "react-router-dom";
+import { useCreatePost } from "../../hooks/usePost";
 
 function NewPostForm() {
   const [mediaFiles, setMediaFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
+  const navigate = useNavigate();
+  const { mutate, isPending: isCreating } = useCreatePost();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
 
   useMediaPreview(mediaFiles, setPreviews);
 
   const onSubmit = (data) => {
-    console.log("Form data:", data);
-    console.log("Media files:", mediaFiles);
-    // Here you can handle form submission and upload to Supabase or backend
+    mutate(
+      { ...data, media_urls: mediaFiles },
+      {
+        onSuccess: () => {
+          reset();
+          navigate("/");
+        },
+      }
+    );
   };
 
   return (
@@ -38,8 +49,10 @@ function NewPostForm() {
       )}
 
       <FileRow>
-        <UploadButton setMediaFiles={setMediaFiles} />
-        <SubmitButton type="submit">Post</SubmitButton>
+        <UploadButton setMediaFiles={setMediaFiles} disabled={isCreating} />
+        <SubmitButton type="submit" disabled={isCreating}>
+          {isCreating ? "Posting..." : "Post"}{" "}
+        </SubmitButton>
       </FileRow>
       <MediaPreviewList previews={previews} />
     </Form>
