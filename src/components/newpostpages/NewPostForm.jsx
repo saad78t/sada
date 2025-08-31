@@ -54,7 +54,11 @@ function NewPostForm() {
           {isCreating ? "Posting..." : "Post"}{" "}
         </SubmitButton>
       </FileRow>
-      <MediaPreviewList previews={previews} />
+      <MediaPreviewList
+        previews={previews}
+        setMediaFiles={setMediaFiles}
+        setPreviews={setPreviews}
+      />
     </Form>
   );
 }

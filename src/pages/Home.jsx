@@ -19,7 +19,7 @@ const HomeContainer = styled.div`
 const PostList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.1rem;
 `;
 
 const EmptyState = styled.p`

@@ -119,17 +119,22 @@ export async function createPost(newPost) {
   }, []);
 
   // Check if all links failed to be created
-  await checkAllFiles(
-    validSignedUrls,
-    validMediaNames,
-    "Failed to create all signed links",
-    "No signed links were created"
-  );
+  // await checkAllFiles(
+  //   validSignedUrls,
+  //   validMediaNames,
+  //   "Failed to create all signed links",
+  //   "No signed links were created"
+  // );
 
   // 2. insert title and content from react hook form
   const { data, error } = await supabase
     .from("posts")
-    .insert([{ ...newPost, media_urls: validSignedUrls }])
+    .insert([
+      {
+        ...newPost,
+        media_urls: validSignedUrls.length > 0 ? validSignedUrls : null,
+      },
+    ])
     .select();
 
   if (error) {

@@ -28,7 +28,16 @@ const HiddenFileInput = styled.input`
 function UploadButton({ setMediaFiles, disabled }) {
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    setMediaFiles(files);
+
+    setMediaFiles((prev) => {
+      const existingNames = prev.map((f) => f.name + f.size + f.lastModified);
+      const newFiles = files.filter(
+        (f) => !existingNames.includes(f.name + f.size + f.lastModified)
+      );
+      return [...prev, ...newFiles];
+    });
+
+    e.target.value = ""; // يجب عمل ريسيت للقيمه لان في حاله اول مره رفعت صوره وبعدين حذفتها من زر الاغلاق وبعدين رجعت مره ثانيه ارجعها حتى انشرها ما راح تنزل فهنا يرست القيمه
   };
 
   return (
