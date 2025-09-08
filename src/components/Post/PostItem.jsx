@@ -29,7 +29,7 @@ const PostContentWrapper = styled.div`
 
 const PostItem = ({ post, likesMap, likesLoading }) => {
   const navigate = useNavigate();
-  const { content, media_urls, id } = post;
+  const { title, content, media_urls, id } = post;
   const location = useLocation();
 
   const handleNavigate = () => {
@@ -50,7 +50,12 @@ const PostItem = ({ post, likesMap, likesLoading }) => {
           postId={id}
         />
 
-        <PostContent content={content} mediaUrls={media_urls} postId={id} />
+        <PostContent
+          title={title}
+          content={content}
+          mediaUrls={media_urls}
+          postId={id}
+        />
 
         <PostActions
           postId={id}

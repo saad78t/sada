@@ -8,10 +8,21 @@ const PostContent = styled.p`
   margin-bottom: 0.5rem;
 `;
 
+const Title = styled.p`
+  text-align: start;
+  padding-left: 3rem;
+  font-weight: 600;
+`;
+
 function PhotoModalPostContent({ post }) {
   const lang = /[\u0600-\u06FF]/.test(post?.content) ? "ar" : "en";
 
-  return <PostContent $lang={lang}>{post.content}</PostContent>;
+  return (
+    <>
+      <Title>{post.title}</Title>
+      <PostContent $lang={lang}>{post.content}</PostContent>
+    </>
+  );
 }
 
 export default PhotoModalPostContent;

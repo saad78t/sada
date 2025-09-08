@@ -7,20 +7,22 @@ import {
   BackButton,
   Title,
 } from "../components/newpostpages/styles";
+import { useCreatePost } from "../hooks/usePost";
 
 const NewPost = () => {
   const navigate = useNavigate();
+  const { mutate, isPending: isCreating } = useCreatePost();
 
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate("/")}>
+        <BackButton onClick={() => navigate("/")} disabled={isCreating}>
           <ArrowLeft />
         </BackButton>
         <Title>New Post</Title>
       </Header>
 
-      <NewPostForm />
+      <NewPostForm mutate={mutate} isCreating={isCreating} />
     </Container>
   );
 };

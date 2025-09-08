@@ -69,11 +69,13 @@ export async function createPost(newPost) {
   });
 
   // Check if all files failed to upload
-  checkAllFiles(
-    validMediaNames,
-    "Failed to upload all files",
-    "No files were uploaded successfully"
-  );
+  if (newPost.media_urls && newPost.media_urls.length > 0) {
+    checkAllFiles(
+      validMediaNames,
+      "Failed to upload all files",
+      "No files were uploaded successfully"
+    );
+  }
 
   // Create signed links for successful files only
   let signedUrls;
@@ -84,7 +86,6 @@ export async function createPost(newPost) {
     console.error("Error creating signed links:", e.message);
     throw new Error(`Failed to create links: ${e.message}`);
   }
-
   // Extract signed links
   //1 const validSignedUrls = signedUrls.map((el) => el.data.signedUrl);
 
@@ -117,14 +118,6 @@ export async function createPost(newPost) {
       ? [...accumulator, el.data.signedUrl]
       : accumulator;
   }, []);
-
-  // Check if all links failed to be created
-  // await checkAllFiles(
-  //   validSignedUrls,
-  //   validMediaNames,
-  //   "Failed to create all signed links",
-  //   "No signed links were created"
-  // );
 
   // 2. insert title and content from react hook form
   const { data, error } = await supabase

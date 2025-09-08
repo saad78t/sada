@@ -27,6 +27,7 @@ export async function uploadInBatches(files, source, batchSize = 5) {
     const batch = files.slice(i, i + batchSize);
     const batchResults = await Promise.all(
       batch.map((file, index) =>
+        // supabase.storage.from("post-media").upload(file, source[i + index])
         supabase.storage.from("post-media").upload(file, source[i + index])
       )
     );
@@ -40,9 +41,9 @@ export async function uploadInBatches(files, source, batchSize = 5) {
   fileName,   // The name/path to store this file in the storage bucket (e.g., "images/photo1.jpg")
   fileData    // The actual file content (File, Blob, or Buffer) that will be uploaded under this name
 )
- * 
+ *
  * مثال مهم جدا لشرح هذا الجزء source[i + index]
- * 
+ *
  * files = ["file1.jpg","file2.jpg","file3.jpg","file4.jpg","file5.jpg",
          "file6.jpg","file7.jpg","file8.jpg","file9.jpg","file10.jpg",
          "file11.jpg","file12.jpg"];
@@ -85,6 +86,7 @@ index=1 → source[10 + 1] = f12
  */
 
 export async function removeUploadedFiles(mediaFiles) {
+  if (!mediaFiles || mediaFiles.length === 0) return;
   const { data, error } = await supabase.storage
     .from("post-media")
     .remove(mediaFiles);
@@ -96,16 +98,9 @@ export async function removeUploadedFiles(mediaFiles) {
   return data || [];
 }
 
-export async function checkAllFiles(
-  filesArray,
-  validMediaNames,
-  logMessage,
-  errorMessage
-) {
+export async function checkAllFiles(filesArray, logMessage, errorMessage) {
   if (filesArray.length === 0) {
-    if (validMediaNames.length > 0) {
-      await removeUploadedFiles(validMediaNames);
-    }
+    await removeUploadedFiles(filesArray);
     console.error(logMessage);
     throw new Error(errorMessage);
   }

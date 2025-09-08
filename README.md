@@ -28,7 +28,49 @@ Below are some current screenshots from the application to showcase the UI and f
 
 ### ➕ Add New Post
 
+## New Post Page
+
+This page allows the user to create and publish a new post.  
+The post must contain **either text or media (or both)** — an empty post is not allowed.
+
+### Features
+
+- **Title field (optional):**  
+  The user can add a title, but it is not required.
+
+- **Content field (optional):**  
+  The main text of the post.  
+  A post can be text-only, media-only, or include both.
+
+- **Media upload button:**  
+  Lets the user select and add multiple images or videos.  
+  Once files are chosen, they appear in a **preview section**.
+
+- **Media preview with remove option:**  
+  Each media item in the preview has a small **`X` button** that allows the user to remove it individually.
+
+- **Delete All button:**  
+  Removes all selected media at once.  
+  Styled in red to highlight its destructive action.
+
+- **Validation:**  
+  If both the text and media are empty, an error message is displayed and the post cannot be submitted.
+
+- **Post button:**  
+  Submits the post.
+  - Disabled during the posting process.
+  - Changes its label to **`Posting...`** while the request is in progress.
+  - All inputs and buttons are temporarily disabled until posting is complete.
+
+This design ensures flexibility by allowing posts with text, media, or both, while preventing completely empty submissions.
+
 ![Add New Post](./screenshots/new_post_page.png)
+
+### Disabled state during posting
+
+During posting, **all interactive elements on the page are disabled** to prevent any changes or duplicate actions.
+
+![disabled_buttons](./screenshots/disabled_buttons.png)
 
 ### Post containing one image
 

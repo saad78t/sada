@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { XCircle } from "lucide-react";
 import Button from "../../Shared/Button";
+import { disabledStyles } from "./styles";
 const PreviewContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -11,9 +12,11 @@ const CloseButton = styled.button`
   position: absolute;
   top: 5px;
   right: 5px;
-  background: rgba(255, 0, 0, 0.7); /* أحمر شفاف بدل الأسود */
+  background: ${({ disabled }) =>
+    disabled ? "#d3d3d3" : "rgba(255, 0, 0, 0.7)"};
+  color: ${({ disabled, theme }) => (disabled ? "#777" : theme.buttonText)};
   border: none;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   color: white;
   padding: 0.3rem;
   border-radius: 50%;
@@ -23,8 +26,11 @@ const CloseButton = styled.button`
   justify-content: center;
 
   &:hover {
-    background: rgba(255, 0, 0, 0.9); /* أوضح عند الهوفر */
+    background: ${({ disabled }) =>
+      disabled ? "#d3d3d3" : "rgba(255, 0, 0, 0.9)"};
   }
+
+  ${disabledStyles}
 `;
 
 const PreviewItem = styled.div`
@@ -47,15 +53,25 @@ const PreviewItem = styled.div`
   }
 `;
 
-const DeleteAll = styled(Button)`
-  background-color: #d32f2f;
+export const DeleteAll = styled(Button)`
+  background-color: ${({ disabled }) => (disabled ? "#d3d3d3" : "#d32f2f")};
+  color: ${({ disabled, theme }) => (disabled ? "#777" : theme.buttonText)};
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  font-weight: bold;
   &:hover {
-    background-color: #ff0000;
+    background-color: ${({ disabled }) => (disabled ? "#d3d3d3" : "#ff0000")};
     transition: background-color 0.3s ease;
   }
+
+  ${disabledStyles}
 `;
 
-function MediaPreviewList({ previews, setMediaFiles, setPreviews }) {
+function MediaPreviewList({
+  previews,
+  setMediaFiles,
+  setPreviews,
+  isCreating,
+}) {
   function deleteItem(index) {
     setMediaFiles((prev) => prev.filter((_, i) => i !== index));
     setPreviews((prev) => prev.filter((_, i) => i !== index));
@@ -73,7 +89,11 @@ function MediaPreviewList({ previews, setMediaFiles, setPreviews }) {
           <PreviewContainer>
             {previews.map(({ file, url }, i) => (
               <PreviewItem key={i}>
-                <CloseButton type="button" onClick={() => deleteItem(i)}>
+                <CloseButton
+                  type="button"
+                  onClick={() => deleteItem(i)}
+                  disabled={isCreating}
+                >
                   <XCircle size={18} />
                 </CloseButton>
                 {file.type.startsWith("image") ? (
@@ -85,7 +105,11 @@ function MediaPreviewList({ previews, setMediaFiles, setPreviews }) {
             ))}
           </PreviewContainer>
           <div>
-            <DeleteAll type="button" onClick={deleteAllMedia}>
+            <DeleteAll
+              type="button"
+              onClick={deleteAllMedia}
+              disabled={isCreating}
+            >
               Delete All
             </DeleteAll>
           </div>
