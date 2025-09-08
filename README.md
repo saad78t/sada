@@ -28,8 +28,6 @@ Below are some current screenshots from the application to showcase the UI and f
 
 ### ➕ Add New Post
 
-## New Post Page
-
 This page allows the user to create and publish a new post.  
 The post must contain **either text or media (or both)** — an empty post is not allowed.
 
